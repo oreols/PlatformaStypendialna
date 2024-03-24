@@ -4,6 +4,9 @@ class Kierunek(models.Model):
     id_kierunku = models.IntegerField(primary_key=True)
     nazwa_kierunku = models.TextField(null=True)
 
+    def __str__(self):
+        return self.nazwa_kierunku
+
 class DecyzjeStypendialne(models.Model):
     id_decyzji = models.IntegerField(primary_key=True)
     id_student = models.IntegerField(null=True)
@@ -45,8 +48,11 @@ class Student(models.Model):
     rok_studiow = models.IntegerField(null=True)
     kierunek = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
     decyzjeStypendialne = models.ForeignKey(DecyzjeStypendialne, on_delete=models.CASCADE)
-    formularz = models.ForeignKey(Formularz, on_delete=models.CASCADE)
+    ##formularz = models.ForeignKey(Formularz, blank=True, null = True, on_delete=models.CASCADE)
     numer_konta_bankowego = models.TextField(null=True)
+
+    def __str__(self):
+        return self.nazwa_uzytkownika
 
 class Admin(models.Model):
     id_admin = models.IntegerField(primary_key=True)
