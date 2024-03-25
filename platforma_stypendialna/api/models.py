@@ -12,6 +12,9 @@ class DecyzjeStypendialne(models.Model):
     id_student = models.IntegerField(null=True)
     decyzja = models.SmallIntegerField(null=True)
 
+    def __str__(self):
+        return str(self.id_decyzji)
+
 class Formularz(models.Model):
     id_formularza = models.IntegerField(primary_key=True)
     typ_stypendium = models.TextField(null=True)
@@ -30,6 +33,9 @@ class Formularz(models.Model):
     charakter_stopnia_niepelnosprawnosci = models.TextField(null=True)
     data_rozpoczecia_orzeczenia = models.DateField(null=True)
     data_konca_orzeczenia = models.DateField(null=True)
+
+    def __str__(self):
+        return str(self.id_formularza)
 
 class Student(models.Model):
     id_student = models.IntegerField(primary_key=True)
@@ -59,6 +65,8 @@ class Admin(models.Model):
     haslo = models.TextField(null=True)
     login = models.TextField(null=True)
     email = models.TextField(null=True)
+    def __str__(self):
+        return self.login
 
 class Aktualnosci(models.Model):
     id_aktualnosci = models.IntegerField(primary_key=True)
@@ -67,11 +75,17 @@ class Aktualnosci(models.Model):
     data_opublikowania = models.DateField(null=True)
     admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.id_aktualnosci)
+
 class Kontakt(models.Model):
     id_kontakt = models.IntegerField(primary_key=True)
     email = models.TextField(null=True)
     numer_tel = models.IntegerField(null=True)
     admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id_kontakt)
 
 class Przedmiot(models.Model):
     id_przedmiot = models.IntegerField(primary_key=True)
@@ -80,6 +94,8 @@ class Przedmiot(models.Model):
     semestr = models.IntegerField(null=True)
     kierunek = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
     punkty_ects = models.IntegerField(null=True)
+    def __str__(self):
+        return self.nazwa_przedmiotu
 
 class OcenaKoncowa(models.Model):
     id_ocena = models.IntegerField(primary_key=True)
@@ -88,6 +104,9 @@ class OcenaKoncowa(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     id_przedmiotu = models.IntegerField(null=True)
     przedmiot = models.ForeignKey(Przedmiot, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.student.imie) + " " + str(self.student.nazwisko) + " " + str(self.ocena_koncowa) + " " + str(self.przedmiot.nazwa_przedmiotu)
 
 class Kryteria(models.Model):
     rok_kryterium = models.IntegerField(primary_key=True)
@@ -98,6 +117,10 @@ class Kryteria(models.Model):
     wzor_stypendium = models.TextField(null=True)
     formularz = models.ForeignKey(Formularz, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.rok_kryterium)
+
+
 class Ustawienia(models.Model):
     id_student = models.IntegerField(primary_key=True)
     nowe_haslo = models.TextField(null=True)
@@ -106,12 +129,19 @@ class Ustawienia(models.Model):
     nowe_imie = models.TextField(null=True)
     nowe_nazwisko = models.TextField(null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE) 
+    def __str__(self):
+        return str(self.id_student)
 
 class Ranking(models.Model):
     numer_albumu = models.IntegerField(primary_key=True)
     punkty_rankingu = models.CharField(max_length=45, null=True)
     typ_stypendium = models.CharField(max_length=65, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.numer_albumu)
+
+    
 
 class DaneDziekanat(models.Model):
     numer_albumu = models.IntegerField(primary_key=True)
@@ -124,6 +154,9 @@ class DaneDziekanat(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     id_kierunku = models.IntegerField(null=True)
 
+    def __str__(self):
+        return str(self.numer_albumu)
+
 class Powiadomienia(models.Model):
     id_powiadomienia = models.IntegerField(primary_key=True)
     tresc_powiadomienia = models.TextField(null=True)
@@ -132,16 +165,25 @@ class Powiadomienia(models.Model):
     student_id_powiadomienie = models.IntegerField(null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.id_powiadomienia)
+
 class KryteriaStrona(models.Model):
     id_wersja = models.IntegerField(primary_key=True)
     rok = models.TextField(null=True)
     tekst = models.TextField(null=True)
     admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.id_wersja)
+
 class InformacjeStypendialne(models.Model):
     id_wersja = models.IntegerField(primary_key=True)
     tekst = models.TextField(null=True)
     admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id_wersja)
 
 class StudentLog(models.Model):
     id_log = models.IntegerField(primary_key=True)
@@ -150,16 +192,24 @@ class StudentLog(models.Model):
     haslo = models.TextField(null=True)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.id_log)
+
 class AdminLog(models.Model):
     id_log_admin = models.IntegerField(primary_key=True)
     adres_ip = models.TextField(null=True)
     login = models.TextField(null=True)
     haslo = models.TextField(null=True)
+    def __str__(self):
+        return str(self.id_log_admin)
 
 class Konkursy(models.Model):
     id_konkursu = models.IntegerField(primary_key=True)
     nazwa_konkursu = models.TextField(null=True)
     nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.nazwa_konkursu)
 
 class Osiagniecia(models.Model):
     id_osiagniecia = models.IntegerField(primary_key=True)
@@ -172,6 +222,9 @@ class Osiagniecia(models.Model):
     krotki_opis = models.TextField(null=True)
     data_osiagniecia = models.DateField(null=True)
 
+    def __str__(self):
+        return str(self.id_osiagniecia)
+
 class OcenaKoncowaDziekanat(models.Model):
     id_ocena = models.IntegerField(primary_key=True)
     numer_albumu = models.IntegerField(null=True)
@@ -179,6 +232,9 @@ class OcenaKoncowaDziekanat(models.Model):
     id_przedmiotu = models.IntegerField(null=True)
     dane_dziekanat = models.ForeignKey('DaneDziekanat', on_delete=models.CASCADE)
     przedmiot = models.ForeignKey('Przedmiot', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.dane_dziekanat.imie) + " " + str(self.dane_dziekanat.nazwisko) + " " + str(self.ocena_koncowa) + " " + str(self.przedmiot.nazwa_przedmiotu)
     
 class CzlonekRodziny(models.Model):
     id_czlonka = models.IntegerField(primary_key=True)
@@ -188,3 +244,6 @@ class CzlonekRodziny(models.Model):
     data_urodzenia = models.DateTimeField(null=True)
     miejsce_pracy = models.TextField(null=True)
     formularz = models.ForeignKey('Formularz', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id_czlonka)
