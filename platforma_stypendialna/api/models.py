@@ -20,19 +20,19 @@ class Formularz(models.Model):
     typ_stypendium = models.TextField(null=True)
     id_student = models.IntegerField(null=True)
     data_zlozenia = models.DateField(null=True)
-    przychod_bez_podatku = models.FloatField(null=True)
+    przychod_bez_podatku = models.FloatField(null=True, blank=True)
     srednia_ocen = models.FloatField(null=True)
-    dodatkowe_informacje = models.TextField(null=True)
-    plik_orzeczenie = models.CharField(max_length=45, null=True)
-    id_osiagniecia = models.IntegerField(null=True)
+    dodatkowe_informacje = models.TextField(null=True, blank=True)
+    plik_orzeczenie = models.ImageField(null=True, blank=True, upload_to='dokumenty/orzeczenia') 
+    id_osiagniecia = models.IntegerField(null=True, blank=True)
     oswiadczenie_prawo_o_szkolnictwie = models.BooleanField(default=False)
     oswiadczenie_gospodarstwo_domowe = models.BooleanField(default=False)
     oswiadczenie_dochody = models.BooleanField(default=False)
-    zalacznik = models.TextField(null=True)
-    stopien_niepelnosprawnosci = models.TextField(null=True)
-    charakter_stopnia_niepelnosprawnosci = models.TextField(null=True)
-    data_rozpoczecia_orzeczenia = models.DateField(null=True)
-    data_konca_orzeczenia = models.DateField(null=True)
+    zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
+    stopien_niepelnosprawnosci = models.TextField(null=True, blank=True)
+    charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True)
+    data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
+    data_konca_orzeczenia = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return str(self.id_formularza)
@@ -40,7 +40,7 @@ class Formularz(models.Model):
 class Student(models.Model):
     id_student = models.IntegerField(primary_key=True)
     nazwa_uzytkownika = models.TextField(null=True)
-    haslo = models.TextField(null=True)
+    haslo = models.CharField(max_length = 100, null=True)
     email = models.TextField(null=True)
     data_rejestracji = models.DateField(null=True)
     ikonka = models.TextField(null=True)
@@ -53,7 +53,7 @@ class Student(models.Model):
     numer_albumu = models.IntegerField(null=True)
     rok_studiow = models.IntegerField(null=True)
     kierunek = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
-    decyzjeStypendialne = models.ForeignKey(DecyzjeStypendialne, on_delete=models.CASCADE)
+    ##decyzjeStypendialne = models.ForeignKey(DecyzjeStypendialne, on_delete=models.CASCADE)
     ##formularz = models.ForeignKey(Formularz, blank=True, null = True, on_delete=models.CASCADE)
     numer_konta_bankowego = models.TextField(null=True)
 
@@ -123,11 +123,11 @@ class Kryteria(models.Model):
 
 class Ustawienia(models.Model):
     id_student = models.IntegerField(primary_key=True)
-    nowe_haslo = models.TextField(null=True)
-    nowy_numer_konta_bankowego = models.TextField(null=True)
-    nowy_email = models.TextField(null=True)
-    nowe_imie = models.TextField(null=True)
-    nowe_nazwisko = models.TextField(null=True)
+    nowe_haslo = models.TextField(null=True, blank=True)
+    nowy_numer_konta_bankowego = models.TextField(null=True, blank=True)
+    nowy_email = models.TextField(null=True, blank=True)
+    nowe_imie = models.TextField(null=True, blank=True)
+    nowe_nazwisko = models.TextField(null=True, blank=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE) 
     def __str__(self):
         return str(self.id_student)
@@ -145,7 +145,7 @@ class Ranking(models.Model):
 
 class DaneDziekanat(models.Model):
     numer_albumu = models.IntegerField(primary_key=True)
-    ocena_koncowa = models.FloatField(null=True)
+    ##ocena_koncowa = models.FloatField(null=True)
     imie = models.TextField(null=True)
     nazwisko = models.TextField(null=True)
     pesel = models.TextField(null=True)
@@ -162,7 +162,7 @@ class Powiadomienia(models.Model):
     tresc_powiadomienia = models.TextField(null=True)
     naglowek_powiadomienia = models.TextField(null=True)
     autor_powiadomienia = models.TextField(null=True)
-    student_id_powiadomienie = models.IntegerField(null=True)
+    ##student_id_powiadomienie = models.IntegerField(null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -189,7 +189,8 @@ class StudentLog(models.Model):
     id_log = models.IntegerField(primary_key=True)
     adres_ip = models.CharField(max_length=45, null=True)
     nazwa_uzytkownika = models.TextField(null=True)
-    haslo = models.TextField(null=True)
+    data_logowania = models.DateTimeField(null=True)
+    ##haslo = models.TextField(null=True)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -199,7 +200,8 @@ class AdminLog(models.Model):
     id_log_admin = models.IntegerField(primary_key=True)
     adres_ip = models.TextField(null=True)
     login = models.TextField(null=True)
-    haslo = models.TextField(null=True)
+    data_logowania = models.DateTimeField(null=True)
+    ##haslo = models.TextField(null=True)
     def __str__(self):
         return str(self.id_log_admin)
 
@@ -210,13 +212,19 @@ class Konkursy(models.Model):
 
     def __str__(self):
         return str(self.nazwa_konkursu)
+class Typ_Osiagniecia(models.Model):
+    id_typ_osiagniecia = models.IntegerField(primary_key=True)
+    nazwa_typu = models.TextField(null=True)
+
+    def __str__(self):
+        return str(self.nazwa_konkursu)
 
 class Osiagniecia(models.Model):
     id_osiagniecia = models.IntegerField(primary_key=True)
     id_konkursu = models.IntegerField(null=True)
     id_student = models.IntegerField(null=True)
     punkty_osiagniecie = models.IntegerField(null=True)
-    typ_osiagniecia = models.TextField(null=True)
+    typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
     konkursy = models.ForeignKey('Konkursy', on_delete=models.CASCADE)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     krotki_opis = models.TextField(null=True)
