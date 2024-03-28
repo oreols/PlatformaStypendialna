@@ -1,0 +1,34 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inria Serif';
+}
+
+body{
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #C8ECE3;
+}
+
+.container {
+    padding: 60px 20px;
+    max-width: 1000px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: bold;
+    color: black;
+    justify-content: center;
+    display: flex;
+    margin: 30px ;
+}
+
+
+
