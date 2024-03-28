@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inria+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="rejestracja.css">
+</head>
+<body>
+    
+    <div class="container">
+        <div class="title"> Rejestracja</div>   
+        <form action="#">
+            <div class="grid-container">
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Email</span> <br>
+                        <input type="email"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Login</span><br>
+                        <input type="text"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Hasło</span><br>
+                        <input type="password"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Powtórz hasło</span><br>
+                        <input type="password" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Załączniki</span><br>
+                        <input class="zalacznik" type="file" multiple required>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Imię</span><br>
+                        <input type="text"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Nazwisko</span><br>
+                        <input type="text" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Pesel</span><br>
+                        <input type="number" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Nr albumu</span><br>
+                        <input type="number"  required>
+                    </div>
+                    <div class="input-box konto">
+                        <span class="details">Nr konta bankowego</span><br>
+                        <input type="number"  required>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Kierunek</span> <br>
+                        <input type="text"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Rok studiów</span><br>
+                        <input type="number" required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Semestr</span><br>
+                        <input type="number"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Nr tel</span><br>
+                        <input type="tel" required>
+                    </div>
+                </div>
+            </div>
+        <button >Utwórz konto</button>    
+        </form>
+        
+    </div>
+</body>
+
+</html>
