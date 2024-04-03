@@ -20,11 +20,12 @@ body{
     border-radius: 10px;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .title {
     text-align: center;
-    margin: 0px auto;
+    margin: 30px auto;
     font-size: 30px;
     color: white;
     background-color: #135B60;
@@ -156,4 +157,22 @@ select {
     width: 20%;
     padding: 5px;
     background-color: #C8ECE3;
+}
+
+#cofnij {
+    padding: 10px;
+    background-color: #C8ECE3;
+    border-radius: 60px;
+    color: black;
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    width: 150px;
+    font-size: 16px;
+}
+
+#cofnij a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
 }
