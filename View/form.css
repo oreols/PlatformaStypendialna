@@ -1,0 +1,178 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inria Serif', sans-serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #C8ECE3;
+}
+
+.container {
+    padding: 60px 20px;
+    max-width: 900px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.title {
+    text-align: center;
+    margin: 30px auto;
+    font-size: 30px;
+    color: white;
+    background-color: #135B60;
+    width: 400px;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+input[type="radio"] {
+    float: left;
+    display: flex;
+}
+
+label {
+    margin-left: 20px;
+    display: flex;
+    
+}
+
+#tab_gospodarstwo {
+    margin: 20px auto 40px;
+    padding: 10px;
+    background-color: #D9D9D9;
+    width: 100%;
+    border: 1px solid black;
+}
+
+table {
+    padding: 30px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead{
+    border-bottom:1px solid #000;
+}
+
+#tab_gospodarstwo td{
+    padding: 10px;
+    border-bottom: 1px solid #000;
+    text-align: center;
+}
+
+#tab_gospodarstwo input{
+    width: 200px;
+    text-align: center;
+    padding: 5px;
+}
+
+h3 {
+    margin: 20px auto;
+    font-size: 18px;
+    color: black;
+    text-align: center;
+}
+
+.inne_dochody ul li {
+    list-style-type: none;
+    margin: 10px 0;
+}
+
+#uwaga {
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+    display: block;
+    margin: 20px auto 0px;
+}
+
+#uwaga a {
+    margin-left: 20px;
+}
+
+
+.subtitle {
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: underline;
+    display: block;
+    margin: 20px auto;
+}
+
+button {
+    font-size: 16px;
+    display: block;
+    margin: 40px auto 0px;
+    padding: 10px 20px;
+    background-color: #135B60;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.minimalna {
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    margin: 0px 40px;
+}
+
+#minimalna_sr {
+    margin-left: 30px;
+}
+
+.input_srednia{
+    background-color: #C8ECE3;
+    width: 300px;
+    margin: 20px;
+    padding: 7px;
+}
+
+div{
+    margin: 15px;
+}
+
+input[type="file"] {
+    margin-top: 20px;
+}
+
+#stopien_niepelnosprawnosci , #symbol_niepelnosprawnosci , #okres_niepelnosprawnosci, #charakter_niepelnosprawnosci {
+    width: 90%;
+    padding: 5px;
+    background-color: #C8ECE3;
+}
+
+select {
+    width: 20%;
+    padding: 5px;
+    background-color: #C8ECE3;
+}
+
+#cofnij {
+    padding: 10px;
+    background-color: #C8ECE3;
+    border-radius: 60px;
+    color: black;
+    position: absolute;
+    top: 10px;
+    left: 30px;
+    width: 150px;
+    font-size: 16px;
+}
+
+#cofnij a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
