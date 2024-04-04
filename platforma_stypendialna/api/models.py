@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 class Kierunek(models.Model):
     id_kierunku = models.IntegerField(primary_key=True)
@@ -37,28 +38,39 @@ class Formularz(models.Model):
     def __str__(self):
         return str(self.id_formularza)
 
-class Student(models.Model):
-    id_student = models.IntegerField(primary_key=True)
-    nazwa_uzytkownika = models.TextField(null=True)
+class Student(AbstractBaseUser):
+    id_student = models.IntegerField(primary_key=True, blank=True)  
+    nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
     haslo = models.CharField(max_length = 100, null=True)
-    email = models.TextField(null=True)
+    email = models.CharField(null=True, unique = True, max_length = 60)
     data_rejestracji = models.DateField(null=True)
-    ikonka = models.TextField(null=True)
-    pesel = models.TextField(null=True)
-    imie = models.TextField(null=True)
-    nazwisko = models.TextField(null=True)
-    numer_telefonu = models.TextField(null=True)
-    nazwa_kierunku = models.TextField(null=True)
+    ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')
+    pesel = models.CharField(null=True, unique = True, max_length=11) 
+    imie = models.CharField(null=True, max_length=20)
+    nazwisko = models.CharField(null=True, max_length=35)
+    zalaczniki = models.FileField(null=True, upload_to='dokumenty/zalaczniki', blank = True)
+    numer_telefonu = models.CharField(null=True, unique = True, max_length=9)
+    ##nazwa_kierunku = models.CharField(null=True, max_length=50)
     semestr = models.IntegerField(null=True)
-    numer_albumu = models.IntegerField(null=True)
+    numer_albumu = models.IntegerField(null=True, unique = True)
     rok_studiow = models.IntegerField(null=True)
     kierunek = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
     ##decyzjeStypendialne = models.ForeignKey(DecyzjeStypendialne, on_delete=models.CASCADE)
     ##formularz = models.ForeignKey(Formularz, blank=True, null = True, on_delete=models.CASCADE)
-    numer_konta_bankowego = models.TextField(null=True)
+    numer_konta_bankowego = models.CharField(null=True, max_length=26)
+
+    USERNAME_FIELD = 'nazwa_uzytkownika'
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.nazwa_uzytkownika
+    
+class StudentManager(BaseUserManager):
+    def create_student(self, id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego):
+        if any(value is None for value in [id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego]):
+            raise ValueError("Ktores z podanych pól jest puste!")
+        student = self.create(id_student=id_student, nazwa_uzytkownika=nazwa_uzytkownika, haslo=haslo, email=email, data_rejestracji=data_rejestracji, ikonka=ikonka, pesel=pesel, imie=imie, nazwisko=nazwisko, numer_telefonu=numer_telefonu, nazwa_kierunku=nazwa_kierunku, semestr=semestr, numer_albumu=numer_albumu, rok_studiow=rok_studiow, kierunek=kierunek, numer_konta_bankowego=numer_konta_bankowego)
+        return student
 
 class Admin(models.Model):
     id_admin = models.IntegerField(primary_key=True)

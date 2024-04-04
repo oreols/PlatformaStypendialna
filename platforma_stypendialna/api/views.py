@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse;
 from django.contrib.auth.forms import UserCreationForm
+
+from .forms import StudentRegistrationForm
 # Create your views here.
 
 def main(request):
@@ -10,11 +12,10 @@ def loginPage(request):
     return HttpResponse("Strona logowania")
 
 def registerPage(request):
-    form = UserCreationForm()
-
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = StudentRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-    context = {'form': form}
-    return render(request, 'register.html', context)
+    else:
+        form = StudentRegistrationForm()
+    return render(request, 'rejestracja.html', {'form': form})

@@ -1,0 +1,90 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inria Serif', sans-serif;
+}
+
+body {
+    background-color: #C8ECE3;
+}
+
+.navbar {
+    background-color: #83C0C0;
+    border-bottom: 1px solid black;
+    font-size: 18px;
+    color: black;
+    margin-bottom: 100px;
+}
+
+.logo{
+    background-color: #83C0C0;
+    padding: 10px;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo h1{
+    font-family: Jacques Francois Shadow;
+    font-size: 50px;
+    margin: 0 auto;
+}
+
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+#logowanie{
+    background-color: #83C0C0;
+}
+
+#logowanie > a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#logowanie > a:hover {
+    color: black;
+}
+
+#rejestracja{
+    background-color: #83C0C0;
+    border: 1px solid white;
+}
+
+#rejestracja > a {
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#rejestracja > a:hover {
+    color: white;
+}
+
+ul {
+    width: 100%;
+    justify-content: center;
+}
+
+ul li {
+    grid-column: auto;
+    list-style: none;
+    display: inline-block;
+    padding: 0px 60px;
+    font-size: 28px;
+}
+
+.nav li a{
+    text-decoration: none;
+}
+ul li a:hover {
+    color: white;
+}
+
+
+

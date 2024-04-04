@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inria+Serif:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/rejestracja.css">
+</head>
+<body>
+
+    
+    <div class="container">
+        <div class="title"> Rejestracja</div>   
+        <form method="POST", action="">
+            {% csrf_token %}
+            <div class="grid-container">
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Email</span> <br>
+                        {{form.email}} 
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Login</span><br>
+                        {{form.nazwa_uzytkownika}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Hasło</span><br>
+                        {{form.haslo}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Załączniki</span><br>
+                        {{form.zalaczniki}}
+                    </div>
+                    <div class="input-box">
+                        <span class="data">Data</span><br>
+                        {{form.data_rejestracji}}
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Imię</span><br>
+                        {{form.imie}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Nazwisko</span><br>
+                        {{form.nazwisko}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Pesel</span><br>
+                        {{form.pesel}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Nr albumu</span><br>
+                        {{form.numer_albumu}}
+                    </div>
+                    <div class="input-box konto">
+                        <span class="details">Nr konta bankowego</span><br>
+                        {{form.numer_konta_bankowego}}
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Kierunek</span> <br>
+                        {{form.kierunek}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Rok studiów</span><br>
+                        {{form.rok_studiow}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Semestr</span><br>
+                        {{form.semestr}}
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Nr tel</span><br>
+                        {{form.numer_telefonu}}
+                    </div>
+                </div>
+            </div>
+        <button type = "submit">Utwórz konto</button>    
+        </form>
+        
+    </div>
+</body>
+
+</html>
