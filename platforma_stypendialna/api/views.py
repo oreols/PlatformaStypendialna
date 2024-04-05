@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse;
 from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import TemplateView
 
 from .forms import StudentRegistrationForm
 # Create your views here.
@@ -18,4 +19,13 @@ def registerPage(request):
             form.save()
     else:
         form = StudentRegistrationForm()
-    return render(request, 'rejestracja.html', {'form': form})
+    return render(request, 'website/rejestracja.html', {'form': form})
+
+class Formularze(TemplateView):
+    template_name = 'website/formularze.html'
+
+class Kontakt(TemplateView):
+    template_name = 'website/kontakt.html'
+
+class Logowanie(TemplateView):
+    template_name = 'website/logowanie.html'

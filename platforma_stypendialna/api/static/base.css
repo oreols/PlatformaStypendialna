@@ -5,16 +5,39 @@
     font-family: 'Inria Serif', sans-serif;
 }
 
-body {
-    background-color: #C8ECE3;
+body{
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #C8ECE3;
 }
+
+.container {
+    margin-top: 50px;
+    padding: 60px 20px;
+    max-width: 1000px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.title {
+    font-size: 30px;
+    color: white;
+    background-color: #135B60;
+    width: 600px;
+    text-align: center; 
+    padding: 10px; 
+    margin: 0 auto; 
+    margin-bottom: 70px;
+}
+
 
 .navbar {
     background-color: #83C0C0;
     border-bottom: 1px solid black;
     font-size: 18px;
     color: black;
-    margin-bottom: 100px;
 }
 
 .logo{
@@ -31,8 +54,7 @@ body {
     margin: 0 auto;
 }
 
-
-a {
+.navbar a {
     text-decoration: none;
     color: black;
 }
@@ -66,13 +88,12 @@ a {
     color: white;
 }
 
-ul {
+.navbar ul {
     width: 100%;
     justify-content: center;
 }
 
-ul li {
-    grid-column: auto;
+.navbar ul li {
     list-style: none;
     display: inline-block;
     padding: 0px 60px;
@@ -82,8 +103,9 @@ ul li {
 .nav li a{
     text-decoration: none;
 }
-ul li a:hover {
+.navbar ul li a:hover {
     color: white;
+    font-size: 28px;
 }
 
 
