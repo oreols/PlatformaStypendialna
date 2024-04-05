@@ -1,0 +1,71 @@
+
+.buttons_forms{
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.buttons_forms button {
+    align-items: center;
+    font-size: 15px;
+    justify-content: center;
+    color: white;
+    letter-spacing: 1px;
+    background-color: #135B60;
+    width: 250px;
+    padding: 5px;
+    cursor: pointer;
+    margin: 0 auto;
+    height: 70px;
+    border: none;
+}
+
+.buttons_forms a {
+    text-decoration: none;
+    color: white;
+} 
+
+.buttons_forms a:hover {
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+
+}
+
+.title_kontakt {
+    font-size: 30px;
+    color: black;
+    width: 600px;
+    text-align: center; 
+    padding: 10px; 
+    margin: 0 auto; 
+    margin-bottom: 70px;
+    font-weight: bold;
+}
+
+.form_kontakt span{
+    display: block;
+    height: 50px;
+    width: 500px;
+}
+
+.form_kontakt span a {
+    color: #135B60;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.form_kontakt span a:hover {
+    font-weight: bold;
+}
+
+.form_kontakt {
+    
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin: auto;
+}
+

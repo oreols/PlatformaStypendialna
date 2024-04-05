@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie</title>
+</head>
+    <div class="container container_logowanie">
+        <div class="title"> Logowanie</div>   
+        <form action="#">
+            <div class="grid-container">
+                <div class="grid-item">
+                    <div class="input-box">
+                        <span class="details">Login</span> <br>
+                        <input type="text"  required>
+                    </div>
+                    <div class="input-box">
+                        <span class="details">Hasło</span><br>
+                        <input type="password"  required>
+                    </div>
+                </div>
+            </div>
+                    
+        <button >ZALOGUJ</button>    
+        </form>
+    </div>
+{% endblock %}
