@@ -1,94 +1,59 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inria Serif', sans-serif;
-}
+.container_rejestracja {
 
-body{
-    display: flex;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    background: #C8ECE3;
-}
+    .grid-container  {
+        display: grid;
+        grid-template-columns: repeat(3,1fr);
+        gap: 10px;
+    }
+    .grid-item {
+        display: flex;
+        flex-direction: column;
+    }
 
-.container {
-    padding: 60px 20px;
-    max-width: 900px;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
+    .input-box {
+        margin-bottom: 10px;
+    }
 
-.title {
-    display: flex;
-    align-items: center;
-    font-size: 30px;
-    justify-content: center;
-    color: white;
-    background-color: #135B60;
-    width: 400px;
-    padding: 5px;
-    margin-bottom: 20px;
-}
+    .details {
+        margin-bottom: 5px;
+    }
+    button {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        justify-content: center;
+        color: white;
+        background-color: #135B60;
+        width: 250px;
+        padding: 5px;
+        cursor: pointer;
+        margin: 0 auto;
+        margin-top: 50px;
+    }
 
-.grid-container  {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 10px;
-}
-.grid-item {
-    display: flex;
-    flex-direction: column;
-}
+    input{
+        height: 35px;
+        margin-top: 2px;
+        width: 200px;
+        padding: 5px;
+        margin-right: 30px;
+        border-color: #135B60;
+        color: black;
+        font-weight: bold;
+        background-color:#b9d4d6 ;
+    }
 
-.input-box {
-    margin-bottom: 10px;
-}
-
-.details {
-    margin-bottom: 5px;
-}
-button {
-    display: flex;
-    align-items: center;
-    font-size: 20px;
-    justify-content: center;
-    color: white;
-    background-color: #135B60;
-    width: 250px;
-    padding: 5px;
-    cursor: pointer;
-    margin: 0 auto;
-    margin-top: 50px;
-}
-
-input{
-    height: 35px;
-    margin-top: 2px;
-    width: 200px;
-    padding: 5px;
-    margin-right: 30px;
-    border-color: #135B60;
-    color: black;
-    font-weight: bold;
-    background-color:#b9d4d6 ;
-}
-
-.zalacznik {
-    font-size: 10px;
-}
+    .zalacznik {
+        font-size: 10px;
+    }
 
 
-.konto {
-    grid-column: span 2;
-}
+    .konto {
+        grid-column: span 2;
+    }
 
-.konto input {
-    width: 192%;
+    .konto input {
+        width: 192%;
+    }
+
 }
