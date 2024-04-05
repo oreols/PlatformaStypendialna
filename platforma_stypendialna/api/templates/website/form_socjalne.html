@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz socjalne</title>
+</head>
+    <div class="container container_form">
+        <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
+        <div class="title"> Stypendium socjalne</div>   
+        <h3>OŚWIADCZENIE</h3>
+        Oświadczam, że: <br> <br>
+        
+        <input type="radio" name="gospodarstwo" id="nie_gospodarstwo">
+        <label for="gospodarstwo">że nie prowadzę wspólnego gospodarstwa domowego z żadnym z rodziców i spełniam jedną z poniższych przesłanek 
+            określonych w art. 88 ust. 2 ustawy z dnia 20 lipca 2018 r. - Prawo o szkolnictwie wyższym i nauce tj :</label> <br>
+        <input type="radio" name="gospodarstwo" id="tak_gospodarstwo">
+        <label for="gospodarstwo">z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe : </label>
+        <div id="tab_gospodarstwo">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lp.</th><th>Imię i nazwisko</th><th>Stopień pokrewieństwa</th><th>Miejsce pracy lub nauki</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.</td><td><input type="text" class="imie_nazwisko" placeholder="Imię i nazwisko członka rodziny"></td><td><input type="text" class="pokrewienstwo" placeholder="stopień pokrewieństwa"> <br><input type="date" class="date" placeholder="data urodzenia"></td><td><input type="text" class="miejsce" placeholder="Miejsce pracy lub nauki"></td>
+                    </tr>
+                    <tr>
+                        <td>2.</td><td><input type="text" class="imie_nazwisko" placeholder="Imię i nazwisko członka rodziny"></td><td><input type="text" class="pokrewienstwo" placeholder="stopień pokrewieństwa"> <br><input type="date" class="date" placeholder="data urodzenia"></td><td><input type="text" class="miejsce" placeholder="Miejsce pracy lub nauki"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <span>Semestr <input type="number" id="nr_semestru" placeholder="ktory semestr"> roku akademickiego 2023/2024 jest moim <input type="number" name="semestr" id="semestry_lacznie" placeholder="semestrem z kolei"> semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).        </span>
+        
+        <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU 
+        (obowiązkowo wypełnia każdy student)</h3>
+
+        <input type="radio" name="dochod" id="dochod"> 
+        <label for="dochod">Oświadczam, że w roku kalendarzowym 2022 uzyskałem/am lub członek mojej rodziny uzyskał inne dochody 
+            niepodlegające opodatkowaniu </label> 
+            <div class="inne_dochody"> 
+                <ul>
+                    <li>
+                    Imie i nazwisko : <input type="text" class="imie_nazwisko_czlonka"> <br>
+                    Rodzaj uzyskiwanego dochodu: <input type="text" class="rodzaj_dochodu"> <br>
+                    Kwota dochodu: <input type="number" class="kwota_dochodu">   
+                    </li>
+                </ul>
+
+                Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w 2023 roku wynosi: <br><input type="number" id="suma_dochodu_gosp" placeholder="suma dochodu z gosp rolnego"> zł + <input type="text" name="" id="suma_innych_doch" placeholder="suma innych dochodów nieopodatkowanych"> zł = <input type="text" id="laczna_kwota_doch" placeholder="łączna kwota ">zł
+                
+            </div>
+        <br>
+        <input type="radio" name="dochod" id="nie_dochod">
+        <label for="dochod">Oświadczam, że w roku kalendarzowym 2023 nie uzyskiwałem/am i żaden z członków mojej rodziny nie uzyskiwał dochodów niepodlegających opodatkowaniu podatkiem dochodowym.</label>
+         <br>   
+        <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
+        <br>
+        <input type="file" multiple>
+    <button id="wyslij_socjalne">WYŚLIJ FORMULARZ</button>
+    </div>
+{% endblock %}

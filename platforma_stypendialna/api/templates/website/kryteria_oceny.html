@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kryteria oceny</title>
+    <link rel="stylesheet" href="kryteria_oceny.css">
+</head>
+    
+    <div class="container container_kryteria_oceny">
+        <div class="title"> Kryteria oceny <span class="date"> 2023/2024 r.</span></div> 
+        <div class="subtitle">STYPENDIUM SOCJALNE</div>
+        <span class="socjalne">
+            Wysokość dochodu na osobę w rodzinie studenta, uprawniającego do ubiegania 
+            się o przyznanie stypendium socjalnego w roku akademickim 2023/2024:
+            1400zł/netto. Stypendium socjalne może otrzymać student znajdujący się w trudnej sytuacji materialnej, a wysokość 
+            dochodu na osobę w jego rodzinie nie przekracza progu dochodu ustalonego w uczelni. 
+            Student, który nie prowadzi wspólnego gospodarstwa domowego z żadnym z rodziców, opiekunów prawnych lub 
+            faktycznych, może ubiegać się o stypendium socjalne bez wykazywania dochodów osiąganych przez te osoby.
+        </span>
+        <div class="subtitle">STYPENDIUM NAUKOWE</div>
+        <span class="naukowe"> 
+            O stypendium rektora może ubiegać się student, który w poprzednim roku akademickim uzyskał średnią 
+            arytmetyczną ocen końcowych z wszystkich zajęć (uwzględniając oceny niedostateczne) przynajmniej na poziomie
+            przedstawionym poniżej w zależności od kierunku oraz terminowo zaliczył poprzedni rok studiów (1 lub 2 termin).
+            <br>
+            Listę rankingową studentów ubiegających się o przyznanie stypendium rektora tworzy się na podstawie uzyskanych 
+            punktów. Punktacja obliczana jest wg wzoru: <br>
+            <span class="wzor"><b>Lpkt = Śr + ON + OA + OS</b></span>
+            <br>
+            <ul class="legenda">
+                <li><b>Lpkt </b>- suma punktów uzyskanych przez studenta</li>
+                <li><b>Śr</b> - średnia arytmetyczna ocen końcowych z wszystkich zajęć uzyskanych w poprzednim roku akademickim</li>
+                <li><b>ON </b>- liczba punktów uzyskanych przez studenta za osiągnięcia naukowe</li>
+                <li><b>OA </b>- liczba punktów uzyskanych przez studenta za osiągnięcia artystyczne</li>
+                <li><b>OS</b> - liczba punktów uzyskanych przez studenta za osiągnięcia sportowe</li>
+            </ul>
+
+            <table class="tabela_sredniej">
+                <thead>
+                    <tr>
+                        <th>kierunek</th><th>średnia ocen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>informatyka</td> <td>4,6</td>
+                    </tr>
+                    <tr>
+                        <td>zarządzanie i inżynieria produkcji</td> <td>4,4</td>
+                    </tr>
+                    <tr>
+                        <td>mechatronika</td> <td>4,6</td>
+                    </tr>
+                    <tr>
+                        <td>transport i logistyka</td> <td>4,8</td>
+                    </tr>
+                    <tr>
+                        <td>pielęgniarstwo</td> <td>4,2</td>
+                    </tr>
+                </tbody>
+            </table>
+            O stypendium rektora może ubiegać się student przyjęty na pierwszy rok studiów pierwszego stopnia lub jednolitych 
+            studiów magisterskich w roku złożenia egzaminu maturalnego, który jest
+            laureatem olimpiady międzynarodowej albo 
+            laureatem lub finalistą olimpiady stopnia centralnego, o których mowa w przepisach o systemie oświaty;
+            medalistą co najmniej współzawodnictwa sportowego o tytuł Mistrza Polski w danym sporcie, o którym mowa w 
+            przepisach o sporcie; <br><br><br>
+
+
+            <u>Stypendium rektora nie może uzyskać więcej niż 10 studentów określonego kierunku studiów.</u>
+
+        </span>
+        <div class="subtitle">STYPENDIUM DLA OSÓB NIEPEŁNOSPRAWNYCH</div>
+            <span class="niepelnosprawnych">
+                Stypendium dla osób niepełnosprawnych przyznawane jest niezależnie od dochodu studenta.
+
+                Ubiegając się o to świadczenie należy przedłożyć w Uczelni orzeczenie o stopniu niepełnosprawności lub orzeczenie traktowane na równi z tym orzeczeniem.
+                Ustawa z dnia 27 sierpnia 1997 r. o rehabilitacji zawodowej i społecznej oraz zatrudnianiu osób niepełnosprawnych (Dz. U. z 2021 r. poz. 573) uznaje równoważność orzeczeń wydanych przez zespoły orzekające i lekarza orzecznika Zakładu Ubezpieczeń Społecznych, a także orzeczeń o zaliczeniu do jednej z grup inwalidów oraz o stałej albo długotrwałej niezdolności do pracy w gospodarstwie rolnym wydanych przed dniem wejścia w życie ustawy, tj. przed dniem 1 stycznia 1998 r. jeżeli nie utraciły ważności.
+            <br><br>
+                Zgodnie z art. 5 wyżej wymienionej ustawy orzeczenia lekarza orzecznika ZUS o:
+            <ul>
+                <li>całkowitej niezdolności do pracy oraz niezdolności do samodzielnej egzystencji, ustalone na podstawie ustawy z dnia 17 grudnia 1998 r. o emeryturach i rentach z Funduszu Ubezpieczeń Społecznych traktuje się na równi z orzeczeniem o znacznym stopniu niepełnosprawności;</li>
+                <li>całkowitej niezdolności do pracy, ustalone na podstawie ustawy wymienionej powyżej traktuje się na równi z orzeczeniem o umiarkowanym stopniu niepełnosprawności</li>
+                <li>częściowej niezdolności do pracy oraz celowości przekwalifikowania, o których mowa w wyżej wymienionej ustawie traktowane jest na równi z orzeczeniem o lekkim stopniu niepełnosprawności, z wyjątkiem orzeczeń o częściowej niezdolności do pracy, wydanym w okresie od 1 stycznia do 16 sierpnia 1998 r., które traktowane są na równi z orzeczeniem o umiarkowanym stopniu niepełnosprawności.</li>
+            </ul> 
+
+                Orzeczenia o zaliczeniu do grupy inwalidzkiej (wydane przed 1 stycznia 1998 r., jeżeli nie utraciły mocy) traktuje się na równi z odpowiednim orzeczeniem o stopniu niepełnosprawności. Oznacza to, że orzeczenie o zaliczeniu do:
+            <ul>
+                <li>I grupy inwalidów traktowane jest na równi z orzeczeniem o znacznym stopniu niepełnosprawności;</li>
+                <li>II grupy inwalidów traktowane jest na równi z orzeczeniem o umiarkowanym stopniu niepełnosprawności;</li>
+                <li>III grupy inwalidów traktowane jest na równi z orzeczeniem o lekkim stopniu niepełnosprawności.</li>
+            </ul>
+
+                Orzeczenie o stałej albo długotrwałej niezdolności do pracy w gospodarstwie rolnym (jeśli zostało wydane przed dniem 1 stycznia 1998 r. i nie utraciło mocy po tym dniu) uprawniające do zasiłku pielęgnacyjnego traktuje się na równi z orzeczeniem o znacznym stopniu niepełnosprawności. Pozostałe orzeczenia o niezdolności do pracy w gospodarstwie rolnym traktuje się na równi z orzeczeniem o lekkim stopniu niepełnosprawności.
+
+            </span>
+         <button class="wypelnij"><a href="formularze">WYPEŁNIJ FORMULARZ</a></button>   
+        </div>
+    </div>
+{% endblock %}

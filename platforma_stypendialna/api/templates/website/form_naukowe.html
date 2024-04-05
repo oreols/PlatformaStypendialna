@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz naukowe</title>
+</head>
+    <div class="container container_form">
+        <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
+        <div class="title"> Stypendium naukowe</div>  
+        <span class="minimalna">MINIMALNA ŚREDNIA: <span  id="minimalna_sr"> 4,5</span></span> 
+    
+        <div class="input_srednia">ŚREDNIA OCEN: <input type="srednia"></div>
+
+        <div id="osiagniecia_naukowe">
+            <span class="subtitle"> OSIĄGNIĘCIA NAUKOWE UZYSKANE W POPRZEDNIM ROKU AKADEMICKIM</span>
+            <ol id="lista_naukowe">
+                <li>Autorstwo lub współautorstwo publikacji naukowych w czasopismach naukowych ujętych w wykazie ogłoszonym przez ministra właściwego do spraw nauki, PKT 0,03
+                    <div class="czasopisma">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data publikacji: <input type="date" placeholder="data publikacji"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Autorstwo lub współautorstwo rozdziału książki, PKT 0,02
+                    <div class="ksiazki">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data wydania książki: <input type="date" placeholder="data wydania"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Autorstwo lub współautorstwo artykułu w publikacji pokonferencyjnej, PKT 0,01
+                    <div class="artykułu">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data publikacji: <input type="date" placeholder="data publikacji"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Referaty własne wygłoszone samodzielnie na konferencjach naukowych, w których uczestniczyli prelegenci ośrodków akademickich, PKT 0,01
+                    <div class="referaty">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data prezentacji: <input type="date" placeholder="data prezentacji"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Nagrody uzyskane w konkursach o zasięgu międzynarodowym, PKT 0,01
+                    <div class="nagrody_miedzynarodowe">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data przyznania: <input type="date" placeholder="data przyznania"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Nagrody uzyskane w konkursach o zasięgu krajowym, w których uczestniczyli studenci ośrodków akademickich, PKT 0,01
+                    <div class="nagrody_krajowe">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data przyznania: <input type="date" placeholder="data przyznania"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Czynny udział w pracach koła naukowego, PKT 0,01
+                    <div class="kolo_naukowe">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+            </ol>
+            <span>Suma punktów za osiągnięcia naukowe ( nie może być większa niż 0,1 pkt) = <input type="text" id="suma_pkt_osiagniec" placeholder="suma punktów"></span><br>
+        </div>
+        <div id="osiagniecia_artystyczne">
+            <span class="subtitle">OSIĄGNIĘCIA ARTYSTYCZNE UZYSKANE W POPRZEDNIM ROKU AKADEMICKIM</span>
+            <ol id="lista_artystyczne">
+                <li>Autorstwo, współautorstwo dzieł artystycznych, w tym plastycznych, muzycznych, teatralnych lub filmowych, wydanych w nakładzie co najmniej 500 egzemplarzy, PKT 0,05
+                    <div class="dzieła">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data wydania dzieła: <input type="date" placeholder="data wydania"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Wykonanie dzieł artystycznych, w tym plastycznych, muzycznych, teatralnych lub filmowych, zaprezentowanych publicznie na festiwalach, wystawach lub przeglądach, o znaczeniu co najmniej krajowym, PKT 0,03
+                    <div class="wykonanie">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data prezentacji: <input type="date" placeholder="data prezentacji"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Nagrody uzyskane w konkursach artystycznych o znaczeniu międzynarodowym, PKT 0,03
+                    <div class="nagrody_miedzynarodowe_art">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data przyznania: <input type="date" placeholder="data przyznania"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>    
+                </li>
+                <li>Nagrody uzyskane w konkursach plastycznych o zasięgu krajowym, w których uczestniczyli studenci z innych ośrodków akademickich, PKT 0,02
+                    <div class="nagrody_krajowe_art">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data przyznania: <input type="date" placeholder="data przyznania"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+            </ol>
+            <span>Suma punktów za osiągnięcia artystyczne ( nie może być większa niż 0,1 pkt) = <input type="text" id="suma_pkt_artystycznych" placeholder="suma punktów"></span><br>
+        </div>
+
+        <div id="sportowe">
+            <span class="subtitle">OSIĄGNIĘCIA SPORTOWE UZYSKANE W POPRZEDNIM ROKU AKADEMICKIM</span>
+            <ol id="lista_sportowe">
+                <li>Uzyskanie, co najmniej dziesiątego miejsca w igrzyskach olimpijskich, ósmego miejsca w mistrzostwach świata, piątego miejsca w młodzieżowych mistrzostwach świata lub mistrzostwach Europy, trzeciego miejsca w młodzieżowych mistrzostwach Europy, PKT 0,05
+                    <div class="olimpijskie">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data zawodów: <input type="date" placeholder="data zawodów"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Uzyskanie, co najmniej trzeciego miejsca w uniwersjadzie, akademickich mistrzostwach świata, akademickich mistrzostwach Europy lub Europejskich Igrzyskach Studentów, PKT 0,03
+                    <div class="uniwersjada">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data zawodów: <input type="date" placeholder="data zawodów"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+                <li>Uzyskanie, co najmniej trzeciego miejsca w akademickich mistrzostwach Polski, PKT 0,02
+                    <div class="mistrzostwa">
+                        Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
+                        Data zawodów: <input type="date" placeholder="data zawodów"><br>
+                        Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
+                    </div>
+                </li>
+            </ol>
+            <span>Suma punktów za osiągnięcia sportowe ( nie może być większa niż 0,1 pkt) = <input type="text" id="suma_pkt_sportowych" placeholder="suma punktów"></span><br>
+        </div>
+        Semestr <input type="number" id="nr_semestru" placeholder="ktory semestr"> roku akademickiego 2023/2024 jest moim <input type="number" name="semestr" id="semestry_lacznie" placeholder="semestrem z kolei"> semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej uczelni). <br>
+        <span id="uwaga">Do wniosku o przyznanie stypendium naukowego obowiązkowo należy dołączyć dokumentację potwierdzające osiągnięcia</span>
+        <br>
+        <input type="file" multiple>
+        <button id="wyslij_naukowe">WYŚLIJ FORMULARZ</button>
+    </div>
+{% endblock %}
