@@ -1,0 +1,71 @@
+.container_kryteria_oceny{
+
+    .title {
+        font-size: 30px;
+        font-weight: bold;
+        color: black;
+        justify-content: center;
+        display: flex;
+        margin: 30px ;
+        background-color: white;
+        margin: 0 auto;
+    }
+    
+    .date {
+        margin-left: 20px;
+    }
+
+    .subtitle {
+        font-weight: bold;
+        font-size: 25px;
+        display: block;
+        margin: 30px 0;
+    }
+
+    .wzor {
+        display: block;
+        margin: 20px;
+    }
+
+    table {
+        padding: 30px;
+        width: 70%;
+    }
+
+    th {
+        font-size: large;
+        background-color: #C8ECE3;
+        padding: 5px;
+    }
+
+    td:nth-child(1) {
+        text-align: left;
+    }
+
+    td:nth-child(2) {
+        text-align: center;
+    }
+
+    .niepelnosprawnych ul{
+        margin: 30px;
+    }
+
+    button {
+        display: block;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        background-color: #135B60;
+        justify-content: center;
+        padding: 10px;
+        border: none;
+        margin: 30px auto;
+
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+}
