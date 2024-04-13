@@ -9,40 +9,29 @@
         <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
         <div class="title"> Stypendium dla osób niepełnosprawnych</div>
         <form action="" method="POST">
-        {% csrf_token %}
+            {% csrf_token %}
 
-        <div id="stopien_niepelnosprawnosci">STOPIEŃ NIEPEŁNOSPRAWNOŚCI: 
-            <select name="stopien">
-                {{forms.stopien_niepelnosprawnosci}}
-            </select>
-        </div>
-        <div id="symbol_niepelnosprawnosci">SYMBOL NIEPEŁNOSPRAWNOŚCI:
-            <select name="symbol">
-                <option value="01-U">01-U</option>
-                <option value="02-P">02-P</option>
-                <option value="03-L">03-L</option>
-                <option value="04-O">04-O</option>
-                <option value="05-R">05-R</option>
-                <option value="06-E">06-E</option>
-                <option value="07-S">07-S</option>
-                <option value="08-T">08-T</option>
-                <option value="09-M">09-M</option>
-                <option value="10-N">10-N</option>
-                <option value="11-I">11-I</option>
-            </select>
-        </div>
-        <div id="charakter_niepelnosprawnosci">CHARAKTER ORZECZONEGO STOPNIA NIEPEŁNOSPRAWNOŚCI: 
-            <input type="text">
-        </div>
-        <div id="okres_niepelnosprawnosci">OKRES NA JAKI WYDANE ZOSTAŁO ORZECZENIE:
-            OD: <input type="date" name="data_od"> DO <input type="date" name="data_do">
-        </div>
+            <div class="input-box">
+                <span class="details">Stopien niepelnosprawnosci</span> <br>
+                {{form.stopien_niepelnosprawnosci}}
+            </div>
+            <div class="input-box">
+                <span class="details">Symbol niepelnosprawnosci</span> <br>
+                {{form.symbol_niepelnosprawnosci}}
+            </div>
+            <div class="input-box">
+                <span class="details">Charakter stopnia niepelnosprawnosci</span> <br>
+                {{form.charakter_stopnia_niepelnosprawnosci}}
+            </div>
+            <div id="okres_niepelnosprawnosci">OKRES NA JAKI WYDANE ZOSTAŁO ORZECZENIE:
+                OD: {{form.data_rozpoczecia_orzeczenia}} DO {{form.data_konca_orzeczenia}}
+            </div>
     
-        Semestr <input type="number" id="nr_semestru" placeholder="ktory semestr"> roku akademickiego 2023/2024 jest moim <input type="number" name="semestr" id="semestry_lacznie" placeholder="semestrem z kolei"> semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej uczelni). <br>
-        <span id="uwaga">Do wniosku o przyznanie stypendium dla osób niepełnosprawnych obowiązkowo należy dołączyć kopię orzeczenia o stopniu niepełnosprawności </span>
-        <br>
-        <input type="file" multiple>
-        <button id="wyslij_niepelno">WYŚLIJ FORMULARZ</button>
+            Semestr {{form.aktualny_semestr}} roku akademickiego 2023/2024 jest moim {{form.semestr_studenta}} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej uczelni). <br>
+            <span id="uwaga">Do wniosku o przyznanie stypendium dla osób niepełnosprawnych obowiązkowo należy dołączyć kopię orzeczenia o stopniu niepełnosprawności </span>
+            <br>
+            {{form.zalacznik_niepelnosprawnosc}}
+            <button type = "submit">WYŚLIJ FORMULARZ</button>
         </form>
-    </div>
+        </div>
 {% endblock %}

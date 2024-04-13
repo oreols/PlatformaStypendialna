@@ -3,7 +3,7 @@ from .views import *
 from .views import Formularze, Kontakt, Logowanie
 
 urlpatterns = [
-    path('', main),
+    path('', main, name = 'main'),
     path('login', loginPage),
     path('register', registerPage, name='register'),
     path('formularze', Formularze.as_view(), name='formularze'),

@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -18,11 +19,11 @@ class DecyzjeStypendialne(models.Model):
 
 class Formularz(models.Model):
     id_formularza = models.IntegerField(primary_key=True)
-    typ_stypendium = models.TextField(null=True)
-    id_student = models.IntegerField(null=True)
-    data_zlozenia = models.DateField(null=True)
+    typ_stypendium = models.TextField(null=True, blank=True)
+    id_student = models.IntegerField(null=True, blank=True)
+    data_zlozenia = models.DateTimeField(null=True, blank=True)
     przychod_bez_podatku = models.FloatField(null=True, blank=True)
-    srednia_ocen = models.FloatField(null=True)
+    srednia_ocen = models.FloatField(null=True, blank=True)
     dodatkowe_informacje = models.TextField(null=True, blank=True)
     plik_orzeczenie = models.ImageField(null=True, blank=True, upload_to='dokumenty/orzeczenia') 
     id_osiagniecia = models.IntegerField(null=True, blank=True)
@@ -30,18 +31,21 @@ class Formularz(models.Model):
     oswiadczenie_gospodarstwo_domowe = models.BooleanField(default=False)
     oswiadczenie_dochody = models.BooleanField(default=False)
     zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
-    stopien_niepelnosprawnosci = models.TextField(null=True, blank=True)
+    stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE)
     symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE)
-    charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True)
+    charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True, max_length=100)
     data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
     data_konca_orzeczenia = models.DateField(null=True, blank=True)
     aktualny_semestr = models.IntegerField(null=True, blank=True)
     semestr_studenta = models.IntegerField(null=True, blank=True)
     zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
 
-
-    def __str__(self):
-        return str(self.id_formularza)
+    
+    def ustal_typ_stypendium(self):
+        if self.typ_stypendium == 'dla niepełnosprawnych':
+            return 'dla niepełnosprawnych'
+        else:
+            return 'dla zdolnych'
 
 class Student(AbstractBaseUser):
     id_student = models.IntegerField(primary_key=True, blank=True)  
@@ -280,3 +284,10 @@ class SymbolNiepelnosprawnosci(models.Model):
 
     def __str__(self):
         return str(self.nazwa_symbolu)
+
+class StopienNiepelnosprawnosci(models.Model):
+    id_stopnia = models.IntegerField(primary_key=True)
+    nazwa_stopnia = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.nazwa_stopnia)

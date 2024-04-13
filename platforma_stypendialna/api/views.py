@@ -17,6 +17,7 @@ def registerPage(request):
         form = StudentRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('main')
     else:
         form = StudentRegistrationForm()
     return render(request, 'website/rejestracja.html', {'form': form})
@@ -26,9 +27,11 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
         form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST)
         if form.is_valid():
             form.save()
+            return redirect('main')
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
+    redirect('website/kontakt.html')
 
 class Formularze(TemplateView):
     template_name = 'website/formularze.html'

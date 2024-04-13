@@ -23,4 +23,5 @@ admin.site.register(Osiagniecia)
 admin.site.register(OcenaKoncowaDziekanat)
 admin.site.register(CzlonekRodziny)
 admin.site.register(SymbolNiepelnosprawnosci)
+admin.site.register(StopienNiepelnosprawnosci)
 # Register your models here.
