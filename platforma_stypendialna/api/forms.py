@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student
+from .models import Student, Formularz
 
 class StudentRegistrationForm(forms.ModelForm):
     class Meta:
@@ -11,4 +11,14 @@ class StudentRegistrationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(StudentRegistrationForm, self).__init__(*args, **kwargs)
+        # You can customize form fields here if needed
+class SkladanieFormularzaDlaNiepelnosprawnych(forms.ModelForm):
+    class Meta:
+        model = Formularz
+        typ_stypendium = 'dla niepelnosprawnych'
+        fields = ['typ_stypendium', 'data_zlozenia', 'stopien_niepelnosprawnosci', 'dodatkowe_informacje']
+        
+
+    #def __init__(self, *args, **kwargs):
+        #super(SkladanieFormularzaForm, self).__init__(*args, **kwargs)
         # You can customize form fields here if needed

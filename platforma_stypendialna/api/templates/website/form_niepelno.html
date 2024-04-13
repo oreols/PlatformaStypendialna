@@ -8,12 +8,12 @@
     <div class="container container_form">
         <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
         <div class="title"> Stypendium dla osób niepełnosprawnych</div>
+        <form action="" method="POST">
+        {% csrf_token %}
 
         <div id="stopien_niepelnosprawnosci">STOPIEŃ NIEPEŁNOSPRAWNOŚCI: 
             <select name="stopien">
-                <option value="1">1-znaczny</option>
-                <option value="2">2-umiarkowany</option>
-                <option value="3">3-lekki</option>
+                {{forms.stopien_niepelnosprawnosci}}
             </select>
         </div>
         <div id="symbol_niepelnosprawnosci">SYMBOL NIEPEŁNOSPRAWNOŚCI:
@@ -43,5 +43,6 @@
         <br>
         <input type="file" multiple>
         <button id="wyslij_niepelno">WYŚLIJ FORMULARZ</button>
+        </form>
     </div>
 {% endblock %}

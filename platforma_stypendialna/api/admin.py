@@ -22,4 +22,5 @@ admin.site.register(Konkursy)
 admin.site.register(Osiagniecia)
 admin.site.register(OcenaKoncowaDziekanat)
 admin.site.register(CzlonekRodziny)
+admin.site.register(SymbolNiepelnosprawnosci)
 # Register your models here.

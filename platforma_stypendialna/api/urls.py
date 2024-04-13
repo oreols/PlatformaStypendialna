@@ -9,4 +9,5 @@ urlpatterns = [
     path('formularze', Formularze.as_view(), name='formularze'),
     path('kontakt', Kontakt.as_view(), name='kontakt'),
     path('logowanie', Logowanie.as_view(), name='logowanie'),
+    path('form_niepelno', ZlozenieFormularzaNiepelnosprawnych, name='skladanieformularzudlaniepelnosprawnych')
 ]

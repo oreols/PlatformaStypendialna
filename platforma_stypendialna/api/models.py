@@ -31,9 +31,14 @@ class Formularz(models.Model):
     oswiadczenie_dochody = models.BooleanField(default=False)
     zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
     stopien_niepelnosprawnosci = models.TextField(null=True, blank=True)
+    symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE)
     charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True)
     data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
     data_konca_orzeczenia = models.DateField(null=True, blank=True)
+    aktualny_semestr = models.IntegerField(null=True, blank=True)
+    semestr_studenta = models.IntegerField(null=True, blank=True)
+    zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
+
 
     def __str__(self):
         return str(self.id_formularza)
@@ -267,3 +272,11 @@ class CzlonekRodziny(models.Model):
 
     def __str__(self):
         return str(self.id_czlonka)
+    
+class SymbolNiepelnosprawnosci(models.Model):
+    
+    id_symbolu = models.IntegerField(primary_key=True)
+    nazwa_symbolu = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.nazwa_symbolu)

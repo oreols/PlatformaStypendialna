@@ -3,7 +3,7 @@ from django.http import HttpResponse;
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import TemplateView
 
-from .forms import StudentRegistrationForm
+from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych
 # Create your views here.
 
 def main(request):
@@ -20,6 +20,15 @@ def registerPage(request):
     else:
         form = StudentRegistrationForm()
     return render(request, 'website/rejestracja.html', {'form': form})
+
+def ZlozenieFormularzaNiepelnosprawnych(request):
+    if request.method == 'POST':
+        form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = SkladanieFormularzaDlaNiepelnosprawnych()
+    return render(request, 'website/form_niepelno.html', {'form': form}) 
 
 class Formularze(TemplateView):
     template_name = 'website/formularze.html'
