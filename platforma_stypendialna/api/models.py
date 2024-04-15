@@ -41,16 +41,11 @@ class Formularz(models.Model):
     zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
 
     
-    def ustal_typ_stypendium(self):
-        if self.typ_stypendium == 'dla niepełnosprawnych':
-            return 'dla niepełnosprawnych'
-        else:
-            return 'dla zdolnych'
 
 class Student(AbstractBaseUser):
     id_student = models.IntegerField(primary_key=True, blank=True)  
     nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
-    haslo = models.CharField(max_length = 100, null=True)
+    #haslo = models.CharField(max_length = 100, null=True)
     email = models.CharField(null=True, unique = True, max_length = 60)
     data_rejestracji = models.DateField(null=True)
     ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')

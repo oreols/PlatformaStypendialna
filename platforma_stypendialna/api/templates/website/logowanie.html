@@ -5,22 +5,23 @@
     <title>Logowanie</title>
 </head>
     <div class="container container_logowanie">
-        <div class="title"> Logowanie</div>   
-        <form action="#">
+        <div class="title"> Logowanie</div>  
+        <form method="POST" action="{% url 'logowanie' %}">
+        {% csrf_token %}
             <div class="grid-container">
                 <div class="grid-item">
                     <div class="input-box">
                         <span class="details">Login</span> <br>
-                        <input type="text"  required>
+                        <input type="text"  required name = "nazwa_uzytkownika">
                     </div>
                     <div class="input-box">
                         <span class="details">Hasło</span><br>
-                        <input type="password"  required>
+                        <input type="password"  required name = "password">
                     </div>
                 </div>
             </div>
                     
-        <button >ZALOGUJ</button>    
+        <button type = "submit">ZALOGUJ</button>    
         </form>
     </div>
 {% endblock %}
