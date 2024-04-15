@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formularz socjalne</title>
+ 
 </head>
     <div class="container container_form">
         <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
@@ -27,12 +28,10 @@
                     <tr>
                         <td>1.</td><td><input type="text" class="imie_nazwisko" placeholder="Imię i nazwisko członka rodziny"></td><td><input type="text" class="pokrewienstwo" placeholder="stopień pokrewieństwa"> <br><input type="date" class="date" placeholder="data urodzenia"></td><td><input type="text" class="miejsce" placeholder="Miejsce pracy lub nauki"></td>
                     </tr>
-                    <tr>
-                        <td>2.</td><td><input type="text" class="imie_nazwisko" placeholder="Imię i nazwisko członka rodziny"></td><td><input type="text" class="pokrewienstwo" placeholder="stopień pokrewieństwa"> <br><input type="date" class="date" placeholder="data urodzenia"></td><td><input type="text" class="miejsce" placeholder="Miejsce pracy lub nauki"></td>
-                    </tr>
                 </tbody>
             </table>
         </div>
+        <button class="dodaj" id="przycisk_dodaj_wiersz">Dodaj</button>
         <span>Semestr <input type="number" id="nr_semestru" placeholder="ktory semestr"> roku akademickiego 2023/2024 jest moim <input type="number" name="semestr" id="semestry_lacznie" placeholder="semestrem z kolei"> semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).        </span>
         
         <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU 
@@ -44,13 +43,14 @@
             <div class="inne_dochody"> 
                 <ul>
                     <li>
-                    Imie i nazwisko : <input type="text" class="imie_nazwisko_czlonka"> <br>
-                    Rodzaj uzyskiwanego dochodu: <input type="text" class="rodzaj_dochodu"> <br>
-                    Kwota dochodu: <input type="number" class="kwota_dochodu">   
+                        Imie i nazwisko: <input type="text" class="imie_nazwisko_czlonka" maxlength="30"> <br>
+                        Rodzaj uzyskiwanego dochodu: <input type="text" class="rodzaj_dochodu" maxlength="20"> <br>
+                        Kwota dochodu: <input type="number" class="kwota_dochodu"  min="1" max="10'000'000">     
                     </li>
                 </ul>
+                <button class="dodaj" id="przycisk_dodaj_element_listy">Dodaj</button>
 
-                Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w 2023 roku wynosi: <br><input type="number" id="suma_dochodu_gosp" placeholder="suma dochodu z gosp rolnego"> zł + <input type="text" name="" id="suma_innych_doch" placeholder="suma innych dochodów nieopodatkowanych"> zł = <input type="text" id="laczna_kwota_doch" placeholder="łączna kwota ">zł
+                Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w 2023 roku wynosi: <br><input type="number" id="suma_dochodu_gosp" placeholder="suma dochodu z gosp rolnego"> zł + <input type="number" name="" id="suma_innych_doch" placeholder="suma innych dochodów nieopodatkowanych"> zł = <input type="number" id="laczna_kwota_doch" placeholder="łączna kwota ">zł
                 
             </div>
         <br>
@@ -62,4 +62,5 @@
         <input type="file" multiple>
     <button id="wyslij_socjalne">WYŚLIJ FORMULARZ</button>
     </div>
+    <script src="static/form_socjalne.js"></script>
 {% endblock %}
