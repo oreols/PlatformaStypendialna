@@ -24,4 +24,6 @@ admin.site.register(OcenaKoncowaDziekanat)
 admin.site.register(CzlonekRodziny)
 admin.site.register(SymbolNiepelnosprawnosci)
 admin.site.register(StopienNiepelnosprawnosci)
+admin.site.register(SemestrStudenta)
+admin.site.register(AktualnySemestr)
 # Register your models here.
