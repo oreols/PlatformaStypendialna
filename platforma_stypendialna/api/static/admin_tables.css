@@ -1,0 +1,39 @@
+body {
+    background-color: white;
+    color: black;
+}
+.container {
+    padding: 20px;
+}
+
+.title {
+    color: white;
+    font-size: large;
+    font-weight: bold;
+    display: inline-block;
+    background-color:black;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#uzytkownicy {
+    background-color: black;
+    color: white;
+    padding: 20px;
+    display: inline-block;
+}
+
+table {
+    border: 1px solid black;
+    width: 100%;
+    border-radius: 30px;
+}
+
+td {
+    padding: 5px;
+}
+button{
+    border-radius: 20px;
+    padding: 10px;
+}

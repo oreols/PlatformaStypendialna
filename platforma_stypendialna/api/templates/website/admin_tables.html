@@ -1,0 +1,49 @@
+{% extends 'navbar.html' %}
+{% block content %}
+    <br>
+    <div class="row">
+        <div class="card ">
+                <div class="card-header">
+                    Studenci
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm ">
+                        <tr>
+                            <th>id</th>
+                            <th>nazwa uzytkownika</th>
+                            <th>email</th>
+                            <th>data rejestracji</th>
+                            <th>pesel</th>
+                            <th>Imie</th>
+                            <th>Nazwisko</th>
+                            <th>nr telefonu</th>
+                            <th>semestr</th>
+                            <th>nr albumu</th>
+                            <th>rok studiow</th>
+                            <th>kierunek</th>
+                            <th>nr konta bankowego</th>
+                            <th>Zmien</th>
+                            <th>Usun</th>
+                        </tr>
+                        {% for students in student %}
+                            <tr>
+                                <td>{{students.id_student}}</td>
+                                <td>{{students.nazwa_uzytkownika}}</td>
+                                <td>{{students.email}}</td>
+                                <td>{{students.data_rejestracji}}</td>
+                                <td>{{students.pesel}}</td>
+                                <td>{{students.imie}}</td>
+                                <td>{{students.nazwisko}}</td>
+                                <td>{{students.numer_telefonu}}</td>
+                                <td>{{students.semestr}}</td>
+                                <td>{{students.numer_albumu}}</td>
+                                <td>{{students.rok_studiow}}</td>
+                                <td>{{students.kierunek}}</td>
+                                <td>{{students.numer_konta_bankowego}}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_studenta' students.id_student %}">Edytuj</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_studenta' students.id_student %}" >Usun</a></td>
+                        {% endfor %}
+                    </table>
+                </div>
+    </div>
+{% endblock %}

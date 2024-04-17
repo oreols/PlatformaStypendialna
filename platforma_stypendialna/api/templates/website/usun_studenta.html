@@ -1,0 +1,11 @@
+{% extends "navbar.html" %}
+    {% block content %}
+
+    <p>Czy na pewno chcesz usunąć studenta "{{item}}" ?</p>
+
+    <form action="{% url 'usun_studenta' item.id_student %}" method="POST">
+        {% csrf_token %}
+        <a href="{% url 'admin_tables' %}">Anuluj</a>
+        <input type="submit" name="Usun">
+    </form>
+    {% endblock %}
