@@ -16,12 +16,7 @@
                             <th>pesel</th>
                             <th>Imie</th>
                             <th>Nazwisko</th>
-                            <th>nr telefonu</th>
-                            <th>semestr</th>
                             <th>nr albumu</th>
-                            <th>rok studiow</th>
-                            <th>kierunek</th>
-                            <th>nr konta bankowego</th>
                             <th>Zmien</th>
                             <th>Usun</th>
                         </tr>
@@ -34,16 +29,35 @@
                                 <td>{{students.pesel}}</td>
                                 <td>{{students.imie}}</td>
                                 <td>{{students.nazwisko}}</td>
-                                <td>{{students.numer_telefonu}}</td>
-                                <td>{{students.semestr}}</td>
                                 <td>{{students.numer_albumu}}</td>
-                                <td>{{students.rok_studiow}}</td>
-                                <td>{{students.kierunek}}</td>
-                                <td>{{students.numer_konta_bankowego}}</td>
                                 <td><a class="btn btn-warning" href="{% url 'edytuj_studenta' students.id_student %}">Edytuj</a></td>
                                 <td><a class="btn btn-danger" href="{% url 'usun_studenta' students.id_student %}" >Usun</a></td>
                         {% endfor %}
                     </table>
                 </div>
+                <div class="card-header">
+                    Formularz dla niepełnosprawnych
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm ">
+                        <tr>
+                            <th>id</th>
+                            <th>id studenta</th>
+                            <th>data zlozenia</th>
+                            <th>Zmien</th>
+                            <th>Usun</th>
+                        </tr>
+                        {% for form in formularz %}
+                            <tr>
+                                <td>{{form.id_formularza}}</td>
+                                <td>{{form.id_studenta}}</td>
+                                <td>{{form.data_zlozenia}}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_niepelno' form.id_formularza %}">Edytuj</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_form_niepelno' form.id_formularza %}" >Usun</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+        </div>        
     </div>
 {% endblock %}

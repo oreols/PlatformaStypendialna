@@ -1,0 +1,11 @@
+{% extends "navbar.html" %}
+    {% block content %}
+
+    <p>Czy na pewno chcesz usunąć formularz "{{item}}" ?</p>
+
+    <form action="{% url 'usun_form_niepelno' item.id_formularza %}" method="POST">
+        {% csrf_token %}
+        <a href="{% url 'admin_tables' %}">Anuluj</a>
+        <input type="submit" name="Usun">
+    </form>
+    {% endblock %}

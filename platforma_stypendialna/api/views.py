@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from .authbackend import CustomAuthBackend
-from .models import Student
+from .models import Student, Formularz
 
 from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych
 # Create your views here.
@@ -56,11 +56,18 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
 
 def PanelAdmina(request):
     student = Student.objects.all()
-    context = {'student': student}
+    formularz = Formularz.objects.all()
+    context = {'student': student , 'formularz': formularz}
     return render(request, 'website/admin_tables.html', context)
 
 class Formularze(TemplateView):
     template_name = 'website/formularze.html'
+
+class StronaGlowna(TemplateView):
+    template_name = 'website/strona_glowna.html'
+
+class KryteriaOceny(TemplateView):
+    template_name = 'website/kryteria_oceny.html'
 
 class Kontakt(TemplateView):
     template_name = 'website/kontakt.html'
@@ -86,3 +93,23 @@ def UsunStudenta(request,pk):
         return redirect('/admin_tables')
     context = {'item': student}
     return render(request, 'website/usun_studenta.html',context)
+
+
+def EdytujFormNiepelno(request,pk):
+    formularz = Formularz.objects.get(id_formularza=pk)
+    form = SkladanieFormularzaDlaNiepelnosprawnych(instance=formularz)
+    if request.method == 'POST':
+        form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST, instance=formularz)
+        if form.is_valid():
+            form.save()
+            return redirect('/admin_tables')
+    context = {'form': form}
+    return render(request, 'website/edytuj_form_niepelno.html',context)
+
+def UsunFormNiepelno(request,pk):
+    formularz = Formularz.objects.get(id_formularza=pk)
+    if request.method == 'POST':
+        formularz.delete()
+        return redirect('/admin_tables')
+    context = {'item': formularz}
+    return render(request, 'website/usun_form_niepelno.html',context)

@@ -1,6 +1,8 @@
 from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.core.exceptions import ValidationError
+
 
 class Kierunek(models.Model):
     id_kierunku = models.IntegerField(primary_key=True)
@@ -19,7 +21,7 @@ class DecyzjeStypendialne(models.Model):
 
 class Formularz(models.Model):
     id_formularza = models.IntegerField(primary_key=True)
-    typ_stypendium = models.TextField(null=True, blank=True)
+    typ_stypendium = models.CharField(null=True, blank=True, max_length=30)
     id_student = models.IntegerField(null=True, blank=True)
     data_zlozenia = models.DateTimeField(null=True, blank=True)
     przychod_bez_podatku = models.FloatField(null=True, blank=True)
@@ -41,6 +43,9 @@ class Formularz(models.Model):
     zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
 
     
+def validate_digits_only(value):
+        if not value.isdigit():
+            raise ValidationError('Wpisz tylko cyfry.')    
 
 class Student(AbstractBaseUser):
     id_student = models.IntegerField(primary_key=True, blank=True)  
@@ -49,25 +54,27 @@ class Student(AbstractBaseUser):
     email = models.CharField(null=True, unique = True, max_length = 60)
     data_rejestracji = models.DateField(null=True)
     ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')
-    pesel = models.CharField(null=True, unique = True, max_length=11) 
+    pesel = models.CharField(null=True, unique = True, max_length=11, validators=[validate_digits_only]) 
     imie = models.CharField(null=True, max_length=20)
     nazwisko = models.CharField(null=True, max_length=35)
     zalaczniki = models.FileField(null=True, upload_to='dokumenty/zalaczniki', blank = True)
-    numer_telefonu = models.CharField(null=True, unique = True, max_length=9)
+    numer_telefonu = models.CharField(null=True, unique = True, max_length=9, validators=[validate_digits_only])
     ##nazwa_kierunku = models.CharField(null=True, max_length=50)
-    semestr = models.IntegerField(null=True)
-    numer_albumu = models.IntegerField(null=True, unique = True)
-    rok_studiow = models.IntegerField(null=True)
+    semestr = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
+    numer_albumu = models.CharField(null=True, max_length=5, validators=[validate_digits_only])
+    rok_studiow = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
     kierunek = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
     ##decyzjeStypendialne = models.ForeignKey(DecyzjeStypendialne, on_delete=models.CASCADE)
     ##formularz = models.ForeignKey(Formularz, blank=True, null = True, on_delete=models.CASCADE)
-    numer_konta_bankowego = models.CharField(null=True, max_length=26)
+    numer_konta_bankowego = models.CharField(null=True, max_length=26, validators=[validate_digits_only])
 
     USERNAME_FIELD = 'nazwa_uzytkownika'
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         return self.nazwa_uzytkownika
+    
+    
     
 class StudentManager(BaseUserManager):
     def create_student(self, id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego):
