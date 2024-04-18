@@ -15,13 +15,12 @@ def main(request):
 
 def loginPage(request):
     if request.method == 'POST':
-        nazwa_uzytkownika = request.POST['nazwa_uzytkownika']
+        username = request.POST['username']
         password = request.POST['password']
 
-        user = CustomAuthBackend().authenticate(request, username=nazwa_uzytkownika, password=password)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            user.backend = 'django.authbackend.CustomAuthBackend'
             login(request, user)
             return HttpResponse("Zalogowano")
         else:
@@ -33,7 +32,7 @@ def registerPage(request):
     if request.method == 'POST':
         form = StudentRegistrationForm(request.POST)
         if form.is_valid():
-            nazwa_uzytkownika = request.POST['nazwa_uzytkownika']
+            username = request.POST['username']
             password = request.POST['password']
             form.instance.password = make_password(password)
             form.save()

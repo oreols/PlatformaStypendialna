@@ -1,6 +1,6 @@
 from datetime import timezone
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
 from django.core.exceptions import ValidationError
 
 
@@ -47,9 +47,9 @@ def validate_digits_only(value):
         if not value.isdigit():
             raise ValidationError('Wpisz tylko cyfry.')    
 
-class Student(AbstractBaseUser):
+class Student(AbstractUser):
     id_student = models.IntegerField(primary_key=True, blank=True)  
-    nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
+    #nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
     #haslo = models.CharField(max_length = 100, null=True)
     email = models.CharField(null=True, unique = True, max_length = 60)
     data_rejestracji = models.DateField(null=True)
@@ -59,29 +59,29 @@ class Student(AbstractBaseUser):
     nazwisko = models.CharField(null=True, max_length=35)
     zalaczniki = models.FileField(null=True, upload_to='dokumenty/zalaczniki', blank = True)
     numer_telefonu = models.CharField(null=True, unique = True, max_length=9, validators=[validate_digits_only])
-    ##nazwa_kierunku = models.CharField(null=True, max_length=50)
+    nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
     semestr = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
     numer_albumu = models.CharField(null=True, max_length=5, validators=[validate_digits_only])
     rok_studiow = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
-    kierunek = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
+    #kierunek = models.CharField(null=True,blank=True,max_length=50)
     ##decyzjeStypendialne = models.ForeignKey(DecyzjeStypendialne, on_delete=models.CASCADE)
     ##formularz = models.ForeignKey(Formularz, blank=True, null = True, on_delete=models.CASCADE)
     numer_konta_bankowego = models.CharField(null=True, max_length=26, validators=[validate_digits_only])
 
-    USERNAME_FIELD = 'nazwa_uzytkownika'
+    #USERNAME_FIELD = 'nazwa_uzytkownika'
     REQUIRED_FIELDS = ['email']
 
     def __str__(self):
-        return self.nazwa_uzytkownika
+        return self.username
     
     
     
-class StudentManager(BaseUserManager):
-    def create_student(self, id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego):
-        if any(value is None for value in [id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego]):
-            raise ValueError("Ktores z podanych pól jest puste!")
-        student = self.create(id_student=id_student, nazwa_uzytkownika=nazwa_uzytkownika, haslo=haslo, email=email, data_rejestracji=data_rejestracji, ikonka=ikonka, pesel=pesel, imie=imie, nazwisko=nazwisko, numer_telefonu=numer_telefonu, nazwa_kierunku=nazwa_kierunku, semestr=semestr, numer_albumu=numer_albumu, rok_studiow=rok_studiow, kierunek=kierunek, numer_konta_bankowego=numer_konta_bankowego)
-        return student
+#class StudentManager(BaseUserManager):
+    #def create_student(self, id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego):
+        #if any(value is None for value in [id_student, nazwa_uzytkownika, haslo, email, data_rejestracji, ikonka, pesel, imie, nazwisko, numer_telefonu, nazwa_kierunku, semestr, numer_albumu, rok_studiow, kierunek, numer_konta_bankowego]):
+            #raise ValueError("Ktores z podanych pól jest puste!")
+        #student = self.create(id_student=id_student, nazwa_uzytkownika=nazwa_uzytkownika, haslo=haslo, email=email, data_rejestracji=data_rejestracji, ikonka=ikonka, pesel=pesel, imie=imie, nazwisko=nazwisko, numer_telefonu=numer_telefonu, nazwa_kierunku=nazwa_kierunku, semestr=semestr, numer_albumu=numer_albumu, rok_studiow=rok_studiow, kierunek=kierunek, numer_konta_bankowego=numer_konta_bankowego)
+        #return student
 
 class Admin(models.Model):
     id_admin = models.IntegerField(primary_key=True)
