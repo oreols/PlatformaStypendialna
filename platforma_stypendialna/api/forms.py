@@ -46,6 +46,12 @@ class StudentRegistrationForm(forms.ModelForm):
             return rok_studiow
         else:
             raise forms.ValidationError('Wpisz od 1 do 5')
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if Student.objects.filter(email=email).exists():
+            raise forms.ValidationError('Email jest już zajęty')
+        return email
         
 class SkladanieFormularzaDlaNiepelnosprawnych(forms.ModelForm):
     

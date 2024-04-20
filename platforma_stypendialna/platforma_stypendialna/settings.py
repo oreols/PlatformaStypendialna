@@ -131,3 +131,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #]
 
 AUTH_USER_MODEL = 'api.Student' 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'live.smtp.mailtrap.io'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'api'
+EMAIL_HOST_PASSWORD = 'abdf6d6f552f573c851654ceaffa15ae'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+DEFAULT_FROM_EMAIL = 'mailtrap@demomailtrap.com'
+
+LOGIN_REDIRECT_URL = 'index'

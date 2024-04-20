@@ -1,0 +1,20 @@
+{%extends "base.html" %}
+
+{%block content%}
+
+{%for message in messages%}
+<div class = "message {{message.tags}}">
+    {{message}}
+</div>
+    {%endfor%}
+<div class = "center">
+    {%if user.is_authenticated%}
+        {%if user.is_active%}
+            <p>witaj, {{user.username}}. Dziekujemy za logowanie.</p>
+            {%else%}
+            <p>Proszę się zalogować.</p>
+            <a href = "{%url 'login'%}">Zaloguj</a> or <a href = "{%url 'register'%}">Zarejestruj</a>
+        {%endif%}
+    {%endif%}
+</div>
+{%endblock%}

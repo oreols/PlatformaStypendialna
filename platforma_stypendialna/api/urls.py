@@ -1,14 +1,25 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from .views import *
 from .views import Formularze, Kontakt, Logowanie
 
 urlpatterns = [
-    path('', main, name = 'main'),
+    #path('', main, name = 'main'),
     path('rejestracja', registerPage, name='register'),
+    path('logout', logoutUser, name='logout'),
+    path('index', index, name='index'),
     path('formularze', Formularze.as_view(), name='formularze'),
-    path('strona_glowna', StronaGlowna.as_view(), name='strona_glowna'),
+    path('', StronaGlowna.as_view(), name='strona_glowna'),
     path('kryteria_oceny', KryteriaOceny.as_view(), name='kryteria_oceny'),
+    #path('account_activation_email', )
     path('kontakt', Kontakt.as_view(), name='kontakt'),
+    path('password_reset', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset_done', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password_reset_confirm', auth_views.PasswordResetDoneView.as_view(), name='password_reset_confirm'),
+    path('password_reset_complete', auth_views.PasswordResetDoneView.as_view(), name='password_reset_complete'),
+    path('password_change', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    path('password_change_done', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('logowanie', loginPage, name='logowanie'),
     path('form_niepelno', ZlozenieFormularzaNiepelnosprawnych, name='form_niepelno'),
     path('admin_tables', PanelAdmina, name='admin_tables'),
@@ -16,4 +27,5 @@ urlpatterns = [
     path('usun_studenta/<str:pk>/', UsunStudenta, name='usun_studenta'),
     path('edytuj_form_niepelno/<str:pk>/', EdytujFormNiepelno, name='edytuj_form_niepelno'),
     path('usun_form_niepelno/<str:pk>/', UsunFormNiepelno, name='usun_form_niepelno'),
+    path('activate/<uidb64>/<token>/', activate, name='activate')
 ]
