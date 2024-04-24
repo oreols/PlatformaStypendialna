@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.shortcuts import redirect, render
 from django.http import HttpResponse;
 from django.contrib.auth.forms import UserCreationForm
@@ -52,18 +53,24 @@ def registerPage(request):
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
+            #id_student = request.POST['id_student']
             form.instance.password = make_password(password)
             user = form.save(commit=False)
             user.is_active = False
             user.save()
+            User = get_user_model()
+            user_object = User.objects.get(username=username)
+            
+
+            
 
             current_site = get_current_site(request)
             mail_subject = 'Aktywuj swoje konto'
             message = render_to_string('account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
+                'uid': urlsafe_base64_encode(force_bytes(user_object.pk)),
+                'token': account_activation_token.make_token(user_object),
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
@@ -79,10 +86,15 @@ def registerPage(request):
 def activate(request, uidb64, token):
     User = get_user_model()
     try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User._default_manager.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
         user = None
+    #user = User._default_manager.get(username=uid)
+    if user is not None:
+        messages.success(request, str(user))
+    else:
+        messages.error(request, str(user))
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
@@ -90,7 +102,7 @@ def activate(request, uidb64, token):
         login(request, user)
 
         messages.success(request, 'Konto zostało aktywowane')
-        return redirect(reverse('login'))
+        return redirect(reverse('logowanie'))
     else:
         messages.error(request, 'Link aktywacyjny jest nieprawidłowy lub przedawniony')
         return redirect('index')
