@@ -119,6 +119,10 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
     return render(request, 'website/form_niepelno.html', {'form': form}) 
     redirect('website/kontakt.html')
 
+#def ZlozenieFormularzaNaukowego(request, pk):
+    #if request.method == 'POST':
+
+
 def PanelAdmina(request):
     student = Student.objects.all()
     formularz = Formularz.objects.all()
