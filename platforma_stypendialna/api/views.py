@@ -1,6 +1,7 @@
 from django.forms import ValidationError
 from django.shortcuts import redirect, render
 from django.http import HttpResponse;
+from django.forms import formset_factory
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic import TemplateView
 from django.template.loader import render_to_string
@@ -16,7 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
 
-from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych
+from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie
 # Create your views here.
 
 def main(request):
@@ -119,8 +120,16 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
     return render(request, 'website/form_niepelno.html', {'form': form}) 
     redirect('website/kontakt.html')
 
-#def ZlozenieFormularzaNaukowego(request, pk):
-    #if request.method == 'POST':
+def ZlozenieFormularzaNaukowego(request):
+    OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=14)
+    formset = OsiagnieciaFormSet()
+    if request.method == 'POST':
+        formset = OsiagnieciaFormSet(request.POST)
+        if formset.is_valid():
+            for form in formset:
+                form.save()
+    
+    return render (request, 'website/form_naukowe.html', {'formset': formset})
 
 
 def PanelAdmina(request):

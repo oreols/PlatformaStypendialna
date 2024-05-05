@@ -228,19 +228,19 @@ class AdminLog(models.Model):
     def __str__(self):
         return str(self.id_log_admin)
 
-class Typ_Osiagniecia(models.Model):
-    id_typ_osiagniecia = models.IntegerField(primary_key=True)
-    nazwa_typu = models.TextField(null=True)
-    punkty_osiagniecie = models.IntegerField(null=True)
+#class Typ_Osiagniecia(models.Model):
+    #id_typ_osiagniecia = models.IntegerField(primary_key=True)
+    #nazwa_typu = models.TextField(null=True)
+    #punkty_osiagniecie = models.IntegerField(null=True)
 
-    def __str__(self):
-        return str(self.nazwa_konkursu)
+    #def __str__(self):
+        #return str(self.nazwa_konkursu)
 
 class Osiagniecia(models.Model):
     id_osiagniecia = models.IntegerField(primary_key=True)
-    id_student = models.IntegerField(null=True)
+    #id_student = models.IntegerField(null=True)
     liczba_osiagniec = models.IntegerField(null=True)
-    typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
+    #typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     krotki_opis = models.TextField(null=True)
     data_osiagniecia = models.DateField(null=True)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, Formularz
+from .models import Student, Formularz, Osiagniecia
 from datetime import datetime
 
 
@@ -67,3 +67,19 @@ class SkladanieFormularzaDlaNiepelnosprawnych(forms.ModelForm):
     # def __init__(self, *args, **kwargs):
     #     super(SkladanieFormularzaDlaNiepelnosprawnych, self).__init__(*args, **kwargs)
         # You can customize form fields here if needed
+
+class SkladanieFormularzaNaukowego(forms.ModelForm):
+    
+    class Meta:
+        model = Formularz
+        fields = ['typ_stypendium', 'data_zlozenia', 'srednia_ocen', 'aktualny_semestr', 'semestr_studenta', 'zalacznik']
+    
+    def clean_data_zlozenia(self):
+        data_zlozenia = datetime.now()  # Zastąp datę starszą dzisiejszą datą
+        return data_zlozenia 
+    
+class ZapiszOsiagniecie(forms.ModelForm):
+
+    class Meta:
+        model = Osiagniecia 
+        fields = ['liczba_osiagniec', 'student', 'krotki_opis', 'data_osiagniecia']

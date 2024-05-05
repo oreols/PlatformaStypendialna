@@ -27,5 +27,6 @@ urlpatterns = [
     path('usun_studenta/<str:pk>/', UsunStudenta, name='usun_studenta'),
     path('edytuj_form_niepelno/<str:pk>/', EdytujFormNiepelno, name='edytuj_form_niepelno'),
     path('usun_form_niepelno/<str:pk>/', UsunFormNiepelno, name='usun_form_niepelno'),
-    path('activate/<uidb64>/<token>/', activate, name='activate')
+    path('activate/<uidb64>/<token>/', activate, name='activate'),
+    path('form_naukowe', ZlozenieFormularzaNaukowego, name='form_naukowe')
 ]

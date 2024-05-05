@@ -25,5 +25,4 @@ admin.site.register(SymbolNiepelnosprawnosci)
 admin.site.register(StopienNiepelnosprawnosci)
 admin.site.register(SemestrStudenta)
 admin.site.register(AktualnySemestr)
-admin.site.register(Typ_Osiagniecia)
 # Register your models here.

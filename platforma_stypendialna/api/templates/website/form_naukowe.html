@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formularz naukowe</title>
 </head>
-    <div class="container container_form">
+    <form method = "post">
+    <div class="container container_form"> 
+       {{ formset.management_form }}
+       {% csrf_token %}
+       {% for form in formset %}
+           
+       
         <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
         <div class="title"> Stypendium naukowe</div>  
         <span class="minimalna">MINIMALNA ŚREDNIA: <span  id="minimalna_sr"> 4,5</span></span> 
@@ -17,6 +23,7 @@
             <ol id="lista_naukowe">
                 <li>Autorstwo lub współautorstwo publikacji naukowych w czasopismach naukowych ujętych w wykazie ogłoszonym przez ministra właściwego do spraw nauki, PKT 0,03
                     <div class="czasopisma">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data publikacji: <input type="date" placeholder="data publikacji"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -24,6 +31,7 @@
                 </li>
                 <li>Autorstwo lub współautorstwo rozdziału książki, PKT 0,02
                     <div class="ksiazki">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data wydania książki: <input type="date" placeholder="data wydania"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -31,6 +39,7 @@
                 </li>
                 <li>Autorstwo lub współautorstwo artykułu w publikacji pokonferencyjnej, PKT 0,01
                     <div class="artykułu">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data publikacji: <input type="date" placeholder="data publikacji"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -132,6 +141,8 @@
         <span id="uwaga">Do wniosku o przyznanie stypendium naukowego obowiązkowo należy dołączyć dokumentację potwierdzające osiągnięcia</span>
         <br>
         <input type="file" multiple>
-        <button id="wyslij_naukowe">WYŚLIJ FORMULARZ</button>
+        <button type = "submit">WYŚLIJ FORMULARZ</button>
+        {% endfor %}
     </div>
+    </form>
 {% endblock %}
