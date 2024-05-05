@@ -9,7 +9,7 @@
     <div class="container container_form"> 
        {{ formset.management_form }}
        {% csrf_token %}
-       {% for form in formset %}
+       {% for form in formset|slice:":1"%}
            
        
         <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
@@ -47,6 +47,7 @@
                 </li>
                 <li>Referaty własne wygłoszone samodzielnie na konferencjach naukowych, w których uczestniczyli prelegenci ośrodków akademickich, PKT 0,01
                     <div class="referaty">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data prezentacji: <input type="date" placeholder="data prezentacji"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -54,6 +55,7 @@
                 </li>
                 <li>Nagrody uzyskane w konkursach o zasięgu międzynarodowym, PKT 0,01
                     <div class="nagrody_miedzynarodowe">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data przyznania: <input type="date" placeholder="data przyznania"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -61,6 +63,7 @@
                 </li>
                 <li>Nagrody uzyskane w konkursach o zasięgu krajowym, w których uczestniczyli studenci ośrodków akademickich, PKT 0,01
                     <div class="nagrody_krajowe">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data przyznania: <input type="date" placeholder="data przyznania"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -68,6 +71,7 @@
                 </li>
                 <li>Czynny udział w pracach koła naukowego, PKT 0,01
                     <div class="kolo_naukowe">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
                     </div>
@@ -80,6 +84,7 @@
             <ol id="lista_artystyczne">
                 <li>Autorstwo, współautorstwo dzieł artystycznych, w tym plastycznych, muzycznych, teatralnych lub filmowych, wydanych w nakładzie co najmniej 500 egzemplarzy, PKT 0,05
                     <div class="dzieła">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data wydania dzieła: <input type="date" placeholder="data wydania"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -87,6 +92,7 @@
                 </li>
                 <li>Wykonanie dzieł artystycznych, w tym plastycznych, muzycznych, teatralnych lub filmowych, zaprezentowanych publicznie na festiwalach, wystawach lub przeglądach, o znaczeniu co najmniej krajowym, PKT 0,03
                     <div class="wykonanie">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data prezentacji: <input type="date" placeholder="data prezentacji"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -94,6 +100,7 @@
                 </li>
                 <li>Nagrody uzyskane w konkursach artystycznych o znaczeniu międzynarodowym, PKT 0,03
                     <div class="nagrody_miedzynarodowe_art">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data przyznania: <input type="date" placeholder="data przyznania"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -101,6 +108,7 @@
                 </li>
                 <li>Nagrody uzyskane w konkursach plastycznych o zasięgu krajowym, w których uczestniczyli studenci z innych ośrodków akademickich, PKT 0,02
                     <div class="nagrody_krajowe_art">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data przyznania: <input type="date" placeholder="data przyznania"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -115,6 +123,7 @@
             <ol id="lista_sportowe">
                 <li>Uzyskanie, co najmniej dziesiątego miejsca w igrzyskach olimpijskich, ósmego miejsca w mistrzostwach świata, piątego miejsca w młodzieżowych mistrzostwach świata lub mistrzostwach Europy, trzeciego miejsca w młodzieżowych mistrzostwach Europy, PKT 0,05
                     <div class="olimpijskie">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data zawodów: <input type="date" placeholder="data zawodów"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -122,6 +131,7 @@
                 </li>
                 <li>Uzyskanie, co najmniej trzeciego miejsca w uniwersjadzie, akademickich mistrzostwach świata, akademickich mistrzostwach Europy lub Europejskich Igrzyskach Studentów, PKT 0,03
                     <div class="uniwersjada">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data zawodów: <input type="date" placeholder="data zawodów"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
@@ -129,6 +139,7 @@
                 </li>
                 <li>Uzyskanie, co najmniej trzeciego miejsca w akademickich mistrzostwach Polski, PKT 0,02
                     <div class="mistrzostwa">
+                        {{ form.as_p }}
                         Liczba osiągnięć: <input type="number" placeholder="liczba osiągnięć tego typu"><br>
                         Data zawodów: <input type="date" placeholder="data zawodów"><br>
                         Krótki opis osiągnięcia/ osiągnięć: <input type="text" placeholder="opis"><br>
