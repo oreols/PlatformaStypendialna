@@ -121,15 +121,46 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
     redirect('website/kontakt.html')
 
 def ZlozenieFormularzaNaukowego(request):
-    OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=14)
+    OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=13)
     formset = OsiagnieciaFormSet()
+
+    texts = [
+        "Autorstwo lub współautorstwo publikacji naukowych w czasopismach naukowych ujętych w wykazie ogłoszonym przez ministra właściwego do spraw nauki, PKT 0,03",
+        "Autorstwo lub współautorstwo rozdziału książki, PKT 0,02",
+        "Autorstwo lub współautorstwo artykułu w publikacji pokonferencyjnej, PKT 0,01",
+        "Referaty własne wygłoszone samodzielnie na konferencjach naukowych, w których uczestniczyli prelegenci ośrodków akademickich, PKT 0,01",
+        "Nagrody uzyskane w konkursach o zasięgu międzynarodowym, PKT 0,01",
+        "Nagrody uzyskane w konkursach o zasięgu krajowym, w których uczestniczyli studenci ośrodków akademickich, PKT 0,01",
+        "Czynny udział w pracach koła naukowego, PKT 0,01",
+        "Autorstwo, współautorstwo dzieł artystycznych, w tym plastycznych, muzycznych, teatralnych lub filmowych, wydanych w nakładzie co najmniej 500 egzemplarzy, PKT 0,05",
+        "Wykonanie dzieł artystycznych, w tym plastycznych, muzycznych, teatralnych lub filmowych, zaprezentowanych publicznie na festiwalach, wystawach lub przeglądach, o znaczeniu co najmniej krajowym, PKT 0,03",
+        "Nagrody uzyskane w konkursach artystycznych o znaczeniu międzynarodowym, PKT 0,03",
+        "Nagrody uzyskane w konkursach plastycznych o zasięgu krajowym, w których uczestniczyli studenci z innych ośrodków akademickich, PKT 0,02",
+        "Uzyskanie, co najmniej dziesiątego miejsca w igrzyskach olimpijskich, ósmego miejsca w mistrzostwach świata, piątego miejsca w młodzieżowych mistrzostwach świata lub mistrzostwach Europy, trzeciego miejsca w młodzieżowych mistrzostwach Europy, PKT 0,05",
+        "Uzyskanie, co najmniej trzeciego miejsca w akademickich mistrzostwach Polski, PKT 0,02"
+    ]
+    
     if request.method == 'POST':
         formset = OsiagnieciaFormSet(request.POST)
-        if formset.is_valid():
-            for form in formset:
-                form.save()
+        for form in formset:
+            form.save()
+    else:
+        form = ZapiszOsiagniecie()
     
-    return render (request, 'website/form_naukowe.html', {'formset': formset})
+    form_text_list  = zip(formset, texts)
+    
+    return render (request, 'website/form_naukowe.html', {'form_text_list': form_text_list})
+
+#def ZlozenieFormularzaNaukowego(request):
+ #   if request.method == 'POST':
+  #      form = ZapiszOsiagniecie(request.POST)
+   #     if form.is_valid():
+    #        form.save()
+     #       return redirect('main')
+    #else:
+     #   form = ZapiszOsiagniecie()
+    #return render(request, 'website/form_naukowe.html', {'form2': form}) 
+    #redirect('website/kontakt.html')
 
 
 def PanelAdmina(request):

@@ -83,3 +83,6 @@ class ZapiszOsiagniecie(forms.ModelForm):
     class Meta:
         model = Osiagniecia 
         fields = ['liczba_osiagniec', 'student', 'krotki_opis', 'data_osiagniecia']
+        widgets = {
+            'krotki_opis': forms.Textarea(attrs={'cols': 30, 'rows': 5}), 
+        }
