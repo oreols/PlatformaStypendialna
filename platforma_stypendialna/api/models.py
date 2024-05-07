@@ -242,8 +242,8 @@ class Osiagniecia(models.Model):
     liczba_osiagniec = models.IntegerField(null=True,blank=True)
     #typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
     student = models.ForeignKey('Student', on_delete=models.SET_NULL, null=True, blank=True)
-    krotki_opis = models.TextField(null=True, max_length=250,blank=True)
-    data_osiagniecia = models.DateField(null=True,blank=True)
+    krotki_opis = models.TextField(null=True, max_length=250, blank=True)
+    data_osiagniecia = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return str(self.id_osiagniecia)

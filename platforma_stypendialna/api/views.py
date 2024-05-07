@@ -143,13 +143,14 @@ def ZlozenieFormularzaNaukowego(request):
     if request.method == 'POST':
         formset = OsiagnieciaFormSet(request.POST)
         for form in formset:
-            form.save()
+            if form.has_changed():
+                form.save()
     else:
         form = ZapiszOsiagniecie()
     
     form_text_list  = zip(formset, texts)
     
-    return render (request, 'website/form_naukowe.html', {'form_text_list': form_text_list})
+    return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list})
 
 #def ZlozenieFormularzaNaukowego(request):
  #   if request.method == 'POST':

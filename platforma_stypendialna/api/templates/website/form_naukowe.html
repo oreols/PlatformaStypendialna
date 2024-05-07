@@ -7,17 +7,18 @@
 </head>
 <style></style>
 <form action = "" method = "POST">
-<div class="container container_form">
-    <div class="title"> Stypendium naukowe</div>  
-    <span class="minimalna">MINIMALNA ŚREDNIA: <span  id="minimalna_sr"> 4,5</span></span>  
     {% csrf_token %}
-    {{ formset.management_form }}
-    {% for form, text in form_text_list %}
-        <li>{{ text }}</li>
-        {{ form }}
-    {% endfor %}
-    <button type = "submit">WYŚLIJ FORMULARZ</button>
+    <div class="container container_form">
+        <div class="title"> Stypendium naukowe</div>  
+        <span class="minimalna">MINIMALNA ŚREDNIA: <span  id="minimalna_sr"> 4,5</span></span>  
+        {{ formset.management_form }}
+        {% for form, text in form_text_list %}
+            <li>{{ text }}</li>
+            {{ form }}
+        {% endfor %}
+        <button type = "submit">WYŚLIJ FORMULARZ</button>
 </form>
+
 
         
 {% endblock %}
