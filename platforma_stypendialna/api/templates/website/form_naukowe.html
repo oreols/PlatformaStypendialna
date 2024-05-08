@@ -15,7 +15,14 @@
         {{ formset.management_form }}
         {% for form, text in form_text_list %}
             <li>{{ text }}</li>
-            {{ form }}
+            <div></div>
+            Liczba osiągnięć tego tytułu: {{ form.liczba_osiagniec }}
+            <div></div>
+            Krótki opis osiągnięcia: {{ form.krotki_opis }}
+            <div></div>
+            Data przyznania osiągniecia: {{ form.data_osiagniecia }}
+            <div></div>
+            
         {% endfor %}
         Semestr {{form_naukowe.aktualny_semestr}} roku akademickiego 2023/2024 jest moim {{form_naukowe.semestr_studenta}} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej uczelni). <br>
         <span id="uwaga">Do wniosku o przyznanie stypendium naukowego obowiązkowo należy dołączyć dokumentację potwierdzające osiągnięcia</span>

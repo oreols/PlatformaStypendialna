@@ -22,7 +22,7 @@ class DecyzjeStypendialne(models.Model):
 class Formularz(models.Model):
     id_formularza = models.IntegerField(primary_key=True)
     typ_stypendium = models.CharField(null=True, blank=True, max_length=30)
-    id_student = models.IntegerField(null=True, blank=True)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, null=True, blank=True)
     data_zlozenia = models.DateTimeField(null=True, blank=True)
     przychod_bez_podatku = models.FloatField(null=True, blank=True)
     srednia_ocen = models.FloatField(null=True, blank=True)
@@ -41,6 +41,9 @@ class Formularz(models.Model):
     aktualny_semestr = models.ForeignKey('AktualnySemestr', on_delete=models.CASCADE)
     semestr_studenta = models.ForeignKey('SemestrStudenta', on_delete=models.CASCADE)
     zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
+
+    def __str__(self):
+        return str(self.id_formularza)
 
     
 def validate_digits_only(value):

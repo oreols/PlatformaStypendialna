@@ -143,11 +143,15 @@ def ZlozenieFormularzaNaukowego(request):
     
     if request.method == 'POST':
         formset = OsiagnieciaFormSet(request.POST)
+        
         form_naukowe = SkladanieFormularzaNaukowego(request.POST)
         if formset.is_valid() and form_naukowe.is_valid():
+            student = request.user
+            form_naukowe.instance.student = student
             form_naukowe.save()
             for form in formset:
                 if form.has_changed():
+                    form.instance.student = student
                     form.save()
     else:
         form = ZapiszOsiagniecie()
