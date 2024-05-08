@@ -11,11 +11,16 @@
     <div class="container container_form">
         <div class="title"> Stypendium naukowe</div>  
         <span class="minimalna">MINIMALNA ŚREDNIA: <span  id="minimalna_sr"> 4,5</span></span>  
+        ŚREDNIA OCEN: {{form_naukowe.srednia_ocen}}
         {{ formset.management_form }}
         {% for form, text in form_text_list %}
             <li>{{ text }}</li>
             {{ form }}
         {% endfor %}
+        Semestr {{form_naukowe.aktualny_semestr}} roku akademickiego 2023/2024 jest moim {{form_naukowe.semestr_studenta}} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej uczelni). <br>
+        <span id="uwaga">Do wniosku o przyznanie stypendium naukowego obowiązkowo należy dołączyć dokumentację potwierdzające osiągnięcia</span>
+        <br>
+        {{form.zalacznik}}
         <button type = "submit">WYŚLIJ FORMULARZ</button>
 </form>
 
