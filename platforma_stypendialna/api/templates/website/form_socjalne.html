@@ -8,59 +8,55 @@
 </head>
     <div class="container container_form">
         <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
-        <div class="title"> Stypendium socjalne</div>   
+        <div class="title"> Stypendium socjalne</div> 
         <h3>OŚWIADCZENIE</h3>
-        Oświadczam, że: <br> <br>
-        
-        <input type="radio" name="gospodarstwo" id="nie_gospodarstwo">
-        <label for="gospodarstwo">że nie prowadzę wspólnego gospodarstwa domowego z żadnym z rodziców i spełniam jedną z poniższych przesłanek 
-            określonych w art. 88 ust. 2 ustawy z dnia 20 lipca 2018 r. - Prawo o szkolnictwie wyższym i nauce tj :</label> <br>
-        <input type="radio" name="gospodarstwo" id="tak_gospodarstwo">
-        <label for="gospodarstwo">z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe : </label>
-        <div id="tab_gospodarstwo">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Lp.</th><th>Imię i nazwisko</th><th>Stopień pokrewieństwa</th><th>Miejsce pracy lub nauki</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1.</td><td><input type="text" class="imie_nazwisko" placeholder="Imię i nazwisko członka rodziny"></td><td><input type="text" class="pokrewienstwo" placeholder="stopień pokrewieństwa"> <br><input type="date" class="date" placeholder="data urodzenia"></td><td><input type="text" class="miejsce" placeholder="Miejsce pracy lub nauki"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <button class="dodaj" id="przycisk_dodaj_wiersz">Dodaj</button>
-        <span>Semestr <input type="number" id="nr_semestru" placeholder="ktory semestr"> roku akademickiego 2023/2024 jest moim <input type="number" name="semestr" id="semestry_lacznie" placeholder="semestrem z kolei"> semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).        </span>
-        
-        <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU 
-        (obowiązkowo wypełnia każdy student)</h3>
-
-        <input type="radio" name="dochod" id="dochod"> 
-        <label for="dochod">Oświadczam, że w roku kalendarzowym 2022 uzyskałem/am lub członek mojej rodziny uzyskał inne dochody 
-            niepodlegające opodatkowaniu </label> 
-            <div class="inne_dochody"> 
-                <ul>
-                    <li>
-                        Imie i nazwisko: <input type="text" class="imie_nazwisko_czlonka" maxlength="30"> <br>
-                        Rodzaj uzyskiwanego dochodu: <input type="text" class="rodzaj_dochodu" maxlength="20"> <br>
-                        Kwota dochodu: <input type="number" class="kwota_dochodu"  min="1" max="10'000'000">     
-                    </li>
-                </ul>
-                <button class="dodaj" id="przycisk_dodaj_element_listy">Dodaj</button>
-
-                Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w 2023 roku wynosi: <br><input type="number" id="suma_dochodu_gosp" placeholder="suma dochodu z gosp rolnego"> zł + <input type="number" name="" id="suma_innych_doch" placeholder="suma innych dochodów nieopodatkowanych"> zł = <input type="number" id="laczna_kwota_doch" placeholder="łączna kwota ">zł
-                
+        <form action="" method="POST">
+            {% csrf_token %}
+            Oświadczam, że: <br> <br>
+           
+            {{form_soc.oswiadczenie_prawo_o_szkolnictwie}}
+            <label for="gospodarstwo">że nie prowadzę wspólnego gospodarstwa domowego z żadnym z rodziców i spełniam jedną z poniższych przesłanek 
+                określonych w art. 88 ust. 2 ustawy z dnia 20 lipca 2018 r. - Prawo o szkolnictwie wyższym i nauce tj :</label> <br>
+            {{form_soc.oswiadczenie_gospodarstwo_domowe}}
+            <label for="gospodarstwo">z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe : </label>
+            <div id="tab_gospodarstwo"> 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lp.</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Stopień pokrewieństwa i data urodzenia</th>
+                            <th>Miejsce pracy lub nauki</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1.</td>
+                            <td>{{czlonek.imie_czlonka}}<br>
+                                {{czlonek.nazwisko_czlonka}}</td>
+                            <td>{{czlonek.stopien_pokrewienstwa}}<br>
+                            {{czlonek.data_urodzenia}}</td>
+                            <td>{{czlonek.miejsce_pracy}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        <br>
-        <input type="radio" name="dochod" id="nie_dochod">
-        <label for="dochod">Oświadczam, że w roku kalendarzowym 2023 nie uzyskiwałem/am i żaden z członków mojej rodziny nie uzyskiwał dochodów niepodlegających opodatkowaniu podatkiem dochodowym.</label>
-         <br>   
-        <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
-        <br>
-        <input type="file" multiple>
-    <button id="wyslij_socjalne">WYŚLIJ FORMULARZ</button>
-    </div>
-    <script src="static/form_socjalne.js"></script>
+            <button class="dodaj" id="przycisk_dodaj_wiersz">Dodaj</button>
+            <span>Semestr {{form_soc.aktualny_semestr}} roku akademickiego 2023/2024 jest moim {{form_soc.semestr_studenta}} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).</span>
+            <br><br><br>
+            <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU <br>
+            (obowiązkowo wypełnia każdy student jeśli w poprzednim roku kalendarzowym on lub członek jego rodziny <u>uzyskał inne dochody niepodlegające opodatkowaniu</u>)</h3>
+
+            Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w poprzednim roku wynosi: {{form_soc.przychod_bez_podatku}} zł. <br>
+                    
+            
+            <br>
+              
+            <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
+            <br>
+            {{form_soc.zalacznik}} 
+        <button id="wyslij_socjalne">WYŚLIJ FORMULARZ</button>
+        </div>
+    </form>
+        <script src="static/form_socjalne.js"></script>
 {% endblock %}

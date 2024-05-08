@@ -1,0 +1,112 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inria Serif', sans-serif;
+    text-decoration: none;
+}
+
+body{
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #C8ECE3;
+}
+
+.container {
+    margin-top: 50px;
+    padding: 60px 20px;
+    max-width: 1000px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
+    position: relative;
+}
+
+.title {
+    font-size: 30px;
+    color: white;
+    background-color: #041011;
+    width: 600px;
+    text-align: center; 
+    padding: 10px; 
+    margin: 0 auto; 
+    margin-bottom: 70px;
+}
+
+.logo{
+    background-color: #83C0C0;
+    padding: 10px;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo h1{
+    font-family: Jacques Francois Shadow;
+    font-size: 50px;
+    margin: 0 auto;
+}
+#logowanie{
+    background-color: #83C0C0;
+}
+
+#logowanie > a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#logowanie > a:hover {
+    color: black;
+}
+
+#rejestracja{
+    background-color: #83C0C0;
+    border: 1px solid white;
+}
+
+#rejestracja > a {
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#rejestracja > a:hover {
+    color: white;
+}
+
+a {
+    color: white;
+    text-decoration-line: none;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+}
+
+.buttons_panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    grid-template-rows: auto;
+    margin: 20px auto 40px;
+    padding: 10px;
+    width: 100%;
+}
+.buttons_panel button {
+    padding: 10px;
+    border: none;
+    background-color:#135B60 ;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+button:hover {
+    background-color: #679fa3;
+    color: black;
+}

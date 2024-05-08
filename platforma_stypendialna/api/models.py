@@ -33,13 +33,13 @@ class Formularz(models.Model):
     oswiadczenie_gospodarstwo_domowe = models.BooleanField(default=False)
     oswiadczenie_dochody = models.BooleanField(default=False)
     zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
-    stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE)
-    symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE)
+    stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE, null=True, blank=True)
+    symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE, null=True, blank=True)
     charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True, max_length=100)
     data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
     data_konca_orzeczenia = models.DateField(null=True, blank=True)
-    aktualny_semestr = models.ForeignKey('AktualnySemestr', on_delete=models.CASCADE)
-    semestr_studenta = models.ForeignKey('SemestrStudenta', on_delete=models.CASCADE)
+    aktualny_semestr = models.ForeignKey('AktualnySemestr', on_delete=models.CASCADE, null=True, blank=True)
+    semestr_studenta = models.ForeignKey('SemestrStudenta', on_delete=models.CASCADE, null=True, blank=True)
     zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
 
     
@@ -96,7 +96,7 @@ class Aktualnosci(models.Model):
     nazwa_aktualnosci = models.TextField(null=True)
     tekst_aktualnosci = models.TextField(null=True)
     data_opublikowania = models.DateField(null=True)
-    admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    admin = models.ForeignKey(Admin, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return str(self.id_aktualnosci)
@@ -263,10 +263,10 @@ class CzlonekRodziny(models.Model):
     id_czlonka = models.IntegerField(primary_key=True)
     imie_czlonka = models.TextField(null=True)
     nazwisko_czlonka = models.TextField(null=True)
-    stopien_pokrewienstwa = models.IntegerField(null=True)
-    data_urodzenia = models.DateTimeField(null=True)
+    stopien_pokrewienstwa = models.TextField(max_length=10, null=True)
+    data_urodzenia = models.DateField(null=True)
     miejsce_pracy = models.TextField(null=True)
-    formularz = models.ForeignKey('Formularz', on_delete=models.CASCADE)
+    formularz = models.ForeignKey('Formularz', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return str(self.id_czlonka)

@@ -58,6 +58,73 @@
                         {% endfor %}
                     </table>
                 </div>
+                <div class="card-header">
+                    Kontakt
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm ">
+                        <tr>
+                            <th>id</th>
+                            <th>email</th>
+                            <th>numer telefonu</th>
+                            <th>Zmien</th>
+                        </tr>
+                        {% for kont in kontakt %}
+                            <tr>
+                                <td>{{kont.id_kontakt}}</td>
+                                <td>{{kont.email}}</td>
+                                <td>{{kont.numer_tel}}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_kontakt'%}">Edytuj</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="card-header">
+                    Aktualnosci
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm ">
+                        <tr>
+                            <th>id</th>
+                            <th>nazwa</th>
+                            <th>tresc</th>
+                            <th>data dodania</th>
+                            <th>Zmien</th>
+                        </tr>
+                        {% for akt in aktualnosci %}
+                            <tr>
+                                <td>{{akt.id_aktualnosci}}</td>
+                                <td>{{akt.nazwa_aktualnosci}}</td>
+                                <td>{{akt.tekst_aktualnosci}}</td>
+                                <td>{{akt.data_opublikowania}}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_aktualnosci' akt.id_aktualnosci %}">Edytuj</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="card-header">
+                    Formularz socjalny
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm ">
+                        <tr>
+                            <th>id</th>
+                            <th>id studenta</th>
+                            <th>data zlozenia</th>
+                            <th>Zmien</th>
+                            <th>Usun</th>
+                        </tr>
+                        {% for form in form_soc %}
+                            <tr>
+                                <td>{{form.id_formularza}}</td>
+                                <td>{{form.id_studenta}}</td>
+                                <td>{{form.data_zlozenia}}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_socjalne' form.id_formularza form.id_czlonka %}">Edytuj</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_form_socjalne' form.id_formularza form.id_czlonka %}" >Usun</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
         </div>        
     </div>
 {% endblock %}

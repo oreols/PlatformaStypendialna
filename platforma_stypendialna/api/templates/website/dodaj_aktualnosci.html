@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dodaj aktualność</title>
+</head>
+<div class="container container_aktualnosci">
+    <div class="title_aktualnosci">Dodaj nową aktualność</div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Dodaj aktualność</button>
+    </form>
+</div>
+{% endblock %}

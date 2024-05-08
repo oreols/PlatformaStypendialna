@@ -1,15 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kontakt</title>
 </head>
-    <div class="container container_kontakt">
-        <div class="title_kontakt">Dane kontaktowe</div>  
-        <form class=form_kontakt  action="#">
-            <span>Numer telefonu: <br><a href="tel:000000000">000000000</a> </span> <br>
-            <span>Email: <br> <a href="mailto:kontaktStypendialnie@onet.pl">kontaktStypendialnie@onet.pl</a>
-        </form>
-    </div>
+<div class="container container_kontakt">
+    <div class="title_kontakt">Dane kontaktowe</div>
+    <span>Numer telefonu: <a href=" tel:{{ ostatni_kontakt.numer_tel }}">{{ ostatni_kontakt.numer_tel }}</a> </span> <br>
+    <span>Email: <a href=" mailto:{{ ostatni_kontakt.email }}">{{ ostatni_kontakt.email }}</a> </span>
+</div>
 {% endblock %}
