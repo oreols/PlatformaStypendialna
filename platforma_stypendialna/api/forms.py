@@ -154,7 +154,7 @@ class FormularzSocjalne(forms.ModelForm):
 class CzlonekSocjalne(forms.ModelForm):
     class Meta:
         model = CzlonekRodziny
-        fields = ['imie_czlonka', 'nazwisko_czlonka', 'data_urodzenia', 'stopien_pokrewienstwa', 'miejsce_pracy', 'formularz']
+        fields = ['imie_czlonka', 'nazwisko_czlonka', 'data_urodzenia', 'stopien_pokrewienstwa', 'miejsce_pracy']
         widgets = {
             'imie_czlonka': forms.TextInput(attrs={'width': '150px'}),
             'nazwisko_czlonka': forms.TextInput(attrs={'width': '150px'}),

@@ -270,11 +270,13 @@ def ZlozenieFormularzaSocjalnego(request):
         form_soc = FormularzSocjalne(request.POST)
         print("Formularz otrzymany:", form_soc)
         if form_soc.is_valid():
+            student = request.user
             form_soc_instance = form_soc.save(commit=False)  # Zapisuje formularz ale jeszcze nie w bazie
             czlonek = CzlonekSocjalne(request.POST)
             if czlonek.is_valid():
                 czlonek_instance = czlonek.save(commit=False)  # Zapisuje czlonka ale tez nie w bazie jeszcze
-                
+                form_soc_instance.student = student
+                czlonek_instance.student = student
                 form_soc_instance.save()  # Teraz zapisuje formularz w bazie
                 czlonek_instance.save()  # Teraz zapisuje członka w bazie
                 return redirect('/admin_tables')

@@ -22,7 +22,7 @@ class DecyzjeStypendialne(models.Model):
 class Formularz(models.Model):
     id_formularza = models.IntegerField(primary_key=True)
     typ_stypendium = models.CharField(null=True, blank=True, max_length=30)
-    id_student = models.IntegerField(null=True, blank=True)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
     data_zlozenia = models.DateTimeField(null=True, blank=True)
     przychod_bez_podatku = models.FloatField(null=True, blank=True)
     srednia_ocen = models.FloatField(null=True, blank=True)
@@ -266,7 +266,8 @@ class CzlonekRodziny(models.Model):
     stopien_pokrewienstwa = models.TextField(max_length=10, null=True)
     data_urodzenia = models.DateField(null=True)
     miejsce_pracy = models.TextField(null=True)
-    formularz = models.ForeignKey('Formularz', on_delete=models.CASCADE, null=True, blank=True)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+
 
     def __str__(self):
         return str(self.id_czlonka)
