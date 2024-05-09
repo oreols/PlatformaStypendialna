@@ -17,7 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
 
-from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie
+from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, SkladanieFormularzaNaukowego
 # Create your views here.
 
 def main(request):
@@ -123,6 +123,7 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
 def ZlozenieFormularzaNaukowego(request):
     OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=13)
     formset = OsiagnieciaFormSet()
+    form_naukowe = SkladanieFormularzaNaukowego()
 
     texts = [
         "Autorstwo lub współautorstwo publikacji naukowych w czasopismach naukowych ujętych w wykazie ogłoszonym przez ministra właściwego do spraw nauki, PKT 0,03",
@@ -142,15 +143,23 @@ def ZlozenieFormularzaNaukowego(request):
     
     if request.method == 'POST':
         formset = OsiagnieciaFormSet(request.POST)
-        for form in formset:
-            if form.has_changed():
-                form.save()
+        
+        form_naukowe = SkladanieFormularzaNaukowego(request.POST)
+        if formset.is_valid() and form_naukowe.is_valid():
+            student = request.user
+            form_naukowe.instance.student = student
+            form_naukowe.save()
+            for form in formset:
+                if form.has_changed():
+                    form.instance.student = student
+                    form.save()
     else:
         form = ZapiszOsiagniecie()
+        form_naukowe = SkladanieFormularzaNaukowego()
     
     form_text_list  = zip(formset, texts)
     
-    return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list})
+    return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list, 'form_naukowe': form_naukowe})
 
 #def ZlozenieFormularzaNaukowego(request):
  #   if request.method == 'POST':

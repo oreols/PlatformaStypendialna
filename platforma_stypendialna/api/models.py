@@ -22,7 +22,7 @@ class DecyzjeStypendialne(models.Model):
 class Formularz(models.Model):
     id_formularza = models.IntegerField(primary_key=True)
     typ_stypendium = models.CharField(null=True, blank=True, max_length=30)
-    id_student = models.IntegerField(null=True, blank=True)
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, null=True, blank=True)
     data_zlozenia = models.DateTimeField(null=True, blank=True)
     przychod_bez_podatku = models.FloatField(null=True, blank=True)
     srednia_ocen = models.FloatField(null=True, blank=True)
@@ -33,14 +33,17 @@ class Formularz(models.Model):
     oswiadczenie_gospodarstwo_domowe = models.BooleanField(default=False)
     oswiadczenie_dochody = models.BooleanField(default=False)
     zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
-    stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE)
-    symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE)
+    stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE, default=None, null = True, blank = True)
+    symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE, null = True, blank = True)
     charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True, max_length=100)
     data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
     data_konca_orzeczenia = models.DateField(null=True, blank=True)
     aktualny_semestr = models.ForeignKey('AktualnySemestr', on_delete=models.CASCADE)
     semestr_studenta = models.ForeignKey('SemestrStudenta', on_delete=models.CASCADE)
     zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
+
+    def __str__(self):
+        return str(self.id_formularza)
 
     
 def validate_digits_only(value):
