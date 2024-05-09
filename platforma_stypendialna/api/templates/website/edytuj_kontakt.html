@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edytuj kontakt</title>
+</head>
+<div class="container container_kontakt">
+    <div class="title_kontakt">Dane kontaktowe</div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Zapisz zmiany</button>
+    </form>
+</div>
+{% endblock %}
