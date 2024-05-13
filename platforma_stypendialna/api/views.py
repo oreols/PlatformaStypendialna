@@ -16,8 +16,10 @@ from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
+from django.views.generic import ListView, UpdateView
 
 from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego
+from django.core.exceptions import ValidationError
 # Create your views here.
 
 def main(request):
@@ -287,45 +289,57 @@ def edytujAktualnosc(request,pk):
 def ZlozenieFormularzaSocjalnego(request):
     if request.method == 'POST':
         form_soc = FormularzSocjalne(request.POST)
-        print("Formularz otrzymany:", form_soc)
-        if form_soc.is_valid():
+        czlonek = CzlonekSocjalne(request.POST)
+        if form_soc.is_valid() and czlonek.is_valid():
             student = request.user
-            form_soc_instance = form_soc.save(commit=False)  # Zapisuje formularz ale jeszcze nie w bazie
-            czlonek = CzlonekSocjalne(request.POST)
-            if czlonek.is_valid():
-                czlonek_instance = czlonek.save(commit=False)  # Zapisuje czlonka ale tez nie w bazie jeszcze
-                form_soc_instance.student = student
-                czlonek_instance.student = student
-                form_soc_instance.save()  # Teraz zapisuje formularz w bazie
-                czlonek_instance.save()  # Teraz zapisuje członka w bazie
-                return redirect('/admin_tables')
+            form_soc_instance = form_soc.save(commit=False)
+            czlonek_instance = czlonek.save(commit=False)
+            form_soc_instance.student = student
+            czlonek_instance.student = student
+            form_soc_instance.save()
+            czlonek_instance.save()
+            return redirect('/admin_tables')
     else:
         form_soc = FormularzSocjalne()
         czlonek = CzlonekSocjalne()
     return render(request, 'website/form_socjalne.html', {'form_soc': form_soc, 'czlonek': czlonek})
 
-
-def EdytujFormSocjalne(request, pk_form, pk_czlonek):
+def EdytujFormSocjalne(request, pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
-    czlonek = CzlonekRodziny.objects.get(id_czlonka=pk_czlonek)
     form_soc = FormularzSocjalne(instance=formularz)
-    czlonek_form = CzlonekSocjalne(instance=czlonek)
     if request.method == 'POST':
         form_soc = FormularzSocjalne(request.POST, instance=formularz)
-        czlonek_form = CzlonekSocjalne(request.POST, instance=czlonek)
-        if form_soc.is_valid() and czlonek_form.is_valid():
+        if form_soc.is_valid():
             form_soc.save()
-            czlonek_form.save()
             return redirect('/admin_tables')
-    context = {'form_soc': form_soc, 'czlonek': czlonek_form}
+    context = {'form_soc': form_soc}
     return render(request, 'website/edytuj_form_socjalne.html',context)
 
-def UsunFormSocjalne(request,pk_form, pk_czlonek):
+def UsunFormSocjalne(request,pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
-    czlonek = CzlonekRodziny.objects.get(id_czlonka=pk_czlonek)
     if request.method == 'POST':
         formularz.delete()
-        czlonek.delete()
         return redirect('/admin_tables')
     context = {'item': formularz}
     return render(request, 'website/usun_form_socjalne.html',context)
+
+def EdytujFormNaukowe(request, pk_form):
+    formularz = Formularz.objects.get(id_formularza=pk_form)
+    form_naukowe = SkladanieFormularzaNaukowego(instance=formularz)
+    if request.method == 'POST':
+        form_naukowe = SkladanieFormularzaNaukowego(request.POST, instance=formularz)
+        if form_naukowe.is_valid():
+            form_naukowe.save()
+            return redirect('/admin_tables')
+    context = {'form_naukowe': form_naukowe}
+    return render(request, 'website/edytuj_form_naukowe.html',context)
+
+def UsunFormNaukowe(request,pk_form):
+    formularz = Formularz.objects.get(id_formularza=pk_form)
+    if request.method == 'POST':
+        formularz.delete()
+        return redirect('/admin_tables')
+    context = {'item': formularz}
+    return render(request, 'website/usun_form_naukowe.html',context)
+
+
