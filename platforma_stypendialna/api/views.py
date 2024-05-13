@@ -112,9 +112,11 @@ def activate(request, uidb64, token):
 def ZlozenieFormularzaNiepelnosprawnych(request):
     if request.method == 'POST':
         form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST)
+        student = request.user
         if form.is_valid():
+            form.instance.student = student
             form.save()
-            return redirect('main')
+            return redirect('strona_glowna')
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
