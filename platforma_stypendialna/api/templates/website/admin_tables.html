@@ -2,129 +2,186 @@
 {% block content %}
     <br>
     <div class="row">
-        <div class="card ">
-                <div class="card-header">
-                    Studenci
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm ">
+        <div class="card">
+            <div class="card-header">
+                Studenci
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>id</th>
+                        <th>nazwa użytkownika</th>
+                        <th>email</th>
+                        <th>data rejestracji</th>
+                        <th>pesel</th>
+                        <th>Imię</th>
+                        <th>Nazwisko</th>
+                        <th>nr albumu</th>
+                        <th>Zmień</th>
+                        <th>Usuń</th>
+                    </tr>
+                    {% for student in student %}
                         <tr>
-                            <th>id</th>
-                            <th>nazwa uzytkownika</th>
-                            <th>email</th>
-                            <th>data rejestracji</th>
-                            <th>pesel</th>
-                            <th>Imie</th>
-                            <th>Nazwisko</th>
-                            <th>nr albumu</th>
-                            <th>Zmien</th>
-                            <th>Usun</th>
+                            <td>{{ student.id_student }}</td>
+                            <td>{{ student.nazwa_uzytkownika }}</td>
+                            <td>{{ student.email }}</td>
+                            <td>{{ student.data_rejestracji }}</td>
+                            <td>{{ student.pesel }}</td>
+                            <td>{{ student.imie }}</td>
+                            <td>{{ student.nazwisko }}</td>
+                            <td>{{ student.numer_albumu }}</td>
+                            <td><a class="btn btn-warning" href="{% url 'edytuj_studenta' student.id_student %}">Edytuj</a></td>
+                            <td><a class="btn btn-danger" href="{% url 'usun_studenta' student.id_student %}">Usuń</a></td>
                         </tr>
-                        {% for students in student %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Formularz dla niepełnosprawnych
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>id</th>
+                        <th>id studenta</th>
+                        <th>data złożenia</th>
+                        <th>Zmień</th>
+                        <th>Usuń</th>
+                    </tr>
+                    {% for form in formularz %}
+                        {% if form.typ_stypendium == 'dla_niepelnosprawnych' %}
                             <tr>
-                                <td>{{students.id_student}}</td>
-                                <td>{{students.nazwa_uzytkownika}}</td>
-                                <td>{{students.email}}</td>
-                                <td>{{students.data_rejestracji}}</td>
-                                <td>{{students.pesel}}</td>
-                                <td>{{students.imie}}</td>
-                                <td>{{students.nazwisko}}</td>
-                                <td>{{students.numer_albumu}}</td>
-                                <td><a class="btn btn-warning" href="{% url 'edytuj_studenta' students.id_student %}">Edytuj</a></td>
-                                <td><a class="btn btn-danger" href="{% url 'usun_studenta' students.id_student %}" >Usun</a></td>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="card-header">
-                    Formularz dla niepełnosprawnych
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm ">
-                        <tr>
-                            <th>id</th>
-                            <th>id studenta</th>
-                            <th>data zlozenia</th>
-                            <th>Zmien</th>
-                            <th>Usun</th>
-                        </tr>
-                        {% for form in formularz %}
-                            <tr>
-                                <td>{{form.id_formularza}}</td>
-                                <td>{{form.id_studenta}}</td>
-                                <td>{{form.data_zlozenia}}</td>
+                                <td>{{ form.id_formularza }}</td>
+                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.data_zlozenia }}</td>
                                 <td><a class="btn btn-warning" href="{% url 'edytuj_form_niepelno' form.id_formularza %}">Edytuj</a></td>
-                                <td><a class="btn btn-danger" href="{% url 'usun_form_niepelno' form.id_formularza %}" >Usun</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_form_niepelno' form.id_formularza %}">Usuń</a></td>
                             </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="card-header">
-                    Kontakt
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm ">
-                        <tr>
-                            <th>id</th>
-                            <th>email</th>
-                            <th>numer telefonu</th>
-                            <th>Zmien</th>
-                        </tr>
-                        {% for kont in kontakt %}
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Formularz socjalny
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>id</th>
+                        <th>id studenta</th>
+                        <th>data złożenia</th>
+                        <th>Zmień</th>
+                        <th>Usuń</th>
+                    </tr>
+                    {% for form in formularz %}
+                        {% if form.typ_stypendium == 'socjalne' %}
                             <tr>
-                                <td>{{kont.id_kontakt}}</td>
-                                <td>{{kont.email}}</td>
-                                <td>{{kont.numer_tel}}</td>
-                                <td><a class="btn btn-warning" href="{% url 'edytuj_kontakt'%}">Edytuj</a></td>
+                                <td>{{ form.id_formularza }}</td>
+                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.data_zlozenia }}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_socjalne' form.id_formularza %}">Edytuj</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_form_socjalne' form.id_formularza %}">Usuń</a></td>
                             </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="card-header">
-                    Aktualnosci
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm ">
-                        <tr>
-                            <th>id</th>
-                            <th>nazwa</th>
-                            <th>tresc</th>
-                            <th>data dodania</th>
-                            <th>Zmien</th>
-                        </tr>
-                        {% for akt in aktualnosci %}
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <br>
+    
+
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Formularz naukowy
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>id</th>
+                        <th>id studenta</th>
+                        <th>data złożenia</th>
+                        <th>Zmień</th>
+                        <th>Usuń</th>
+                    </tr>
+                    {% for form in formularz %}
+                        {% if form.typ_stypendium == 'naukowe' %}
                             <tr>
-                                <td>{{akt.id_aktualnosci}}</td>
-                                <td>{{akt.nazwa_aktualnosci}}</td>
-                                <td>{{akt.tekst_aktualnosci}}</td>
-                                <td>{{akt.data_opublikowania}}</td>
-                                <td><a class="btn btn-warning" href="{% url 'edytuj_aktualnosci' akt.id_aktualnosci %}">Edytuj</a></td>
+                                <td>{{ form.id_formularza }}</td>
+                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.data_zlozenia }}</td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_naukowe' form.id_formularza%}">Edytuj</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_form_naukowe' form.id_formularza %}">Usuń</a></td>
                             </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="card-header">
-                    Formularz socjalny
-                </div>
-                <div class="card-body">
-                    <table class="table table-sm ">
-                        <tr>
-                            <th>id</th>
-                            <th>id studenta</th>
-                            <th>data zlozenia</th>
-                            <th>Zmien</th>
-                            <th>Usun</th>
-                        </tr>
-                        {% for form in form_soc %}
-                            <tr>
-                                <td>{{form.id_formularza}}</td>
-                                <td>{{form.id_studenta}}</td>
-                                <td>{{form.data_zlozenia}}</td>
-                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_socjalne' form.id_formularza form.id_czlonka %}">Edytuj</a></td>
-                                <td><a class="btn btn-danger" href="{% url 'usun_form_socjalne' form.id_formularza form.id_czlonka %}" >Usun</a></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-        </div>        
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="card-header">
+        Kontakt
+    </div>
+    <div class="card-body">
+        <table class="table table-sm ">
+            <tr>
+                <th>id</th>
+                <th>email</th>
+                <th>numer telefonu</th>
+                <th>Zmien</th>
+            </tr>
+            {% for kont in kontakt %}
+                <tr>
+                    <td>{{kont.id_kontakt}}</td>
+                    <td>{{kont.email}}</td>
+                    <td>{{kont.numer_tel}}</td>
+                    <td><a class="btn btn-warning" href="{% url 'edytuj_kontakt'%}">Edytuj</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="card-header">
+        Aktualnosci
+    </div>
+    <div class="card-body">
+        <table class="table table-sm ">
+            <tr>
+                <th>id</th>
+                <th>nazwa</th>
+                <th>tresc</th>
+                <th>data dodania</th>
+                <th>Zmien</th>
+            </tr>
+            {% for akt in aktualnosci %}
+                <tr>
+                    <td>{{akt.id_aktualnosci}}</td>
+                    <td>{{akt.nazwa_aktualnosci}}</td>
+                    <td>{{akt.tekst_aktualnosci}}</td>
+                    <td>{{akt.data_opublikowania}}</td>
+                    <td><a class="btn btn-warning" href="{% url 'edytuj_aktualnosci' akt.id_aktualnosci %}">Edytuj</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    </div>        
     </div>
 {% endblock %}

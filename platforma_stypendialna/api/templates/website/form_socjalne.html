@@ -41,7 +41,7 @@
                     </tbody>
                 </table>
             </div>
-            <button class="dodaj" id="przycisk_dodaj_wiersz">Dodaj</button>
+            {% comment %} <button class="dodaj" id="przycisk_dodaj_wiersz">Dodaj</button> {% endcomment %}
             <span>Semestr {{form_soc.aktualny_semestr}} roku akademickiego 2023/2024 jest moim {{form_soc.semestr_studenta}} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).</span>
             <br><br><br>
             <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU <br>
@@ -55,6 +55,8 @@
             <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
             <br>
             {{form_soc.zalacznik}} 
+            {{form_soc.errors}}
+            {{czlonek.errors}}
         <button id="wyslij_socjalne">WYŚLIJ FORMULARZ</button>
         </div>
     </form>

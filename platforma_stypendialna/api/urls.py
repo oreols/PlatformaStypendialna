@@ -35,6 +35,8 @@ urlpatterns = [
     path('dodaj_aktualnosci', dodajAktualnosc, name='dodaj_aktualnosci'),
     path('edytuj_aktualnosci/<str:pk>/', edytujAktualnosc, name='edytuj_aktualnosci'),
     path('form_socjalne', ZlozenieFormularzaSocjalnego, name='form_socjalne'),
-    path('edytuj_form_socjalne/<str:pk_form>/<str:pk_czlonek>/', EdytujFormSocjalne, name='edytuj_form_socjalne'),
-    path('usun_form_socjalne/<str:pk_form>/<str:pk_czlonek>/', UsunFormSocjalne, name='usun_form_socjalne'),
+    path('edytuj_form_socjalne/<str:pk_form>/', EdytujFormSocjalne, name='edytuj_form_socjalne'),
+    path('usun_form_socjalne/<str:pk_form>/', UsunFormSocjalne, name='usun_form_socjalne'),
+    path('edytuj_form_naukowe/<str:pk_form>/', EdytujFormNaukowe, name='edytuj_form_naukowe'),
+    path('usun_form_naukowe/<str:pk_form>/', UsunFormNaukowe, name='usun_form_naukowe'),
 ]
