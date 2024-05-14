@@ -157,6 +157,7 @@ def ZlozenieFormularzaNaukowego(request):
                 if form.has_changed():
                     form.instance.student = student
                     form.save()
+            return redirect('/admin_tables')
     else:
         form = ZapiszOsiagniecie()
         form_naukowe = SkladanieFormularzaNaukowego()

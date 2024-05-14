@@ -184,8 +184,7 @@ def validate_string(value):
 def validate_data(value):
     if value > datetime.now().date():
         raise ValidationError("Data jest z przyszłości")
-    elif datetime.strptime(value) != '%Y-%m-%d':
-        raise ValidationError("Napisz datę w formacie RRRR-MM-DD")
+    
 
 class CzlonekSocjalne(forms.ModelForm):
     imie_czlonka = forms.CharField(validators=[validate_string])
