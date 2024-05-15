@@ -1,0 +1,20 @@
+{% extends "base_admin.html" %}
+{% block content %}
+<head>
+    <title>Formularze</title>
+</head>
+    <div class="container container_panel_rektora">
+        <div class="title">Panel rektora</div>
+        <div class="buttons">
+            <button class="base">Wnioski</button>
+            <button class="base"><a href="ranking">Ranking</a></button>
+            <button class="base"><a href="archiwum">Archiwum</a></button>
+        </div>
+        <div class="wnioski-list">
+            <a href="nowe_wnioski">Nowe</a>
+            <a href="zaakceptowane_wnioski">Zaakceptowane</a>
+            <a href="odrzucone_wnioski">Odrzucone</a>
+        </div>
+    </div>
+
+{% endblock %}
