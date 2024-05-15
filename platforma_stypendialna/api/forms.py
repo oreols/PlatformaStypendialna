@@ -58,8 +58,9 @@ class StudentRegistrationForm(forms.ModelForm):
 class SkladanieFormularzaDlaNiepelnosprawnych(forms.ModelForm):
     class Meta:
         model = Formularz
-        fields = ['typ_stypendium', 'data_zlozenia', 'stopien_niepelnosprawnosci', 'symbol_niepelnosprawnosci', 'charakter_stopnia_niepelnosprawnosci', 'data_rozpoczecia_orzeczenia','data_konca_orzeczenia', 'aktualny_semestr', 'semestr_studenta', 'zalacznik_niepelnosprawnosc']
+        fields = ['typ_stypendium', 'data_zlozenia', 'stopien_niepelnosprawnosci', 'symbol_niepelnosprawnosci', 'charakter_stopnia_niepelnosprawnosci', 'data_rozpoczecia_orzeczenia','data_konca_orzeczenia', 'aktualny_semestr', 'semestr_studenta','status','komentarz', 'zalacznik_niepelnosprawnosc']
         widgets = {
+            'komentarz': forms.Textarea(attrs={'cols': 40, 'rows': 4}),
             'data_rozpoczecia_orzeczenia': forms.DateInput(attrs={'type': 'date'}) ,
             'data_konca_orzeczenia': forms.DateInput(attrs={'type': 'date'}),
             'charakter_stopnia_niepelnosprawnosci': forms.Textarea(attrs={'cols': 30, 'rows': 5}),

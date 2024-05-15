@@ -108,6 +108,13 @@ body{
     color: white;
     font-size: 28px;
 }
+.hidden {
+    display: none;
+}
+
+#hidden {
+    display: none;
+}
 
 
 
