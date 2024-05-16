@@ -21,7 +21,7 @@ class DecyzjeStypendialne(models.Model):
 
 
 class Formularz(models.Model):
-    id_formularza = models.IntegerField(primary_key=True)
+    id_formularza = models.AutoField(primary_key=True)
     typ_stypendium = models.CharField(null=True, blank=True, max_length=30)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     data_zlozenia = models.DateTimeField(null=True, blank=True)
@@ -50,7 +50,7 @@ def validate_digits_only(value):
             raise ValidationError('Wpisz tylko cyfry.')    
 
 class Student(AbstractUser):
-    id_student = models.IntegerField(primary_key=True, blank=True)  
+    id_student = models.AutoField(primary_key=True, blank=True)  
     #nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
     #haslo = models.CharField(max_length = 100, null=True)
     email = models.CharField(null=True, unique=True, max_length=191)
@@ -262,7 +262,7 @@ class OcenaKoncowaDziekanat(models.Model):
         return str(self.dane_dziekanat.imie) + " " + str(self.dane_dziekanat.nazwisko) + " " + str(self.ocena_koncowa) + " " + str(self.przedmiot.nazwa_przedmiotu)
     
 class CzlonekRodziny(models.Model):
-    id_czlonka = models.IntegerField(primary_key=True)
+    id_czlonka = models.AutoField(primary_key=True)
     imie_czlonka = models.TextField(null=True)
     nazwisko_czlonka = models.TextField(null=True)
     stopien_pokrewienstwa = models.TextField(max_length=10, null=True)
