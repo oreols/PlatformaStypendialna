@@ -16,8 +16,14 @@ from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
+from django.views.generic import ListView, UpdateView
 
 from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego
+from django.core.exceptions import ValidationError
+from django.forms.models import modelformset_factory
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 
 def main(request):
@@ -155,6 +161,7 @@ def ZlozenieFormularzaNaukowego(request):
                 if form.has_changed():
                     form.instance.student = student
                     form.save()
+            return redirect('/admin_tables')
     else:
         form = ZapiszOsiagniecie()
         form_naukowe = SkladanieFormularzaNaukowego()
@@ -181,10 +188,19 @@ def AdminTables(request):
     context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci}
     return render(request, 'website/admin_tables.html', context)
 
+def NoweWnioski(request):
+    formularz = Formularz.objects.all()
+    context = {'formularz': formularz}
+    return render(request, 'website/nowe_wnioski.html', context)
+
 class PanelAdmina(TemplateView):
     template_name = 'website/panel_admina.html'
+
+
 class Formularze(TemplateView):
     template_name = 'website/formularze.html'
+class PanelRektora(TemplateView):
+    template_name = 'website/panel_rektora.html'
 
 class StronaGlowna(TemplateView):
     template_name = 'website/strona_glowna.html'
@@ -232,6 +248,87 @@ def EdytujFormNiepelno(request,pk):
             return redirect('/admin_tables')
     context = {'form': form}
     return render(request, 'website/edytuj_form_niepelno.html',context)
+
+def ZobaczFormNiepelno(request, pk):
+    formularz = get_object_or_404(Formularz, id_formularza=pk)
+    
+    if request.method == 'POST':
+        form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST, instance=formularz)
+        if form.is_valid():
+            if 'accept' in request.POST:
+                formularz.status = 'zaakceptowane'
+                formularz.save()
+                return redirect('zaakceptowane_wnioski')
+            elif 'reject' in request.POST:
+                formularz.status = 'odrzucone'
+                formularz.save()
+                return redirect('odrzucone_wnioski')
+    else:
+        form = SkladanieFormularzaDlaNiepelnosprawnych(instance=formularz)
+
+    context = {'form': form}
+    return render(request, 'website/zobacz_form_niepelno.html', context)
+
+
+def ZobaczFormSocjalne(request, pk):
+    formularz = get_object_or_404(Formularz, id_formularza=pk)
+    
+    if request.method == 'POST':
+        form = FormularzSocjalne(request.POST, instance=formularz)
+        if 'accept' in request.POST:
+            formularz.status = 'zaakceptowane'
+            formularz.save()
+            return redirect('zaakceptowane_wnioski')
+        elif 'reject' in request.POST:
+            if form.is_valid():
+                formularz.status = 'odrzucone'
+                formularz.save()
+                return redirect('odrzucone_wnioski')
+    else:
+        form = FormularzSocjalne(instance=formularz)
+    
+    # Disable all fields except komentarz
+    for field_name, field in form.fields.items():
+        if field_name != 'komentarz':
+            field.widget.attrs['disabled'] = 'disabled'
+    
+    context = {'form': form}
+    return render(request, 'website/zobacz_form_socjalne.html', context)
+
+def ZobaczFormNaukowe(request, pk):
+    formularz = get_object_or_404(Formularz, id_formularza=pk)
+    
+    if request.method == 'POST':
+        form = SkladanieFormularzaNaukowego(request.POST, instance=formularz)
+        if 'accept' in request.POST:
+            formularz.status = 'zaakceptowane'
+            formularz.save()
+            return redirect('zaakceptowane_wnioski')
+        elif 'reject' in request.POST:
+            if form.is_valid():
+                formularz.status = 'odrzucone'
+                formularz.save()
+                return redirect('odrzucone_wnioski')
+    else:
+        form = SkladanieFormularzaNaukowego(instance=formularz)
+    
+    # Disable all fields except komentarz
+    for field_name, field in form.fields.items():
+        if field_name != 'komentarz':
+            field.widget.attrs['disabled'] = 'disabled'
+    
+    context = {'form': form}
+    return render(request, 'website/zobacz_form_naukowe.html', context)
+
+def AkceptowaneWnioski(request):
+    formularze = Formularz.objects.filter(status='zaakceptowane')
+    return render(request, 'website/zaakceptowane_wnioski.html', {'formularze': formularze})
+
+def OdrzuconeWnioski(request):
+    formularze = Formularz.objects.filter(status='odrzucone')
+    return render(request, 'website/odrzucone_wnioski.html', {'formularze': formularze})
+
+
 
 def UsunFormNiepelno(request,pk):
     formularz = Formularz.objects.get(id_formularza=pk)
@@ -286,48 +383,126 @@ def edytujAktualnosc(request,pk):
     return render(request, 'website/edytuj_aktualnosci.html',context)
 
 
-def ZlozenieFormularzaSocjalnego(request):
-    if request.method == 'POST':
-        form_soc = FormularzSocjalne(request.POST)
-        print("Formularz otrzymany:", form_soc)
-        if form_soc.is_valid():
-            student = request.user
-            form_soc_instance = form_soc.save(commit=False)  # Zapisuje formularz ale jeszcze nie w bazie
-            czlonek = CzlonekSocjalne(request.POST)
-            if czlonek.is_valid():
-                czlonek_instance = czlonek.save(commit=False)  # Zapisuje czlonka ale tez nie w bazie jeszcze
-                form_soc_instance.student = student
-                czlonek_instance.student = student
-                form_soc_instance.save()  # Teraz zapisuje formularz w bazie
-                czlonek_instance.save()  # Teraz zapisuje członka w bazie
-                return redirect('/admin_tables')
+def ZlozenieFormularzaSocjalnego(request, id=None):
+    if id:
+        obj = get_object_or_404(Formularz, id=id)
     else:
-        form_soc = FormularzSocjalne()
-        czlonek = CzlonekSocjalne()
-    return render(request, 'website/form_socjalne.html', {'form_soc': form_soc, 'czlonek': czlonek})
+        obj = None
+    
+    form_soc = FormularzSocjalne(request.POST or None, instance=obj)
+    CzlonekFormset = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne, extra=1, can_delete=True)
+    if obj:
+        formset = CzlonekFormset(request.POST or None, queryset=obj.czlonekrodziny_set.all())
+    else:
+        formset = CzlonekFormset(request.POST or None, queryset=CzlonekRodziny.objects.none())
+
+    if request.method == 'POST':
+        if form_soc.is_valid() and formset.is_valid():
+            student = request.user
+            form_soc_instance = form_soc.save(commit=False)
+            form_soc_instance.student = student
+            form_soc_instance.save()
+
+            for form in formset:
+                if form.cleaned_data.get('DELETE'):
+                    if form.instance.pk:
+                        form.instance.delete()
+                else:
+                    czlonek_instance = form.save(commit=False)
+                    czlonek_instance.student = student
+                    czlonek_instance.save()
+            return redirect('/admin_tables')
+
+    context = {
+        'form_soc': form_soc,
+        'formset': formset
+    }
+    return render(request, 'website/form_socjalne.html', context)
+
+# def ZlozenieFormularzaSocjalnego(request):
+#     if request.method == 'POST':
+#         form_soc = FormularzSocjalne(request.POST)
+#         czlonek = CzlonekSocjalne(request.POST)
+#         if form_soc.is_valid() and czlonek.is_valid():
+#             student = request.user
+#             form_soc_instance = form_soc.save(commit=False)
+#             czlonek_instance = czlonek.save(commit=False)
+#             form_soc_instance.student = student
+#             czlonek_instance.student = student
+#             form_soc_instance.save()
+#             czlonek_instance.save()
+#             return redirect('/admin_tables')
+#     else:
+#         form_soc = FormularzSocjalne()
+#         czlonek = CzlonekSocjalne()
+#     return render(request, 'website/form_socjalne.html', {'form_soc': form_soc, 'czlonek': czlonek})
+
+# def ZlozenieFormularzaSocjalnego(request, id=None):
+#     form_soc = FormularzSocjalne(request.POST)
+#     obj = get_object_or_404(CzlonekRodziny, id_czlonka=id, student=request.user)
+#     form = CzlonekSocjalne(request.POST or None, instance=obj)
+#     CzlonekFormset = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne, extra=0)
+#     qs = obj.czlonekrodziny_set.all()
+#     formset = CzlonekFormset(request.POST or None, queryset=qs)
+#     context = {
+#         'form': form,
+#         'formset': formset,
+#         'object': obj
+#     }
+#     if request.method == 'POST':
+#         if all([form.is_valid(), formset.is_valid(), form_soc.is_valid()]):
+#             student = request.user
+#             form_soc_instance = form_soc.save(commit=False)
+#             parent = form.save(commit=False)
+#             form_soc_instance.student = student
+#             parent.student = student
+#             form_soc_instance.save()
+#             parent.save()
+#             for form in formset:
+#                 child = form.save(commit=False)
+#                 child.parent = parent
+#                 child.save()
+#             return redirect('website/admin_tables')
+#     return render(request, 'website/form_socjalne.html', context)
 
 
-def EdytujFormSocjalne(request, pk_form, pk_czlonek):
+def EdytujFormSocjalne(request, pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
-    czlonek = CzlonekRodziny.objects.get(id_czlonka=pk_czlonek)
     form_soc = FormularzSocjalne(instance=formularz)
-    czlonek_form = CzlonekSocjalne(instance=czlonek)
     if request.method == 'POST':
         form_soc = FormularzSocjalne(request.POST, instance=formularz)
-        czlonek_form = CzlonekSocjalne(request.POST, instance=czlonek)
-        if form_soc.is_valid() and czlonek_form.is_valid():
+        if form_soc.is_valid():
             form_soc.save()
-            czlonek_form.save()
             return redirect('/admin_tables')
-    context = {'form_soc': form_soc, 'czlonek': czlonek_form}
+    context = {'form_soc': form_soc}
     return render(request, 'website/edytuj_form_socjalne.html',context)
 
-def UsunFormSocjalne(request,pk_form, pk_czlonek):
+def UsunFormSocjalne(request,pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
-    czlonek = CzlonekRodziny.objects.get(id_czlonka=pk_czlonek)
     if request.method == 'POST':
         formularz.delete()
-        czlonek.delete()
         return redirect('/admin_tables')
     context = {'item': formularz}
     return render(request, 'website/usun_form_socjalne.html',context)
+
+def EdytujFormNaukowe(request, pk_form):
+    formularz = Formularz.objects.get(id_formularza=pk_form)
+    form_naukowe = SkladanieFormularzaNaukowego(instance=formularz)
+    if request.method == 'POST':
+        form_naukowe = SkladanieFormularzaNaukowego(request.POST, instance=formularz)
+        if form_naukowe.is_valid():
+            form_naukowe.save()
+            return redirect('/admin_tables')
+    context = {'form_naukowe': form_naukowe}
+    return render(request, 'website/edytuj_form_naukowe.html',context)
+
+def UsunFormNaukowe(request,pk_form):
+    formularz = Formularz.objects.get(id_formularza=pk_form)
+    if request.method == 'POST':
+        formularz.delete()
+        return redirect('/admin_tables')
+    context = {'item': formularz}
+    return render(request, 'website/usun_form_naukowe.html',context)
+
+    
+

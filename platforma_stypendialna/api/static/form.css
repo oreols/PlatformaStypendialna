@@ -11,45 +11,10 @@
         margin-bottom: 20px;
     }
 
-    input[type="radio"] {
-        float: left;
-        display: flex;
-    }
-
     label {
         margin-left: 20px;
         display: flex;
         
-    }
-
-    #tab_gospodarstwo {
-        margin: 20px auto 40px;
-        padding: 10px;
-        background-color: #D9D9D9;
-        width: 100%;
-        border: 1px solid black;
-    }
-
-    table {
-        padding: 30px;
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    thead{
-        border-bottom:1px solid #000;
-    }
-
-    #tab_gospodarstwo td{
-        padding: 10px;
-        border-bottom: 1px solid #000;
-        text-align: center;
-    }
-
-    #tab_gospodarstwo input{
-        width: 200px;
-        text-align: center;
-        padding: 5px;
     }
 
     h3 {
@@ -157,5 +122,31 @@
         color: black;
         font-weight: bold;
     }
+    div.hidden {
+        display: none;
+    }
+    #familyMembersTable{
+        display: flex;
+        width: 20px;
+    }
+    #hidden {
+        display: none;
+    }
 
+    #tab_gospodarstwo p{
+        display: flex;
+        margin-left: 20px;
+    }
+    #tab_gospodarstwo p input{
+        margin-left: 20px;
+        width: 200px;
+    }
+    #tab_gospodarstwo {
+        padding: 10px;
+        background-color: bisque;
+    }
+    div.czlonek-form div, div.czlonek-form p{
+        display: flex;
+        margin: 10px;
+    } 
 }

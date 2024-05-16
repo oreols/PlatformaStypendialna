@@ -2,6 +2,7 @@ from django import forms
 from .models import Student, Formularz, Osiagniecia, Kontakt, Aktualnosci, CzlonekRodziny
 from datetime import datetime
 from django.core.exceptions import ValidationError
+from django.forms.models import inlineformset_factory
 
 
 
@@ -53,16 +54,24 @@ class StudentRegistrationForm(forms.ModelForm):
         if Student.objects.filter(email=email).exists():
             raise forms.ValidationError('Email jest już zajęty')
         return email
-        
+     
 class SkladanieFormularzaDlaNiepelnosprawnych(forms.ModelForm):
-    
     class Meta:
         model = Formularz
-        fields = ['typ_stypendium', 'data_zlozenia', 'stopien_niepelnosprawnosci', 'symbol_niepelnosprawnosci', 'charakter_stopnia_niepelnosprawnosci', 'data_rozpoczecia_orzeczenia','data_konca_orzeczenia', 'aktualny_semestr', 'semestr_studenta', 'zalacznik_niepelnosprawnosc']
-
+        fields = ['typ_stypendium', 'data_zlozenia', 'stopien_niepelnosprawnosci', 'symbol_niepelnosprawnosci', 'charakter_stopnia_niepelnosprawnosci', 'data_rozpoczecia_orzeczenia','data_konca_orzeczenia', 'aktualny_semestr', 'semestr_studenta','status','komentarz', 'zalacznik_niepelnosprawnosc']
+        widgets = {
+            'komentarz': forms.Textarea(attrs={'cols': 40, 'rows': 4}),
+            'data_rozpoczecia_orzeczenia': forms.DateInput(attrs={'type': 'date'}) ,
+            'data_konca_orzeczenia': forms.DateInput(attrs={'type': 'date'}),
+            'charakter_stopnia_niepelnosprawnosci': forms.Textarea(attrs={'cols': 30, 'rows': 5}),
+        }
     def clean_data_zlozenia(self):
         data_zlozenia = datetime.now()  # Zastąp datę starszą dzisiejszą datą
         return data_zlozenia 
+    
+    def clean_typ_stypendium(self):
+        typ_stypendium = "dla_niepelnosprawnych"
+        return typ_stypendium
  
 
     # def __init__(self, *args, **kwargs):
@@ -78,6 +87,10 @@ class SkladanieFormularzaNaukowego(forms.ModelForm):
     def clean_data_zlozenia(self):
         data_zlozenia = datetime.now()  # Zastąp datę starszą dzisiejszą datą
         return data_zlozenia 
+    
+    def clean_typ_stypendium(self):
+        typ_stypendium = "naukowe"
+        return typ_stypendium
     
 class ZapiszOsiagniecie(forms.ModelForm):
 
@@ -132,16 +145,29 @@ class AktualnosciForm(forms.ModelForm):
     def clean_data_opublikowania(self):
         data_opublikowania = datetime.now()
         return data_opublikowania
-    
+
 class FormularzSocjalne(forms.ModelForm):
+    oswiadczenie_prawo_o_szkolnictwie = forms.BooleanField(required=False)
+    oswiadczenie_gospodarstwo_domowe = forms.BooleanField(required=False)
     class Meta:
         model = Formularz
-        fields = ['typ_stypendium', 'data_zlozenia', 'oswiadczenie_dochody', 'przychod_bez_podatku', 'oswiadczenie_prawo_o_szkolnictwie', 'oswiadczenie_gospodarstwo_domowe', 'aktualny_semestr', 'semestr_studenta', 'zalacznik']
+        fields = ['typ_stypendium', 'data_zlozenia', 'przychod_bez_podatku', 'aktualny_semestr', 'semestr_studenta','oswiadczenie_prawo_o_szkolnictwie','oswiadczenie_gospodarstwo_domowe', 'zalacznik']
         widgets = {
-            'oswiadczenie_prawo_o_szkolnictwie': forms.RadioSelect(),
-            'oswiadczenie_gospodarstwo_domowe': forms.RadioSelect(),
-            'oswiadczenie_dochody': forms.RadioSelect(),
+            'oswiadczenie_prawo_o_szkolnictwie': forms.CheckboxInput(attrs={'width': '150px'}),
+            'oswiadczenie_gospodarstwo_domowe': forms.CheckboxInput(attrs={'width': '150px'}),
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        oswiadczenie_prawo = cleaned_data.get("oswiadczenie_prawo_o_szkolnictwie")
+        oswiadczenie_gospodarstwo = cleaned_data.get("oswiadczenie_gospodarstwo_domowe")
+
+        if oswiadczenie_prawo and oswiadczenie_gospodarstwo:
+            raise ValidationError("Możesz zaznaczyć tylko jedno oświadczenie.")
+        
+        if not oswiadczenie_prawo and not oswiadczenie_gospodarstwo:
+            raise ValidationError("Musisz zaznaczyć jedno oświadczenie.")
+        
+        return cleaned_data
     
     def clean_data_zlozenia(self):
         data_zlozenia = datetime.now()
@@ -151,8 +177,21 @@ class FormularzSocjalne(forms.ModelForm):
     def clean_typ_stypendium(self):
         typ_stypendium = "socjalne"
         return typ_stypendium
+    
+def validate_string(value):
+    if not value.isalpha():
+        raise ValidationError("Wpisz same litery")
+
+def validate_data(value):
+    if value > datetime.now().date():
+        raise ValidationError("Data jest z przyszłości")
+    
 
 class CzlonekSocjalne(forms.ModelForm):
+    imie_czlonka = forms.CharField(validators=[validate_string])
+    nazwisko_czlonka = forms.CharField(validators=[validate_string])
+    stopien_pokrewienstwa = forms.CharField(validators=[validate_string])
+    data_urodzenia = forms.DateField(validators=[validate_data])
     class Meta:
         model = CzlonekRodziny
         fields = ['imie_czlonka', 'nazwisko_czlonka', 'data_urodzenia', 'stopien_pokrewienstwa', 'miejsce_pracy']
@@ -161,5 +200,5 @@ class CzlonekSocjalne(forms.ModelForm):
             'nazwisko_czlonka': forms.TextInput(attrs={'width': '150px'}),
             'stopien_pokrewienstwa': forms.TextInput(attrs={'width': '150px'}),
             'miejsce_pracy': forms.TextInput(attrs={'width': '150px'}),
-            'data_urodzenia': forms.DateInput(attrs={'type': 'date'})
         }
+

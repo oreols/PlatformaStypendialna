@@ -4,59 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formularz socjalne</title>
- 
 </head>
-    <div class="container container_form">
-        <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
-        <div class="title"> Stypendium socjalne</div> 
-        <h3>OŚWIADCZENIE</h3>
-        <form action="" method="POST">
-            {% csrf_token %}
-            Oświadczam, że: <br> <br>
-           
-            {{form_soc.oswiadczenie_prawo_o_szkolnictwie}}
-            <label for="gospodarstwo">że nie prowadzę wspólnego gospodarstwa domowego z żadnym z rodziców i spełniam jedną z poniższych przesłanek 
-                określonych w art. 88 ust. 2 ustawy z dnia 20 lipca 2018 r. - Prawo o szkolnictwie wyższym i nauce tj :</label> <br>
-            {{form_soc.oswiadczenie_gospodarstwo_domowe}}
-            <label for="gospodarstwo">z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe : </label>
-            <div id="tab_gospodarstwo"> 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Lp.</th>
-                            <th>Imię i nazwisko</th>
-                            <th>Stopień pokrewieństwa i data urodzenia</th>
-                            <th>Miejsce pracy lub nauki</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1.</td>
-                            <td>{{czlonek.imie_czlonka}}<br>
-                                {{czlonek.nazwisko_czlonka}}</td>
-                            <td>{{czlonek.stopien_pokrewienstwa}}<br>
-                            {{czlonek.data_urodzenia}}</td>
-                            <td>{{czlonek.miejsce_pracy}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <button class="dodaj" id="przycisk_dodaj_wiersz">Dodaj</button>
-            <span>Semestr {{form_soc.aktualny_semestr}} roku akademickiego 2023/2024 jest moim {{form_soc.semestr_studenta}} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).</span>
-            <br><br><br>
-            <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU <br>
-            (obowiązkowo wypełnia każdy student jeśli w poprzednim roku kalendarzowym on lub członek jego rodziny <u>uzyskał inne dochody niepodlegające opodatkowaniu</u>)</h3>
-
-            Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w poprzednim roku wynosi: {{form_soc.przychod_bez_podatku}} zł. <br>
-                    
-            
-            <br>
-              
-            <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
-            <br>
-            {{form_soc.zalacznik}} 
-        <button id="wyslij_socjalne">WYŚLIJ FORMULARZ</button>
+<div class="container container_form">
+    <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
+    <div class="title"> Stypendium socjalne</div> 
+    <h3>OŚWIADCZENIE</h3>
+    <form action="" method="POST">
+        {% csrf_token %}
+        Oświadczam, że: <br> <br>
+        
+        {{ form_soc.oswiadczenie_prawo_o_szkolnictwie }}
+        <label for="gospodarstwo">że nie prowadzę wspólnego gospodarstwa domowego z żadnym z rodziców i spełniam jedną z poniższych przesłanek 
+            określonych w art. 88 ust. 2 ustawy z dnia 20 lipca 2018 r. - Prawo o szkolnictwie wyższym i nauce tj :</label> <br>
+        {{ form_soc.oswiadczenie_gospodarstwo_domowe }}
+        <label for="gospodarstwo">z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe : </label>
+        <div id="tab_gospodarstwo"> 
+            <table>
+                <tbody id="familyMembersTable">
+                    <h4>Czlonek rodziny</h4>
+                    {% if formset%}
+                    {{ formset.management_form }}
+                    <div id='czlonek-list'>
+                        {% for form in formset %}
+                            <div id='form-1' class='czlonek-form'>
+                                {{form.as_div}}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div id="empty-form" id="hidden" class="hidden">{{ formset.empty_form.as_p }}</div>
+                    <button id='add-more' type='button'>Dodaj</button>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
-    </form>
-        <script src="static/form_socjalne.js"></script>
+        
+        <span>Semestr {{ form_soc.aktualny_semestr }} roku akademickiego 2023/2024 jest moim {{ form_soc.semestr_studenta }} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).</span>
+        <br><br><br>
+        <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU <br>
+        (obowiązkowo wypełnia każdy student jeśli w poprzednim roku kalendarzowym on lub członek jego rodziny <u>uzyskał inne dochody niepodlegające opodatkowaniu</u>)</h3>
+
+        Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w poprzednim roku wynosi: {{ form_soc.przychod_bez_podatku }} zł. <br>
+                
+        
+        <br>
+          
+        <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
+        <br>
+        {{ form_soc.zalacznik }} 
+        {{ form_soc.errors }}
+        {{ formset.non_form_errors }}
+        <button id="wyslij_socjalne" type="submit">WYŚLIJ FORMULARZ</button>
+    </div>
+</form>
+
+<script>
+    const addMoreButton = document.getElementById('add-more');
+    const totalNewForms = document.getElementById('id_form-TOTAL_FORMS');
+
+    const table = document.getElementById('familyMembersTable');
+    addMoreButton.addEventListener('click', function(args) {
+        if(event){
+            event.preventDefault();
+        }
+        
+        const currentCzlonekForms = document.getElementsByClassName('czlonek-form')
+        const currentFormCount = currentCzlonekForms.length //+ 1;
+        console.log(currentCzlonekForms.length)
+        const formCopyTarget = document.getElementById('czlonek-list');
+        const copyEmptyFormEl = document.getElementById('empty-form').cloneNode(true);
+        copyEmptyFormEl.setAttribute('class', 'czlonek-form');
+        copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`);
+        const regex = new RegExp('__prefix__', 'g');
+        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount);
+        totalNewForms.setAttribute('value', currentFormCount + 1);
+        formCopyTarget.append(copyEmptyFormEl);
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,50 @@
+.container_panel_rektora {
+    .title {
+        text-align: center;
+        margin: 30px auto;
+        font-size: 30px;
+        color: white;
+        background-color: #051a1b;
+        width: 400px;
+        padding: 5px;
+        margin-bottom: 20px;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .base {
+        padding: 10px;
+        border: none;
+        background-color: #135B60;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .wnioski-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #559ba0;
+        padding: 10px;
+        border-radius: 5px;
+        width: 33%;
+    }
+
+    .wnioski-list a {
+        color: white;
+        text-decoration: none;
+    }
+
+    button:hover, .wnioski-list a:hover {
+        background-color: #679fa3;
+        color: black;
+    }
+}

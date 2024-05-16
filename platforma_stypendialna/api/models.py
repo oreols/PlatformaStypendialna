@@ -3,6 +3,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
 from django.core.exceptions import ValidationError
 
+def validate_digits_only(value):
+        if not value.isdigit():
+            raise ValidationError('Wpisz tylko cyfry.') 
+def validate_string(value):
+        if not value.isalpha():
+            raise ValidationError('Wpisz tylko litery.')
 
 class Kierunek(models.Model):
     id_kierunku = models.IntegerField(primary_key=True)
@@ -40,15 +46,17 @@ class Formularz(models.Model):
     charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True, max_length=100)
     data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
     data_konca_orzeczenia = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=20, choices=[('nowe', 'Nowe'), ('zaakceptowane', 'Zaakceptowane'), ('odrzucone', 'Odrzucone')], default='nowe', blank=True, null=True)
+    komentarz = models.TextField(null=True, blank=True)
+    punkty_osiagniecie = models.IntegerField(null=True, blank=True)
     aktualny_semestr = models.ForeignKey('AktualnySemestr', on_delete=models.CASCADE, null=True, blank=True)
     semestr_studenta = models.ForeignKey('SemestrStudenta', on_delete=models.CASCADE, null=True, blank=True)
-    zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')
+    zalacznik_niepelnosprawnosc = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki_niepelnosprawnosci')   
 
+def validate_string(value):
+    if not value.isalpha():
+        raise ValidationError('Wpisz tylko litery.')
     
-def validate_digits_only(value):
-        if not value.isdigit():
-            raise ValidationError('Wpisz tylko cyfry.')    
-
 class Student(AbstractUser):
     id_student = models.AutoField(primary_key=True, blank=True)  
     #nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
@@ -57,8 +65,8 @@ class Student(AbstractUser):
     data_rejestracji = models.DateField(null=True)
     ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')
     pesel = models.CharField(null=True, unique = True, max_length=11, validators=[validate_digits_only]) 
-    imie = models.CharField(null=True, max_length=20)
-    nazwisko = models.CharField(null=True, max_length=35)
+    imie = models.CharField(null=True, max_length=20, validators=[validate_string])
+    nazwisko = models.CharField(null=True, max_length=35, validators=[validate_string])
     zalaczniki = models.FileField(null=True, upload_to='dokumenty/zalaczniki', blank = True)
     numer_telefonu = models.CharField(null=True, unique = True, max_length=9, validators=[validate_digits_only])
     nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE, null=True, blank=True)
@@ -266,8 +274,12 @@ class CzlonekRodziny(models.Model):
     imie_czlonka = models.TextField(null=True)
     nazwisko_czlonka = models.TextField(null=True)
     stopien_pokrewienstwa = models.TextField(max_length=10, null=True)
+    id_czlonka = models.IntegerField(primary_key=True)
+    imie_czlonka = models.TextField(null=True, validators=[validate_string])
+    nazwisko_czlonka = models.TextField(null=True, validators=[validate_string])
+    stopien_pokrewienstwa = models.TextField(max_length=10, null=True, validators=[validate_string])
     data_urodzenia = models.DateField(null=True)
-    miejsce_pracy = models.TextField(null=True)
+    miejsce_pracy = models.TextField(null=True, max_length=20)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
 
 

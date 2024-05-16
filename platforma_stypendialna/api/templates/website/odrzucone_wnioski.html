@@ -1,0 +1,26 @@
+{% extends "navbar.html" %}
+{% block content %}
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Odrzucone Wnioski
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>ID</th>
+                        <th>ID Studenta</th>
+                        <th>Data Złożenia</th>
+                    </tr>
+                    {% for form in formularze %}
+                        <tr>
+                            <td>{{ form.id_formularza }}</td>
+                            <td>{{ form.id_studenta }}</td>
+                            <td>{{ form.data_zlozenia }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
