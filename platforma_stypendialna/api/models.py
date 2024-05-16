@@ -247,7 +247,7 @@ class AdminLog(models.Model):
         #return str(self.nazwa_konkursu)
 
 class Osiagniecia(models.Model):
-    id_osiagniecia = models.IntegerField(primary_key=True)
+    id_osiagniecia = models.AutoField(primary_key=True)
     #id_student = models.IntegerField(null=True)
     liczba_osiagniec = models.IntegerField(null=True,blank=True)
     #typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
