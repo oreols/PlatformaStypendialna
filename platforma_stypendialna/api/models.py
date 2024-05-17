@@ -314,4 +314,11 @@ class SemestrStudenta(models.Model):
 
     def __str__(self):
         return str(self.semestr)
+    
+class HistoriaStatusuFormularza(models.Model):
+    formularz_id = models.IntegerField()
+    stary_status = models.CharField(max_length=255)
+    nowy_status = models.CharField(max_length=255)
+    zmiana_timestamp = models.DateTimeField(auto_now_add=True)
+
 

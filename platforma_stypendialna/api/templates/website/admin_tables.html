@@ -4,7 +4,7 @@
     <div class="row">
         <div class="card">
             <div class="card-header">
-                Studenci
+                Studenci (liczba: {{ student_count }})
             </div>
             <div class="card-body">
                 <table class="table table-sm">
@@ -23,7 +23,7 @@
                     {% for student in student %}
                         <tr>
                             <td>{{ student.id_student }}</td>
-                            <td>{{ student.nazwa_uzytkownika }}</td>
+                            <td>{{ student.username }}</td>
                             <td>{{ student.email }}</td>
                             <td>{{ student.data_rejestracji }}</td>
                             <td>{{ student.pesel }}</td>
@@ -93,8 +93,8 @@
                                 <td>{{ form.id_formularza }}</td>
                                 <td>{{ form.id_studenta }}</td>
                                 <td>{{ form.data_zlozenia }}</td>
-                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_socjalne' form.id_formularza %}">Edytuj</a></td>
-                                <td><a class="btn btn-danger" href="{% url 'usun_form_socjalne' form.id_formularza %}">Usuń</a></td>
+                                <td><a class="btn btn-warning" href="{% url 'edytuj_form_socjalne' pk_form=form.id_formularza pk_student=form.student_id %}">Edytuj</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'usun_form_socjalne' pk_form=form.id_formularza pk_student=form.student_id %}">Usuń</a></td>
                             </tr>
                         {% endif %}
                     {% endfor %}

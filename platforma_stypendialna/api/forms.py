@@ -201,4 +201,3 @@ class CzlonekSocjalne(forms.ModelForm):
             'stopien_pokrewienstwa': forms.TextInput(attrs={'width': '150px'}),
             'miejsce_pracy': forms.TextInput(attrs={'width': '150px'}),
         }
-
