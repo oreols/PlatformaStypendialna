@@ -17,6 +17,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView, UpdateView
+from django.db import connection
 
 from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego
 from django.core.exceptions import ValidationError
@@ -25,6 +26,14 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
+
+def student_has_submitted_form_naukowe(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'naukowe'", [student_id])
+        row = cursor.fetchone()
+    return row[0] > 0
+
+
 
 def main(request):
     return HttpResponse("Witam na platformie stypendialnej!")
@@ -159,14 +168,14 @@ def ZlozenieFormularzaNaukowego(request):
             form_naukowe.instance.student = student
             form_naukowe.save(commit=False)
             #srednia = form_naukowe.srednia_ocen()
-            if srednia >= 4.5:
+            if srednia >= 4.5 and not student_has_submitted_form_naukowe(form_naukowe.instance.student.id_student):
                 form_naukowe.save(commit=True)
                 for form in formset:
                     if form.has_changed():
                         form.instance.student = student
                         form.save()
             else:
-                return HttpResponse("Nie spełniasz wymagań")
+                return HttpResponse("Nie spełniasz wymagań lub już złożyłeś formularz naukowy")
 
         return redirect('/admin_tables')
     else:
