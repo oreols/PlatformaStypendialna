@@ -71,6 +71,7 @@ class Student(AbstractUser):
     numer_telefonu = models.CharField(null=True, unique = True, max_length=9, validators=[validate_digits_only])
     nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE, null=True, blank=True)
     semestr = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
+    dodatkowe_punkty = models.IntegerField(null=True, blank=True, default=0)
     numer_albumu = models.CharField(null=True, max_length=5, validators=[validate_digits_only])
     rok_studiow = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
     #kierunek = models.CharField(null=True,blank=True,max_length=50)

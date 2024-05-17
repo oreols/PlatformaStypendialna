@@ -151,17 +151,24 @@ def ZlozenieFormularzaNaukowego(request):
     
     if request.method == 'POST':
         formset = OsiagnieciaFormSet(request.POST)
+        srednia = float(request.POST["srednia_ocen"])
         
         form_naukowe = SkladanieFormularzaNaukowego(request.POST)
         if formset.is_valid() and form_naukowe.is_valid():
             student = request.user
             form_naukowe.instance.student = student
-            form_naukowe.save()
-            for form in formset:
-                if form.has_changed():
-                    form.instance.student = student
-                    form.save()
-            return redirect('/admin_tables')
+            form_naukowe.save(commit=False)
+            #srednia = form_naukowe.srednia_ocen()
+            if srednia >= 4.5:
+                form_naukowe.save(commit=True)
+                for form in formset:
+                    if form.has_changed():
+                        form.instance.student = student
+                        form.save()
+            else:
+                return HttpResponse("Nie spełniasz wymagań")
+
+        return redirect('/admin_tables')
     else:
         form = ZapiszOsiagniecie()
         form_naukowe = SkladanieFormularzaNaukowego()
