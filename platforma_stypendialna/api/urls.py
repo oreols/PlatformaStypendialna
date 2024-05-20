@@ -6,12 +6,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    #path('', main, name = 'main'),
+    path('', StronaGlowna.as_view, name = 'main'),
     path('rejestracja', registerPage, name='register'),
     path('logout', logoutUser, name='logout'),
     path('index', index, name='index'),
     path('formularze', Formularze, name='formularze'),
-    path('strona_glowna', StronaGlowna, name='strona_glowna'),
+    path('strona_glowna', StronaGlowna.as_view, name='strona_glowna'),
     #path('strona_glowna', StronaGlowna.as_view(), name='strona_glowna'),
     path('kryteria_oceny', KryteriaOceny, name='kryteria_oceny'),
     #path('account_activation_email', )

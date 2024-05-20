@@ -32,6 +32,7 @@ from django.urls import reverse
 from django.db import connection
 from django.forms.models import inlineformset_factory
 
+
 # Create your views here.
 
 def student_has_submitted_form_naukowe(student_id):
@@ -264,8 +265,7 @@ def PanelRektora(request):
 
 def StronaGlowna(request):
     return render(request, 'website/strona_glowna.html')
-class PanelAdmina(TemplateView):
-    template_name = 'website/panel_admina.html'
+
 
 class Wyniki(TemplateView):
     template_name = 'website/wyniki.html'
@@ -274,10 +274,6 @@ class Ranking(TemplateView):
     template_name = 'website/ranking.html'
 
 
-class Formularze(TemplateView):
-    template_name = 'website/formularze.html'
-class PanelRektora(TemplateView):
-    template_name = 'website/panel_rektora.html'
 
 class StronaGlowna(TemplateView):
     template_name = 'website/strona_glowna.html'
@@ -507,9 +503,7 @@ def edytujAktualnosc(request,pk):
 
 @login_required
 
-from django.forms import inlineformset_factory
 
-from django.forms import inlineformset_factory
 
 def ZlozenieFormularzaSocjalnego(request, id=None):
     if id:
@@ -700,5 +694,77 @@ def UsunFormNaukowe(request,pk_form):
     context = {'item': formularz}
     return render(request, 'website/usun_form_naukowe.html',context)
 
-    
+@user_passes_test(lambda u: u.is_superuser)
+def ZobaczFormNaukowe(request, pk):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id_formularza, student_id, typ_stypendium, srednia_ocen, data_zlozenia, status, punkty_osiagniecie FROM api_formularz WHERE id_formularza = %s", [pk])
+        row = cursor.fetchone()
+        if not row:
+            raise Http404("Formularz nie istnieje")
+        
+        formularz = {
+            'id_formularza': row[0],
+            'student_id': row[1], 
+            'typ_stypendium': row[2],
+            'srednia_ocen': row[3],
+            'punkty_osiagniecie': row[4],
+            'data_zlozenia': row[5],
+        }
 
+    if request.method == 'POST':
+        form = SkladanieFormularzaNaukowego(request.POST, initial=formularz)
+        if 'accept' in request.POST:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE api_formularz SET status = 'zaakceptowane' WHERE id_formularza = %s", [pk]
+                )
+            return redirect('zaakceptowane_wnioski')
+        elif 'reject' in request.POST:
+            if form.is_valid():
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "UPDATE api_formularz SET status = 'odrzucone' WHERE id_formularza = %s", [pk]
+                    )
+                return redirect('odrzucone_wnioski')
+    else:
+        form = SkladanieFormularzaNaukowego(initial=formularz)
+    
+    # Wyłączanie wszystkich pól oprócz komentarza
+    for field_name, field in form.fields.items():
+        if field_name != 'komentarz':
+            field.widget.attrs['disabled'] = 'disabled'
+    
+    context = {'form': form}
+    return render(request, 'website/zobacz_form_naukowe.html', context)
+
+@login_required
+def AktualizujProfil(request):
+    if request.method == 'POST':
+        form = UpdateUzytkownik(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profil_uzytkownika')
+    else:
+        form = UpdateUzytkownik(instance=request.user)
+    context = {
+        'form': form
+    }
+
+    return render(request, 'website/profil_uzytkownika.html', context)
+
+def WynikiStudenta(request, pk_decyzji, pk_formularz):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT typ_stypendium, status FROM api_formularz WHERE id_formularza = %s",[pk_formularz])
+        form = cursor.fetchall()
+        if not form:
+            cursor.execute(
+                "UPDATE api_formularz SET status = 'nie zlozono wniosku' WHERE id_formularza = %s",[pk_formularz])
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM api_decyzjestypendialne WHERE id_decyzji = %s",[pk_decyzji])
+        wyniki = cursor.fetchall()
+
+    context = {'form': form, 'wyniki': wyniki}
+    return render(request, 'website/wyswietl_wyniki.html', context)
