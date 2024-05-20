@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="title">Wyniki</div> 
+    <div class="label">
+        {% for f in form %}
+            <div class="rodzaj_formularza">FORMULARZ: {{ f.typ_stypendium }}</div>
+        {% empty %}
+            <div class="rodzaj_formularza">Brak złożonego formularza</div>
+        {% endfor %}
+    </div>
+    <div class="decyzja">
+        {% for w in wyniki %}
+            <div>DECYZJA: {{ w.decyzja }}</div>
+        {% empty %}
+            <div>Brak decyzji stypendialnej</div>
+        {% endfor %}
+    </div>           
+    <button class="zobacz_ranking"><a href="{% url 'ranking' %}">ZOBACZ RANKING</a></button> 
+</div>
+{% endblock %}

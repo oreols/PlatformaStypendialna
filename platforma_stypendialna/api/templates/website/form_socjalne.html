@@ -8,17 +8,22 @@
 <div class="container container_form">
     <button id="cofnij"><a href="formularze">WSTECZ</a></button> <br>
     <div class="title"> Stypendium socjalne</div> 
-    <h3>OŚWIADCZENIE</h3>
     <form action="" method="POST">
-        {% csrf_token %}
-        Oświadczam, że: <br> <br>
-        
-        {{ form_soc.oswiadczenie_prawo_o_szkolnictwie }}
-        <label for="gospodarstwo">że nie prowadzę wspólnego gospodarstwa domowego z żadnym z rodziców i spełniam jedną z poniższych przesłanek 
-            określonych w art. 88 ust. 2 ustawy z dnia 20 lipca 2018 r. - Prawo o szkolnictwie wyższym i nauce tj :</label> <br>
-        {{ form_soc.oswiadczenie_gospodarstwo_domowe }}
-        <label for="gospodarstwo">z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe : </label>
-        <div id="tab_gospodarstwo"> 
+    {% csrf_token %}    
+        <br>
+        <br>
+        <br>
+        <span>Semestr {{ aktualny_semestr.aktualny_semestr }} roku akademickiego 2023/2024 jest moim {{ semestr_studenta.semestr_studenta }} semestrem studiów łącznie (uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).</span>
+    <h3><b>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU</b> <br>
+        (obowiązkowo wypełnia każdy student jeśli w poprzednim roku kalendarzowym on lub członek jego rodziny <u>uzyskał inne dochody niepodlegające opodatkowaniu</u>)</h3>
+
+        <div class='klasa'>Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w poprzednim roku wynosi: {{ form_soc.przychod_bez_podatku }} zł.</div> <br><br>
+
+    
+    <b>Oświadczam, że: </b> <br>
+    Z osobami, których dane zostały podane w poniższej tabeli, prowadzę wspólne gospodarstwo domowe:  <br>
+    (jeśli student nie prowadzi wspólnego gospodarstwa domowego z żadną osobą, wówczas w tabeli nie wpisuje się żadnych danych.)
+    <div id="tab_gospodarstwo"> 
             <table>
                 <tbody id="familyMembersTable">
                     <h4>Czlonek rodziny</h4>
@@ -37,17 +42,7 @@
                 </tbody>
             </table>
         </div>
-        
-        <span>Semestr {{ form_soc.aktualny_semestr }} roku akademickiego 2023/2024 jest moim {{ form_soc.semestr_studenta }} semestrem studiów łącznie ( uwzględniając wszystkie rozpoczęte semestry na tej i innej uczelni).</span>
-        <br><br><br>
-        <h3>OŚWIADCZENIE STUDENTA O WYSOKOŚCI DOCHODU NIEPODLEGAJĄCEGO OPODATKOWANIU <br>
-        (obowiązkowo wypełnia każdy student jeśli w poprzednim roku kalendarzowym on lub członek jego rodziny <u>uzyskał inne dochody niepodlegające opodatkowaniu</u>)</h3>
-
-        Łączny dochód niepodlegający opodatkowaniu uzyskany w mojej rodzinie w poprzednim roku wynosi: {{ form_soc.przychod_bez_podatku }} zł. <br>
-                
-        
-        <br>
-          
+        <br><br>
         <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
         <br>
         {{ form_soc.zalacznik }} 
@@ -55,14 +50,17 @@
         {{ formset.non_form_errors }}
         <button id="wyslij_socjalne" type="submit">WYŚLIJ FORMULARZ</button>
     </div>
+
+
 </form>
 
 <script>
     const addMoreButton = document.getElementById('add-more');
     const totalNewForms = document.getElementById('id_form-TOTAL_FORMS');
 
-    const table = document.getElementById('familyMembersTable');
-    addMoreButton.addEventListener('click', function(args) {
+    
+    addMoreButton.addEventListener('click', add_new_form)
+    function add_new_form(event){
         if(event){
             event.preventDefault();
         }
@@ -70,14 +68,14 @@
         const currentCzlonekForms = document.getElementsByClassName('czlonek-form')
         const currentFormCount = currentCzlonekForms.length //+ 1;
         console.log(currentCzlonekForms.length)
-        const formCopyTarget = document.getElementById('czlonek-list');
-        const copyEmptyFormEl = document.getElementById('empty-form').cloneNode(true);
-        copyEmptyFormEl.setAttribute('class', 'czlonek-form');
-        copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`);
-        const regex = new RegExp('__prefix__', 'g');
-        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount);
-        totalNewForms.setAttribute('value', currentFormCount + 1);
-        formCopyTarget.append(copyEmptyFormEl);
-    });
+        const formCopyTarget = document.getElementById('czlonek-list')
+        const copyEmptyFormEl = document.getElementById('empty-form').cloneNode(true)
+        copyEmptyFormEl.setAttribute('class', 'czlonek-form')
+        copyEmptyFormEl.setAttribute('id', `form-${currentFormCount}`)
+        const regex = new RegExp('__prefix__', 'g')
+        copyEmptyFormEl.innerHTML = copyEmptyFormEl.innerHTML.replace(regex, currentFormCount)
+        totalNewForms.setAttribute('value', currentFormCount + 1)
+        formCopyTarget.append(copyEmptyFormEl)
+    };
 </script>
 {% endblock %}

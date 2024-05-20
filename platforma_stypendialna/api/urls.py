@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import *
-from .views import Formularze, Kontakt, Logowanie
+from .views import Formularze, Kontakt, Logowanie, EdytujFormSocjalne
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -32,13 +32,16 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', activate, name='activate'),
     path('form_naukowe', ZlozenieFormularzaNaukowego, name='form_naukowe'),
     path('panel_admina', PanelAdmina, name='panel_admina'),
+    path('ranking', Ranking.as_view(), name='ranking'),
+    path('wyniki', Wyniki.as_view(), name='wyniki'),
+    path('wyswietl_wyniki/<str:pk_decyzji>/<str:pk_formularz>/', WynikiStudenta, name='wyswietl_wyniki'),
     path('edytuj_kontakt', edytujKontakt, name='edytuj_kontakt'),
     path('admin_tables', AdminTables, name='admin_tables'),
     path('dodaj_aktualnosci', dodajAktualnosc, name='dodaj_aktualnosci'),
     path('edytuj_aktualnosci/<str:pk>/', edytujAktualnosc, name='edytuj_aktualnosci'),
     path('form_socjalne', ZlozenieFormularzaSocjalnego, name='form_socjalne'),
-    path('edytuj_form_socjalne/<str:pk_form>/', EdytujFormSocjalne, name='edytuj_form_socjalne'),
-    path('usun_form_socjalne/<str:pk_form>/', UsunFormSocjalne, name='usun_form_socjalne'),
+    path('edytuj_form_socjalne/<str:pk_form>/<str:pk_student>', EdytujFormSocjalne, name='edytuj_form_socjalne'),
+    path('usun_form_socjalne/<str:pk_form>/<str:pk_student>', UsunFormSocjalne, name='usun_form_socjalne'),
     path('edytuj_form_naukowe/<str:pk_form>/', EdytujFormNaukowe, name='edytuj_form_naukowe'),
     path('usun_form_naukowe/<str:pk_form>/', UsunFormNaukowe, name='usun_form_naukowe'),
     path('panel_rektora', PanelRektora, name='panel_rektora'),

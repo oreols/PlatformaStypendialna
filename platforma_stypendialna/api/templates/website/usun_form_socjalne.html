@@ -1,11 +1,13 @@
 {% extends "navbar.html" %}
-    {% block content %}
 
-    <p>Czy na pewno chcesz usunąć formularz "{{item}}" ?</p>
+{% block content %}
+    <p>Czy na pewno chcesz usunąć formularz oraz czlonków rodziny"?</p>
 
-    <form action="{% url 'usun_form_socjalne' item.id_formularza %}" method="POST">
+    <form method="POST">
         {% csrf_token %}
+        {{ form.as_p}}
+        {{ czlonek.as_p}}
+        <button type="submit">Usuń</button>
         <a href="{% url 'admin_tables' %}">Anuluj</a>
-        <input type="submit" name="Usun">
     </form>
-    {% endblock %}
+{% endblock %}

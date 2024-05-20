@@ -301,4 +301,48 @@ class Migration(migrations.Migration):
                 ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        migrations.RunSQL('''
+            DELIMITER //
+            CREATE PROCEDURE CountStudents()
+            BEGIN
+            DECLARE student_count INT;
+
+            SELECT COUNT(*) INTO student_count FROM api_Student;
+
+            SELECT student_count AS 'Liczba_studentow';
+            END//
+            DELIMITER ;
+            '''),
+        migrations.RunSQL(
+            """
+            CREATE TABLE IF NOT EXISTS HistoriaStatusuFormularza (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                formularz_id INT,
+                stary_status VARCHAR(255),
+                nowy_status VARCHAR(255),
+                zmiana_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (formularz_id) REFERENCES api_formularz(id_formularza)
+            );
+            """,
+            reverse_sql="DROP TABLE IF EXISTS HistoriaStatusuFormularza;"
+        ),
+        migrations.RunSQL(
+            """
+            DELIMITER //
+
+            CREATE TRIGGER trg_status_update
+            BEFORE UPDATE ON api_formularz
+            FOR EACH ROW
+            BEGIN
+                IF NEW.status <> OLD.status THEN
+                    INSERT INTO HistoriaStatusuFormularza (formularz_id, stary_status, nowy_status)
+                    VALUES (OLD.id_formularza, OLD.status, NEW.status);
+                END IF;
+            END;
+            //
+
+            DELIMITER ;
+            """,
+            reverse_sql="DROP TRIGGER IF EXISTS trg_status_update;"
+        ),
     ]
