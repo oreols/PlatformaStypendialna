@@ -33,6 +33,18 @@ def student_has_submitted_form_naukowe(student_id):
         row = cursor.fetchone()
     return row[0] > 0
 
+def student_has_submitted_form_socjalne(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'socjalne'", [student_id])
+        row = cursor.fetchone()
+    return row[0] > 0
+
+def student_has_submitted_form_niepelnosprawne(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'dla_niepelnosprawnych'", [student_id])
+        row = cursor.fetchone()
+    return row[0] > 0
+
 
 
 def main(request):
@@ -128,10 +140,19 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
     if request.method == 'POST':
         form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST)
         student = request.user
-        if form.is_valid():
-            form.instance.student = student
-            form.save()
-            return redirect('strona_glowna')
+        form.instance.student = student
+        form.save(commit=False)
+        if not student_has_submitted_form_socjalne(form.instance.student.id_student):
+            if not student_has_submitted_form_niepelnosprawne(form.instance.student.id_student):
+                #student = request.user
+                if form.is_valid():
+                    #form.instance.student = student
+                    form.save()
+                    return redirect('strona_glowna')
+            else: 
+                return HttpResponse("Skladales juz formularz socjalny")
+        else:
+            return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
