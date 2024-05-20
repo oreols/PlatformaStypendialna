@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, Formularz, Osiagniecia, Kontakt, Aktualnosci, CzlonekRodziny
+from .models import Student, Formularz, Osiagniecia, Kontakt, Aktualnosci, CzlonekRodziny, AktualnySemestr, SemestrStudenta
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory
@@ -151,24 +151,8 @@ class FormularzSocjalne(forms.ModelForm):
     oswiadczenie_gospodarstwo_domowe = forms.BooleanField(required=False)
     class Meta:
         model = Formularz
-        fields = ['typ_stypendium', 'data_zlozenia', 'przychod_bez_podatku', 'aktualny_semestr', 'semestr_studenta','oswiadczenie_prawo_o_szkolnictwie','oswiadczenie_gospodarstwo_domowe', 'zalacznik']
-        widgets = {
-            'oswiadczenie_prawo_o_szkolnictwie': forms.CheckboxInput(attrs={'width': '150px'}),
-            'oswiadczenie_gospodarstwo_domowe': forms.CheckboxInput(attrs={'width': '150px'}),
-        }
-    def clean(self):
-        cleaned_data = super().clean()
-        oswiadczenie_prawo = cleaned_data.get("oswiadczenie_prawo_o_szkolnictwie")
-        oswiadczenie_gospodarstwo = cleaned_data.get("oswiadczenie_gospodarstwo_domowe")
+        fields = ['typ_stypendium', 'data_zlozenia', 'przychod_bez_podatku', 'aktualny_semestr', 'semestr_studenta', 'zalacznik']
 
-        if oswiadczenie_prawo and oswiadczenie_gospodarstwo:
-            raise ValidationError("Możesz zaznaczyć tylko jedno oświadczenie.")
-        
-        if not oswiadczenie_prawo and not oswiadczenie_gospodarstwo:
-            raise ValidationError("Musisz zaznaczyć jedno oświadczenie.")
-        
-        return cleaned_data
-    
     def clean_data_zlozenia(self):
         data_zlozenia = datetime.now()
         self.cleaned_data['data_zlozenia'] = data_zlozenia
@@ -201,3 +185,17 @@ class CzlonekSocjalne(forms.ModelForm):
             'stopien_pokrewienstwa': forms.TextInput(attrs={'width': '150px'}),
             'miejsce_pracy': forms.TextInput(attrs={'width': '150px'}),
         }
+
+class SemestrStudentaForm(forms.ModelForm):
+    semestr_studenta = forms.ModelChoiceField(queryset=SemestrStudenta.objects.all(), label="Semestr studenta")
+
+    class Meta:
+        model = Formularz
+        fields = ['semestr_studenta']
+
+class AktualnySemestrForm(forms.ModelForm):
+    aktualny_semestr = forms.ModelChoiceField(queryset=AktualnySemestr.objects.all(), label="Aktualny semestr")
+
+    class Meta:
+        model = Formularz
+        fields = ['aktualny_semestr']

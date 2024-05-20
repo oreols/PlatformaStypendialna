@@ -12,13 +12,12 @@ from django.utils.encoding import force_bytes, force_str
 from .authbackend import CustomAuthBackend
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny, DecyzjeStypendialne
+from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
-from django.views.generic import ListView, UpdateView
 
-from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego, ZapiszOsiagniecie
+from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego, ZapiszOsiagniecie, SemestrStudentaForm, AktualnySemestrForm
 from django.core.exceptions import ValidationError
 from django.forms.models import modelformset_factory
 from django.shortcuts import get_object_or_404
@@ -435,7 +434,8 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
         obj = get_object_or_404(Formularz, id=id)
     else:
         obj = None
-
+    semestr_studenta = SemestrStudentaForm(request.POST or None, instance=obj)
+    aktualny_semestr = AktualnySemestrForm(request.POST or None, instance=obj)
     form_soc = FormularzSocjalne(request.POST or None, instance=obj)
     CzlonekFormset = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne, extra=1, can_delete=True)
     if obj:
@@ -444,8 +444,14 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
         formset = CzlonekFormset(request.POST or None, queryset=CzlonekRodziny.objects.none())
 
     if request.method == 'POST':
-        if form_soc.is_valid() and formset.is_valid():
+        if form_soc.is_valid() and formset.is_valid() and semestr_studenta.is_valid() and aktualny_semestr.is_valid():
             student = request.user
+            semestr_studenta_instance = semestr_studenta.save(commit=False)
+            semestr_studenta_instance.student = student
+            semestr_studenta_instance.save()
+            aktualny_semestr_instance = aktualny_semestr.save(commit=False)
+            aktualny_semestr_instance.student = student
+            aktualny_semestr_instance.save()
             form_soc_instance = form_soc.save(commit=False)
             form_soc_instance.student = student
             form_soc_instance.save()
@@ -462,12 +468,16 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
 
     context = {
         'form_soc': form_soc,
-        'formset': formset
+        'formset': formset,
+        'semestr_studenta': semestr_studenta,
+        'aktualny_semestr': aktualny_semestr
     }
     return render(request, 'website/form_socjalne.html', context)
+
+
 def EdytujFormSocjalne(request, pk_form, pk_student):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id_formularza, student_id, data_zlozenia, status, przychod_bez_podatku, oswiadczenie_prawo_o_szkolnictwie, oswiadczenie_gospodarstwo_domowe, semestr_studenta_id, aktualny_semestr_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
+        cursor.execute("SELECT id_formularza, student_id, data_zlozenia, status, przychod_bez_podatku, semestr_studenta_id, aktualny_semestr_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
         form_row = cursor.fetchone()
         if not form_row:
             raise Http404("Formularz nie istnieje")
@@ -478,10 +488,8 @@ def EdytujFormSocjalne(request, pk_form, pk_student):
             'data_zlozenia': form_row[2],
             'status': form_row[3],
             'przychod_bez_podatku': form_row[4],
-            'oswiadczenie_prawo_o_szkolnictwie': form_row[5],
-            'oswiadczenie_gospodarstwo_domowe': form_row[6],
-            'semestr_studenta_id': form_row[7],
-            'aktualny_semestr_id': form_row[8]
+            'semestr_studenta_id': form_row[5],
+            'aktualny_semestr_id': form_row[6]
 
         }
 
