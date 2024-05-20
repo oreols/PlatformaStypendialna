@@ -25,12 +25,14 @@ class DecyzjeStypendialne(models.Model):
     def __str__(self):
         return str(self.id_decyzji)
 
+
 class Formularz(models.Model):
-    id_formularza = models.IntegerField(primary_key=True)
+    id_formularza = models.AutoField(primary_key=True)
     typ_stypendium = models.CharField(null=True, blank=True, max_length=30)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
     data_zlozenia = models.DateTimeField(null=True, blank=True)
     przychod_bez_podatku = models.FloatField(null=True, blank=True)
+    srednia_przychod = models.FloatField(null=True, blank=True)
     srednia_ocen = models.FloatField(null=True, blank=True)
     dodatkowe_informacje = models.TextField(null=True, blank=True)
     plik_orzeczenie = models.ImageField(null=True, blank=True, upload_to='dokumenty/orzeczenia') 
@@ -56,10 +58,10 @@ def validate_string(value):
         raise ValidationError('Wpisz tylko litery.')
     
 class Student(AbstractUser):
-    id_student = models.IntegerField(primary_key=True, blank=True)  
+    id_student = models.AutoField(primary_key=True, blank=True)  
     #nazwa_uzytkownika = models.CharField(null=True, unique=True, max_length = 20)
     #haslo = models.CharField(max_length = 100, null=True)
-    email = models.CharField(null=True, unique = True, max_length = 60)
+    email = models.CharField(null=True, unique=True, max_length=191)
     data_rejestracji = models.DateField(null=True)
     ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')
     pesel = models.CharField(null=True, unique = True, max_length=11, validators=[validate_digits_only]) 
@@ -67,7 +69,7 @@ class Student(AbstractUser):
     nazwisko = models.CharField(null=True, max_length=35, validators=[validate_string])
     zalaczniki = models.FileField(null=True, upload_to='dokumenty/zalaczniki', blank = True)
     numer_telefonu = models.CharField(null=True, unique = True, max_length=9, validators=[validate_digits_only])
-    nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE)
+    nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE, null=True, blank=True)
     semestr = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
     numer_albumu = models.CharField(null=True, max_length=5, validators=[validate_digits_only])
     rok_studiow = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
@@ -77,7 +79,7 @@ class Student(AbstractUser):
     numer_konta_bankowego = models.CharField(null=True, max_length=26, validators=[validate_digits_only])
 
     #USERNAME_FIELD = 'nazwa_uzytkownika'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'id_student']
 
     def __str__(self):
         return self.username
@@ -245,7 +247,7 @@ class AdminLog(models.Model):
         #return str(self.nazwa_konkursu)
 
 class Osiagniecia(models.Model):
-    id_osiagniecia = models.IntegerField(primary_key=True)
+    id_osiagniecia = models.AutoField(primary_key=True)
     #id_student = models.IntegerField(null=True)
     liczba_osiagniec = models.IntegerField(null=True,blank=True)
     #typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
@@ -268,6 +270,10 @@ class OcenaKoncowaDziekanat(models.Model):
         return str(self.dane_dziekanat.imie) + " " + str(self.dane_dziekanat.nazwisko) + " " + str(self.ocena_koncowa) + " " + str(self.przedmiot.nazwa_przedmiotu)
     
 class CzlonekRodziny(models.Model):
+    id_czlonka = models.AutoField(primary_key=True)
+    imie_czlonka = models.TextField(null=True)
+    nazwisko_czlonka = models.TextField(null=True)
+    stopien_pokrewienstwa = models.TextField(max_length=10, null=True)
     id_czlonka = models.IntegerField(primary_key=True)
     imie_czlonka = models.TextField(null=True, validators=[validate_string])
     nazwisko_czlonka = models.TextField(null=True, validators=[validate_string])
@@ -308,4 +314,11 @@ class SemestrStudenta(models.Model):
 
     def __str__(self):
         return str(self.semestr)
+    
+class HistoriaStatusuFormularza(models.Model):
+    formularz_id = models.IntegerField()
+    stary_status = models.CharField(max_length=255)
+    nowy_status = models.CharField(max_length=255)
+    zmiana_timestamp = models.DateTimeField(auto_now_add=True)
+
 

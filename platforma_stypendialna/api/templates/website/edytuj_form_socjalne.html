@@ -1,13 +1,10 @@
 {% extends "navbar.html" %}
-    {% block content %}
-
-    <form action="" method="POST">
+{% block content %}
+    <h2>Edytuj Formularz Socjalny</h2>
+    <form method="post">
         {% csrf_token %}
-
-        <div>"Formularz socjalny"</div>
-        {{form_soc}}
-        <div>"Członek rodziny"</div>
-        {{czlonek_form}}
-        <input type="submit" name="Submit">
+        {{ form_soc.as_p }}
+        {{ czlonek.as_p }}
+        <button type="submit">Zapisz</button>
     </form>
-    {% endblock %}
+{% endblock %}

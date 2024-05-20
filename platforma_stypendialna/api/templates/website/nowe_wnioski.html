@@ -81,10 +81,9 @@
                     <tr>
                         <th>id</th>
                         <th>id studenta</th>
-                        <th>data złożenia</th>
-                        <th>status</th>
                         <th>srednia ocen</th>
                         <th>punkty</th>
+                        <th>data złożenia</th>
                         <th>zobacz</th>
                     </tr>
                     {% for form in formularz %}
@@ -92,11 +91,10 @@
                             {% if form.status == 'nowe'%}
                         <tr>
                             <td>{{ form.id_formularza }}</td>
-                            <td>{{ form.id_studenta }}</td>
+                            <td>{{ form.student_id }}</td>
+                            <td>{{ form.srednia_ocen }}</td>  
+                            <td>{{ form.punkty_osiagniecie }}</td>  
                             <td>{{ form.data_zlozenia }}</td>
-                            <td>{{ form.status }}</td>
-                            <td>{{ form.srednia_ocen }}</td>
-                            <td>{{ form.punkty }}</td>
                             <td><a class="btn btn-warning" href="{% url 'zobacz_form_naukowe' form.id_formularza %}">Otwórz</a></td>
                         </tr>
                             {% endif %}
