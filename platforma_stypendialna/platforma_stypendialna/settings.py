@@ -147,3 +147,4 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'mailtrap@demomailtrap.com'
 
 LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'logowanie'

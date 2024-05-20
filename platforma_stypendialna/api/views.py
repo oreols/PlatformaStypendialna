@@ -18,6 +18,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.views.generic import ListView, UpdateView
 from django.db import connection
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego
 from django.core.exceptions import ValidationError
@@ -134,8 +135,8 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Link aktywacyjny jest nieprawidłowy lub przedawniony')
         return redirect('index')
-        
-        
+
+@login_required   
 def ZlozenieFormularzaNiepelnosprawnych(request):
     if request.method == 'POST':
         form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST)
@@ -158,6 +159,7 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
     return render(request, 'website/form_niepelno.html', {'form': form}) 
     redirect('website/kontakt.html')
 
+@login_required
 def ZlozenieFormularzaNaukowego(request):
     OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=13)
     formset = OsiagnieciaFormSet()
@@ -217,6 +219,8 @@ def ZlozenieFormularzaNaukowego(request):
      #   form = ZapiszOsiagniecie()
     #return render(request, 'website/form_naukowe.html', {'form2': form}) 
     #redirect('website/kontakt.html')
+
+@user_passes_test(lambda u: u.is_superuser)
 def AdminTables(request):
     student = Student.objects.all()
     formularz = Formularz.objects.all()
@@ -225,22 +229,27 @@ def AdminTables(request):
     context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci}
     return render(request, 'website/admin_tables.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def NoweWnioski(request):
     formularz = Formularz.objects.all()
     context = {'formularz': formularz}
     return render(request, 'website/nowe_wnioski.html', context)
 
-class PanelAdmina(TemplateView):
-    template_name = 'website/panel_admina.html'
+@user_passes_test(lambda u: u.is_superuser)
+def PanelAdmina(request):
+    return render(request, 'website/panel_admina.html')
 
+@user_passes_test(lambda u: u.is_superuser)
+def Formularze(request):
+    return render(request, 'website/formularze.html')
 
-class Formularze(TemplateView):
-    template_name = 'website/formularze.html'
-class PanelRektora(TemplateView):
-    template_name = 'website/panel_rektora.html'
+@user_passes_test(lambda u: u.is_superuser)
+def PanelRektora(request):
+    return render(request, 'website/panel_rektora.html')
 
-class StronaGlowna(TemplateView):
-    template_name = 'website/strona_glowna.html'
+@user_passes_test(lambda u: u.is_superuser)
+def StronaGlowna(request):
+    return render(request, 'website/strona_glowna.html')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -249,12 +258,13 @@ class StronaGlowna(TemplateView):
         context['ostatnia_aktualnosc'] = ostatnia_aktualnosc
         return context
 
-class KryteriaOceny(TemplateView):
-    template_name = 'website/kryteria_oceny.html'
+def KryteriaOceny(request):
+    return render(request, 'website/kryteria_oceny.html')
 
-class Logowanie(TemplateView):
-    template_name = 'website/logowanie.html'
+def Logowanie(request):
+    return render(request, 'website/logowanie.html')
 
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujStudenta(request,pk):
     student = Student.objects.get(id_student=pk)
     form = StudentRegistrationForm(instance=student)
@@ -266,6 +276,7 @@ def EdytujStudenta(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_studenta.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def UsunStudenta(request,pk):
     student = Student.objects.get(id_student=pk)
     if request.method == 'POST':
@@ -274,7 +285,7 @@ def UsunStudenta(request,pk):
     context = {'item': student}
     return render(request, 'website/usun_studenta.html',context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujFormNiepelno(request,pk):
     formularz = Formularz.objects.get(id_formularza=pk)
     form = SkladanieFormularzaDlaNiepelnosprawnych(instance=formularz)
@@ -286,6 +297,7 @@ def EdytujFormNiepelno(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_form_niepelno.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNiepelno(request, pk):
     formularz = get_object_or_404(Formularz, id_formularza=pk)
     
@@ -306,7 +318,7 @@ def ZobaczFormNiepelno(request, pk):
     context = {'form': form}
     return render(request, 'website/zobacz_form_niepelno.html', context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormSocjalne(request, pk):
     formularz = get_object_or_404(Formularz, id_formularza=pk)
     
@@ -332,6 +344,7 @@ def ZobaczFormSocjalne(request, pk):
     context = {'form': form}
     return render(request, 'website/zobacz_form_socjalne.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNaukowe(request, pk):
     formularz = get_object_or_404(Formularz, id_formularza=pk)
     
@@ -357,16 +370,18 @@ def ZobaczFormNaukowe(request, pk):
     context = {'form': form}
     return render(request, 'website/zobacz_form_naukowe.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def AkceptowaneWnioski(request):
     formularze = Formularz.objects.filter(status='zaakceptowane')
     return render(request, 'website/zaakceptowane_wnioski.html', {'formularze': formularze})
 
+@user_passes_test(lambda u: u.is_superuser)
 def OdrzuconeWnioski(request):
     formularze = Formularz.objects.filter(status='odrzucone')
     return render(request, 'website/odrzucone_wnioski.html', {'formularze': formularze})
 
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def UsunFormNiepelno(request,pk):
     formularz = Formularz.objects.get(id_formularza=pk)
     if request.method == 'POST':
@@ -386,6 +401,7 @@ class Kontakty(TemplateView):
             context['form'] = KontaktForm(instance=ostatni_kontakt)
         return context
 
+@user_passes_test(lambda u: u.is_superuser)
 def edytujKontakt(request):
     kontakt = Kontakt.objects.last()
     if request.method == 'POST':
@@ -397,7 +413,7 @@ def edytujKontakt(request):
         form = KontaktForm(instance=kontakt)
     return render(request, 'website/edytuj_kontakt.html', {'form': form})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def dodajAktualnosc(request):
     if request.method == 'POST':
         aktualnosci = AktualnosciForm(request.POST)
@@ -408,6 +424,7 @@ def dodajAktualnosc(request):
         aktualnosci = AktualnosciForm()
     return render(request, 'website/dodaj_aktualnosci.html', {'form': aktualnosci})
 
+@user_passes_test(lambda u: u.is_superuser)
 def edytujAktualnosc(request,pk):
     aktualnosci = Aktualnosci.objects.get(id_aktualnosci=pk)
     form = AktualnosciForm(instance=aktualnosci)
@@ -419,7 +436,7 @@ def edytujAktualnosc(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_aktualnosci.html',context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def ZlozenieFormularzaSocjalnego(request, id=None):
     if id:
         obj = get_object_or_404(Formularz, id=id)
@@ -503,6 +520,7 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
 #     return render(request, 'website/form_socjalne.html', context)
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujFormSocjalne(request, pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
     form_soc = FormularzSocjalne(instance=formularz)
@@ -514,6 +532,8 @@ def EdytujFormSocjalne(request, pk_form):
     context = {'form_soc': form_soc}
     return render(request, 'website/edytuj_form_socjalne.html',context)
 
+
+@user_passes_test(lambda u: u.is_superuser)
 def UsunFormSocjalne(request,pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
     if request.method == 'POST':
@@ -522,6 +542,7 @@ def UsunFormSocjalne(request,pk_form):
     context = {'item': formularz}
     return render(request, 'website/usun_form_socjalne.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujFormNaukowe(request, pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
     form_naukowe = SkladanieFormularzaNaukowego(instance=formularz)
@@ -533,6 +554,7 @@ def EdytujFormNaukowe(request, pk_form):
     context = {'form_naukowe': form_naukowe}
     return render(request, 'website/edytuj_form_naukowe.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def UsunFormNaukowe(request,pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
     if request.method == 'POST':
