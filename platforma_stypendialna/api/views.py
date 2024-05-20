@@ -20,7 +20,7 @@ from django.views.generic import ListView, UpdateView
 from django.db import connection
 from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego
+from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego, UpdateUzytkownik
 from django.core.exceptions import ValidationError
 from django.forms.models import modelformset_factory
 from django.shortcuts import get_object_or_404
@@ -53,10 +53,12 @@ def main(request):
 
 def logoutUser(request):
     logout(request)
-    return redirect('index')
+    return redirect('logowanie')
 
 
 def loginPage(request):
+    if request.user.is_authenticated:
+        return redirect('profil_uzytkownika')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -65,7 +67,7 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
-            return HttpResponse("Zalogowano")
+            return redirect('strona_glowna')
         else:
             return HttpResponse("Nieprawidłowa nazwa użytkownika lub hasło")
         
@@ -76,6 +78,8 @@ def index(request):
     return render(request, 'index.html', {'messages': messages_to_display})
 
 def registerPage(request):
+    if request.user.is_authenticated:
+        return redirect('profil_uzytkownika')
     form = StudentRegistrationForm()
     if request.method == 'POST':
         form = StudentRegistrationForm(request.POST)
@@ -239,7 +243,7 @@ def NoweWnioski(request):
 def PanelAdmina(request):
     return render(request, 'website/panel_admina.html')
 
-@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def Formularze(request):
     return render(request, 'website/formularze.html')
 
@@ -247,7 +251,7 @@ def Formularze(request):
 def PanelRektora(request):
     return render(request, 'website/panel_rektora.html')
 
-@user_passes_test(lambda u: u.is_superuser)
+
 def StronaGlowna(request):
     return render(request, 'website/strona_glowna.html')
 
@@ -436,7 +440,7 @@ def edytujAktualnosc(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_aktualnosci.html',context)
 
-@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def ZlozenieFormularzaSocjalnego(request, id=None):
     if id:
         obj = get_object_or_404(Formularz, id=id)
@@ -563,5 +567,24 @@ def UsunFormNaukowe(request,pk_form):
     context = {'item': formularz}
     return render(request, 'website/usun_form_naukowe.html',context)
 
+#@login_required
+#def ProfilUzytkownika(request):
+    #return render(request, 'website/profil_uzytkownika.html')
+
+@login_required
+def AktualizujProfil(request):
+    if request.method == 'POST':
+        form = UpdateUzytkownik(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profil_uzytkownika')
+    else:
+        form = UpdateUzytkownik(instance=request.user)
+    context = {
+        'form': form
+    }
+
+    return render(request, 'website/profil_uzytkownika.html', context)
+    
     
 

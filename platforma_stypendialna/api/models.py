@@ -1,4 +1,5 @@
 from datetime import timezone
+from PIL import Image
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
 from django.core.exceptions import ValidationError
@@ -63,7 +64,7 @@ class Student(AbstractUser):
     #haslo = models.CharField(max_length = 100, null=True)
     email = models.CharField(null=True, unique=True, max_length=191)
     data_rejestracji = models.DateField(null=True)
-    ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')
+    ikonka = models.ImageField(null=True, max_length = 180, blank=True, default='default.jpg', upload_to='dokumenty/ikonki')
     pesel = models.CharField(null=True, unique = True, max_length=11, validators=[validate_digits_only]) 
     imie = models.CharField(null=True, max_length=20, validators=[validate_string])
     nazwisko = models.CharField(null=True, max_length=35, validators=[validate_string])
@@ -84,6 +85,7 @@ class Student(AbstractUser):
 
     def __str__(self):
         return self.username
+    
     
     
     

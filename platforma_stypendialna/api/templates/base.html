@@ -1,4 +1,6 @@
+{% load static %}
 <!DOCTYPE html>
+
 <html lang="pl">
 
 <head>
@@ -24,9 +26,16 @@
     <div class="logo">
         <h1>STYPENDIALNIE</h1> 
         <div class="buttons_nav">
-            <button id="logowanie"><a href="logowanie">Logowanie</a></button>
-            <button id="rejestracja"><a href="rejestracja">Rejestracja</a></button>
-            <button id="rejestracja"><a href="{% url 'logout' %}">Wyloguj</a></button>
+            {% if user.is_authenticated %}
+            <a href="profil_uzytkownika">
+                <img src="{{ user.ikonka.url }}" width="40" height="40" alt="User Icon">
+            </a>
+            {% else %}
+                <button id="logowanie"><a href="logowanie">Logowanie</a></button>
+                <button id="rejestracja"><a href="rejestracja">Rejestracja</a></button>
+            
+                
+            {% endif %}
         </div>
     </div>
     <div class="navbar">

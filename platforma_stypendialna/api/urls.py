@@ -2,6 +2,8 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import *
 from .views import Formularze, Kontakt, Logowanie
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     #path('', main, name = 'main'),
@@ -9,7 +11,7 @@ urlpatterns = [
     path('logout', logoutUser, name='logout'),
     path('index', index, name='index'),
     path('formularze', Formularze, name='formularze'),
-    path('', StronaGlowna, name='strona_glowna'),
+    path('strona_glowna', StronaGlowna, name='strona_glowna'),
     #path('strona_glowna', StronaGlowna.as_view(), name='strona_glowna'),
     path('kryteria_oceny', KryteriaOceny, name='kryteria_oceny'),
     #path('account_activation_email', )
@@ -46,4 +48,5 @@ urlpatterns = [
     path('zobacz_form_naukowe/<int:pk>/', ZobaczFormNaukowe, name='zobacz_form_naukowe'),
     path('zaakceptowane_wnioski', AkceptowaneWnioski, name='zaakceptowane_wnioski'),
     path('odrzucone_wnioski/', OdrzuconeWnioski, name='odrzucone_wnioski'),
+    path('profil_uzytkownika', AktualizujProfil, name='profil_uzytkownika'),
 ]

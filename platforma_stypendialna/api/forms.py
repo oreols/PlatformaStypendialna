@@ -202,3 +202,20 @@ class CzlonekSocjalne(forms.ModelForm):
             'miejsce_pracy': forms.TextInput(attrs={'width': '150px'}),
         }
 
+class UpdateUzytkownik(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['numer_telefonu', 'numer_albumu', 'rok_studiow', 'nazwa_kierunku', 'numer_konta_bankowego', 'pesel', 'imie', 'nazwisko', 'ikonka']
+        widgets = {
+            'username': forms.TextInput(attrs={'width': '150px'}),
+            'email': forms.EmailInput(attrs={'width': '150px'}),
+            'numer_telefonu': forms.TextInput(attrs={'width': '150px'}),
+            'numer_albumu': forms.TextInput(attrs={'width': '150px'}),
+            'rok_studiow': forms.TextInput(attrs={'width': '150px'}),
+            'nazwa_kierunku': forms.TextInput(attrs={'width': '150px'}),
+            'numer_konta_bankowego': forms.TextInput(attrs={'width': '150px'}),
+            'pesel': forms.TextInput(attrs={'width': '150px'}),
+            'imie': forms.TextInput(attrs={'width': '150px'}),
+            'nazwisko': forms.TextInput(attrs={'width': '150px'}),
+        }
+
