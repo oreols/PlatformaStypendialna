@@ -1,9 +1,8 @@
 {% extends "navbar.html" %}
-    {% block content %}
-
+{% block content %}
     <form action="" method="POST">
         {% csrf_token %}
         {{form_naukowe}}
         <input type="submit" name="Submit">
     </form>
-    {% endblock %}
+{% endblock %}

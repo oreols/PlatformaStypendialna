@@ -3,8 +3,25 @@
     <h2>Edytuj Formularz Socjalny</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form_soc.as_p }}
-        {{ czlonek.as_p }}
-        <button type="submit">Zapisz</button>
+        
+        <!-- Formularz Socjalny -->
+        <fieldset>
+            <legend>Formularz Socjalny</legend>
+            {{ form_soc.as_p }}
+        </fieldset>
+        
+        <!-- Członkowie Rodziny -->
+        <fieldset>
+            <legend>Członkowie Rodziny</legend>
+            {% for form in czlonek_forms %}
+                <fieldset>
+                    <legend>Członek {{ forloop.counter }}</legend>
+                    {{ form.pk_czlonek.as_hidden }}
+                    {{ form.as_p }}
+                </fieldset>
+            {% endfor %}
+        </fieldset>
+        
+        <button type="submit">Zapisz zmiany</button>
     </form>
 {% endblock %}

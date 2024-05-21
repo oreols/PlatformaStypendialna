@@ -147,8 +147,6 @@ class AktualnosciForm(forms.ModelForm):
         return data_opublikowania
 
 class FormularzSocjalne(forms.ModelForm):
-    oswiadczenie_prawo_o_szkolnictwie = forms.BooleanField(required=False)
-    oswiadczenie_gospodarstwo_domowe = forms.BooleanField(required=False)
     class Meta:
         model = Formularz
         fields = ['typ_stypendium', 'data_zlozenia', 'przychod_bez_podatku', 'aktualny_semestr', 'semestr_studenta', 'zalacznik']

@@ -38,9 +38,6 @@ class Formularz(models.Model):
     dodatkowe_informacje = models.TextField(null=True, blank=True)
     plik_orzeczenie = models.ImageField(null=True, blank=True, upload_to='dokumenty/orzeczenia') 
     id_osiagniecia = models.IntegerField(null=True, blank=True)
-    oswiadczenie_prawo_o_szkolnictwie = models.BooleanField(default=False)
-    oswiadczenie_gospodarstwo_domowe = models.BooleanField(default=False)
-    oswiadczenie_dochody = models.BooleanField(default=False)
     zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
     stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE, null=True, blank=True)
     symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE, null=True, blank=True)
@@ -318,10 +315,5 @@ class SemestrStudenta(models.Model):
     def __str__(self):
         return str(self.semestr)
     
-class HistoriaStatusuFormularza(models.Model):
-    formularz_id = models.IntegerField()
-    stary_status = models.CharField(max_length=255)
-    nowy_status = models.CharField(max_length=255)
-    zmiana_timestamp = models.DateTimeField(auto_now_add=True)
 
 

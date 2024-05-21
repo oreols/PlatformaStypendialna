@@ -363,11 +363,6 @@ def ZobaczFormSocjalne(request, pk):
     else:
         form = FormularzSocjalne(instance=formularz)
     
-    # Disable all fields except komentarz
-    for field_name, field in form.fields.items():
-        if field_name != 'komentarz':
-            field.widget.attrs['disabled'] = 'disabled'
-    
     context = {'form': form}
     return render(request, 'website/zobacz_form_socjalne.html', context)
 
@@ -405,11 +400,6 @@ def ZobaczFormNaukowe(request, pk):
                 return redirect('odrzucone_wnioski')
     else:
         form = SkladanieFormularzaNaukowego(initial=formularz)
-    
-    # Wyłączanie wszystkich pól oprócz komentarza
-    for field_name, field in form.fields.items():
-        if field_name != 'komentarz':
-            field.widget.attrs['disabled'] = 'disabled'
     
     context = {'form': form}
     return render(request, 'website/zobacz_form_naukowe.html', context)
@@ -550,53 +540,6 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
     }
     return render(request, 'website/form_socjalne.html', context)
 
-# def ZlozenieFormularzaSocjalnego(request):
-#     if request.method == 'POST':
-#         form_soc = FormularzSocjalne(request.POST)
-#         czlonek = CzlonekSocjalne(request.POST)
-#         if form_soc.is_valid() and czlonek.is_valid():
-#             student = request.user
-#             form_soc_instance = form_soc.save(commit=False)
-#             czlonek_instance = czlonek.save(commit=False)
-#             form_soc_instance.student = student
-#             czlonek_instance.student = student
-#             form_soc_instance.save()
-#             czlonek_instance.save()
-#             return redirect('/admin_tables')
-#     else:
-#         form_soc = FormularzSocjalne()
-#         czlonek = CzlonekSocjalne()
-#     return render(request, 'website/form_socjalne.html', {'form_soc': form_soc, 'czlonek': czlonek})
-
-# def ZlozenieFormularzaSocjalnego(request, id=None):
-#     form_soc = FormularzSocjalne(request.POST)
-#     obj = get_object_or_404(CzlonekRodziny, id_czlonka=id, student=request.user)
-#     form = CzlonekSocjalne(request.POST or None, instance=obj)
-#     CzlonekFormset = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne, extra=0)
-#     qs = obj.czlonekrodziny_set.all()
-#     formset = CzlonekFormset(request.POST or None, queryset=qs)
-#     context = {
-#         'form': form,
-#         'formset': formset,
-#         'object': obj
-#     }
-#     if request.method == 'POST':
-#         if all([form.is_valid(), formset.is_valid(), form_soc.is_valid()]):
-#             student = request.user
-#             form_soc_instance = form_soc.save(commit=False)
-#             parent = form.save(commit=False)
-#             form_soc_instance.student = student
-#             parent.student = student
-#             form_soc_instance.save()
-#             parent.save()
-#             for form in formset:
-#                 child = form.save(commit=False)
-#                 child.parent = parent
-#                 child.save()
-#             return redirect('website/admin_tables')
-#     return render(request, 'website/form_socjalne.html', context)
-
-
 @user_passes_test(lambda u: u.is_superuser)
 def EdytujFormSocjalne(request, pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
@@ -604,62 +547,68 @@ def EdytujFormSocjalne(request, pk_form):
 
 def EdytujFormSocjalne(request, pk_form, pk_student):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id_formularza, student_id, data_zlozenia, status, przychod_bez_podatku, semestr_studenta_id, aktualny_semestr_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
+        cursor.execute("SELECT id_formularza, typ_stypendium, data_zlozenia, przychod_bez_podatku, aktualny_semestr_id, semestr_studenta_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
         form_row = cursor.fetchone()
         if not form_row:
             raise Http404("Formularz nie istnieje")
         
         formularz = {
             'id_formularza': form_row[0],
-            'student_id': form_row[1],
+            'typ_stypendium': form_row[1],
             'data_zlozenia': form_row[2],
-            'status': form_row[3],
-            'przychod_bez_podatku': form_row[4],
-            'semestr_studenta_id': form_row[5],
-            'aktualny_semestr_id': form_row[6]
-
+            'przychod_bez_podatku': form_row[3],
+            'aktualny_semestr_id': form_row[4],
+            'semestr_studenta_id': form_row[5]
         }
 
-        cursor.execute("SELECT student_id, id_czlonka, imie_czlonka, nazwisko_czlonka, stopien_pokrewienstwa, data_urodzenia, miejsce_pracy FROM api_czlonekrodziny WHERE student_id = %s", [pk_student])
-        czlonek_row = cursor.fetchone()
-        if not czlonek_row:
-            raise Http404("Czlonek rodziny nie istnieje")
-        
-        czlonek = {
-            'student_id': czlonek_row[0],
-            'id_czlonka': czlonek_row[1],
-            'imie_czlonka': czlonek_row[2],
-            'nazwisko_czlonka': czlonek_row[3],
-            'stopien_pokrewienstwa': czlonek_row[4],
-            'data_urodzenia': czlonek_row[5],
-            'miejsce_pracy': czlonek_row[6]
-        }
+        cursor.execute("SELECT cr.id_czlonka, cr.student_id, cr.imie_czlonka, cr.nazwisko_czlonka, cr.stopien_pokrewienstwa, cr.data_urodzenia, cr.miejsce_pracy FROM api_czlonekrodziny cr JOIN api_student u ON cr.student_id = u.id_student WHERE u.id_student = %s", [pk_student])
+        czlonek_rows = cursor.fetchall()
 
-    if request.method == 'POST':
-        form_soc = FormularzSocjalne(request.POST, initial=formularz)
-        czlonek_form = CzlonekSocjalne(request.POST, initial=czlonek)
+        if not czlonek_rows:
+            raise Http404("Członek rodziny nie istnieje")
         
-        if form_soc.is_valid() and czlonek_form.is_valid():
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    UPDATE api_formularz
-                    SET  przychod_bez_podatku = %s, oswiadczenie_prawo_o_szkolnictwie = %s, oswiadczenie_gospodarstwo_domowe = %s
-                    WHERE id_formularza = %s
-                """, [form_soc.cleaned_data['przychod_bez_podatku'], form_soc.cleaned_data['oswiadczenie_prawo_o_szkolnictwie'], form_soc.cleaned_data['oswiadczenie_gospodarstwo_domowe'], pk_form])
-                
-                cursor.execute("""
-                    UPDATE api_czlonekrodziny
-                    SET imie_czlonka = %s, nazwisko_czlonka = %s, data_urodzenia = %s, miejsce_pracy = %s, stopien_pokrewienstwa = %s
-                    WHERE id_czlonka = %s
-                """, [czlonek_form.cleaned_data['imie_czlonka'], czlonek_form.cleaned_data['nazwisko_czlonka'], czlonek_form.cleaned_data['data_urodzenia'],czlonek_form.cleaned_data['miejsce_pracy'],czlonek_form.cleaned_data['stopien_pokrewienstwa'], czlonek['id_czlonka']])
+        czlonkowie = []
+        czlonek_forms = []
+        for row in czlonek_rows:
+            czlonek = {
+                'id_czlonka': row[0],
+                'student_id': row[1],
+                'imie_czlonka': row[2],
+                'nazwisko_czlonka': row[3],
+                'stopien_pokrewienstwa': row[4],
+                'data_urodzenia': row[5],
+                'miejsce_pracy': row[6]
+            }
+            czlonkowie.append(czlonek)
+            czlonek_forms.append(CzlonekSocjalne(initial=czlonek))
 
-            return redirect('/admin_tables')
-    else:
-        form_soc = FormularzSocjalne(initial=formularz)
-        czlonek_form = CzlonekSocjalne(initial=czlonek)
+        if request.method == 'POST':
+            form_soc = FormularzSocjalne(request.POST, initial=formularz)
+            czlonek_forms = [CzlonekSocjalne(request.POST, initial=czlonek) for czlonek in czlonkowie]
+            
+            if form_soc.is_valid() and all(form.is_valid() for form in czlonek_forms):
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        UPDATE api_formularz
+                        SET przychod_bez_podatku = %s 
+                        WHERE id_formularza = %s
+                    """, [form_soc.cleaned_data['przychod_bez_podatku'], pk_form])
+                    
+                    for form, czlonek in zip(czlonek_forms, czlonkowie):
+                        cursor.execute("""
+                            UPDATE api_czlonekrodziny
+                            SET imie_czlonka = %s, nazwisko_czlonka = %s, data_urodzenia = %s, miejsce_pracy = %s, stopien_pokrewienstwa = %s
+                            WHERE id_czlonka = %s
+                        """, [form.cleaned_data['imie_czlonka'], form.cleaned_data['nazwisko_czlonka'], form.cleaned_data['data_urodzenia'], form.cleaned_data['miejsce_pracy'], form.cleaned_data['stopien_pokrewienstwa'], czlonek['id_czlonka']])
+
+                return redirect('/admin_tables')
+        else:
+            form_soc = FormularzSocjalne(initial=formularz)
+            czlonek_forms = [CzlonekSocjalne(initial=czlonek) for czlonek in czlonkowie]
     
-    context = {'form_soc': form_soc, 'czlonek': czlonek_form}
+    context = {'form_soc': form_soc, 'czlonek_forms': czlonek_forms}
     return render(request, 'website/edytuj_form_socjalne.html', context)
+
 
 
 
@@ -729,11 +678,6 @@ def ZobaczFormNaukowe(request, pk):
     else:
         form = SkladanieFormularzaNaukowego(initial=formularz)
     
-    # Wyłączanie wszystkich pól oprócz komentarza
-    for field_name, field in form.fields.items():
-        if field_name != 'komentarz':
-            field.widget.attrs['disabled'] = 'disabled'
-    
     context = {'form': form}
     return render(request, 'website/zobacz_form_naukowe.html', context)
 
@@ -752,19 +696,19 @@ def AktualizujProfil(request):
 
     return render(request, 'website/profil_uzytkownika.html', context)
 
-def WynikiStudenta(request, pk_decyzji, pk_formularz):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT typ_stypendium, status FROM api_formularz WHERE id_formularza = %s",[pk_formularz])
-        form = cursor.fetchall()
-        if not form:
-            cursor.execute(
-                "UPDATE api_formularz SET status = 'nie zlozono wniosku' WHERE id_formularza = %s",[pk_formularz])
+# def WynikiStudenta(request, pk_decyzji, pk_formularz):
+#     with connection.cursor() as cursor:
+#         cursor.execute(
+#             "SELECT typ_stypendium, status FROM api_formularz WHERE id_formularza = %s",[pk_formularz])
+#         form = cursor.fetchall()
+#         if not form:
+#             cursor.execute(
+#                 "UPDATE api_formularz SET status = 'nie zlozono wniosku' WHERE id_formularza = %s",[pk_formularz])
 
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM api_decyzjestypendialne WHERE id_decyzji = %s",[pk_decyzji])
-        wyniki = cursor.fetchall()
+#     with connection.cursor() as cursor:
+#         cursor.execute(
+#             "SELECT * FROM api_decyzjestypendialne WHERE id_decyzji = %s",[pk_decyzji])
+#         wyniki = cursor.fetchall()
 
-    context = {'form': form, 'wyniki': wyniki}
-    return render(request, 'website/wyswietl_wyniki.html', context)
+#     context = {'form': form, 'wyniki': wyniki}
+#     return render(request, 'website/wyswietl_wyniki.html', context)

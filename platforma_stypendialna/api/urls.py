@@ -6,15 +6,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', StronaGlowna.as_view, name = 'main'),
+    path('', StronaGlowna.as_view(), name='strona_glowna'),
+    path('strona_glowna', StronaGlowna.as_view(), name='strona_glowna'),
     path('rejestracja', registerPage, name='register'),
     path('logout', logoutUser, name='logout'),
     path('index', index, name='index'),
     path('formularze', Formularze, name='formularze'),
-    path('strona_glowna', StronaGlowna.as_view, name='strona_glowna'),
-    #path('strona_glowna', StronaGlowna.as_view(), name='strona_glowna'),
     path('kryteria_oceny', KryteriaOceny, name='kryteria_oceny'),
-    #path('account_activation_email', )
     path('kontakt', Kontakty.as_view(), name='kontakt'),
     path('password_reset', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset_done', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
@@ -34,7 +32,7 @@ urlpatterns = [
     path('panel_admina', PanelAdmina, name='panel_admina'),
     path('ranking', Ranking.as_view(), name='ranking'),
     path('wyniki', Wyniki.as_view(), name='wyniki'),
-    path('wyswietl_wyniki/<str:pk_decyzji>/<str:pk_formularz>/', WynikiStudenta, name='wyswietl_wyniki'),
+    # path('wyswietl_wyniki/<str:pk_decyzji>/<str:pk_formularz>/', WynikiStudenta, name='wyswietl_wyniki'),
     path('edytuj_kontakt', edytujKontakt, name='edytuj_kontakt'),
     path('admin_tables', AdminTables, name='admin_tables'),
     path('dodaj_aktualnosci', dodajAktualnosc, name='dodaj_aktualnosci'),
