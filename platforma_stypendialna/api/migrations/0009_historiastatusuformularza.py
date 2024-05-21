@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0008_remove_czlonekrodziny_formularz_id'),
+        ('api', '0007_student_dodatkowe_punkty'),
     ]
 
     operations = [

@@ -105,7 +105,7 @@ class Admin(models.Model):
         return self.login
 
 class Aktualnosci(models.Model):
-    id_aktualnosci = models.IntegerField(primary_key=True)
+    id_aktualnosci = models.AutoField(primary_key=True)
     nazwa_aktualnosci = models.TextField(null=True)
     tekst_aktualnosci = models.TextField(null=True)
     data_opublikowania = models.DateField(null=True)
