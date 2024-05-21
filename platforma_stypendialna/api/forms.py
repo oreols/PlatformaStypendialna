@@ -147,8 +147,6 @@ class AktualnosciForm(forms.ModelForm):
         return data_opublikowania
 
 class FormularzSocjalne(forms.ModelForm):
-    oswiadczenie_prawo_o_szkolnictwie = forms.BooleanField(required=False)
-    oswiadczenie_gospodarstwo_domowe = forms.BooleanField(required=False)
     class Meta:
         model = Formularz
         fields = ['typ_stypendium', 'data_zlozenia', 'przychod_bez_podatku', 'aktualny_semestr', 'semestr_studenta', 'zalacznik']
@@ -185,6 +183,24 @@ class CzlonekSocjalne(forms.ModelForm):
             'stopien_pokrewienstwa': forms.TextInput(attrs={'width': '150px'}),
             'miejsce_pracy': forms.TextInput(attrs={'width': '150px'}),
         }
+
+class UpdateUzytkownik(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['numer_telefonu', 'numer_albumu', 'rok_studiow', 'nazwa_kierunku', 'numer_konta_bankowego', 'pesel', 'imie', 'nazwisko', 'ikonka']
+        widgets = {
+            'username': forms.TextInput(attrs={'width': '150px'}),
+            'email': forms.EmailInput(attrs={'width': '150px'}),
+            'numer_telefonu': forms.TextInput(attrs={'width': '150px'}),
+            'numer_albumu': forms.TextInput(attrs={'width': '150px'}),
+            'rok_studiow': forms.TextInput(attrs={'width': '150px'}),
+            'nazwa_kierunku': forms.TextInput(attrs={'width': '150px'}),
+            'numer_konta_bankowego': forms.TextInput(attrs={'width': '150px'}),
+            'pesel': forms.TextInput(attrs={'width': '150px'}),
+            'imie': forms.TextInput(attrs={'width': '150px'}),
+            'nazwisko': forms.TextInput(attrs={'width': '150px'}),
+        }
+
 
 class SemestrStudentaForm(forms.ModelForm):
     semestr_studenta = forms.ModelChoiceField(queryset=SemestrStudenta.objects.all(), label="Semestr studenta")

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Stypendialne</title>
+</head>
+
+<img src="{{ user.ikonka.url }}" width="120" height="120" alt="User Icon"> 
+{{ user.email}}
+<div></div>
+<div></div>
+<a href="password_reset" >Reset Hasła</a>
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form}}
+    <input type="submit" name="Submit">
+</form>
+<button id="rejestracja"><a href="{% url 'logout' %}">Wyloguj</a></button>
+
+{% endblock %}

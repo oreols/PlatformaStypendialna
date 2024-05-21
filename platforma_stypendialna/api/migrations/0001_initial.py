@@ -164,9 +164,6 @@ class Migration(migrations.Migration):
                 ('dodatkowe_informacje', models.TextField(blank=True, null=True)),
                 ('plik_orzeczenie', models.ImageField(blank=True, null=True, upload_to='dokumenty/orzeczenia')),
                 ('id_osiagniecia', models.IntegerField(blank=True, null=True)),
-                ('oswiadczenie_prawo_o_szkolnictwie', models.BooleanField(default=False)),
-                ('oswiadczenie_gospodarstwo_domowe', models.BooleanField(default=False)),
-                ('oswiadczenie_dochody', models.BooleanField(default=False)),
                 ('zalacznik', models.FileField(blank=True, null=True, upload_to='dokumenty/zalaczniki')),
                 ('charakter_stopnia_niepelnosprawnosci', models.TextField(blank=True, max_length=100, null=True)),
                 ('data_rozpoczecia_orzeczenia', models.DateField(blank=True, null=True)),
@@ -313,36 +310,4 @@ class Migration(migrations.Migration):
             END//
             DELIMITER ;
             '''),
-        migrations.RunSQL(
-            """
-            CREATE TABLE IF NOT EXISTS HistoriaStatusuFormularza (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                formularz_id INT,
-                stary_status VARCHAR(255),
-                nowy_status VARCHAR(255),
-                zmiana_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (formularz_id) REFERENCES api_formularz(id_formularza)
-            );
-            """,
-            reverse_sql="DROP TABLE IF EXISTS HistoriaStatusuFormularza;"
-        ),
-        migrations.RunSQL(
-            """
-            DELIMITER //
-
-            CREATE TRIGGER trg_status_update
-            BEFORE UPDATE ON api_formularz
-            FOR EACH ROW
-            BEGIN
-                IF NEW.status <> OLD.status THEN
-                    INSERT INTO HistoriaStatusuFormularza (formularz_id, stary_status, nowy_status)
-                    VALUES (OLD.id_formularza, OLD.status, NEW.status);
-                END IF;
-            END;
-            //
-
-            DELIMITER ;
-            """,
-            reverse_sql="DROP TRIGGER IF EXISTS trg_status_update;"
-        ),
     ]

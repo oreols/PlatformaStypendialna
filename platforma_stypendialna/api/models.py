@@ -1,4 +1,5 @@
 from datetime import timezone
+from PIL import Image
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, AbstractUser
 from django.core.exceptions import ValidationError
@@ -37,9 +38,6 @@ class Formularz(models.Model):
     dodatkowe_informacje = models.TextField(null=True, blank=True)
     plik_orzeczenie = models.ImageField(null=True, blank=True, upload_to='dokumenty/orzeczenia') 
     id_osiagniecia = models.IntegerField(null=True, blank=True)
-    oswiadczenie_prawo_o_szkolnictwie = models.BooleanField(default=False)
-    oswiadczenie_gospodarstwo_domowe = models.BooleanField(default=False)
-    oswiadczenie_dochody = models.BooleanField(default=False)
     zalacznik = models.FileField(null=True, blank=True, upload_to='dokumenty/zalaczniki')
     stopien_niepelnosprawnosci = models.ForeignKey('StopienNiepelnosprawnosci', on_delete=models.CASCADE, null=True, blank=True)
     symbol_niepelnosprawnosci = models.ForeignKey('SymbolNiepelnosprawnosci', on_delete=models.CASCADE, null=True, blank=True)
@@ -63,7 +61,7 @@ class Student(AbstractUser):
     #haslo = models.CharField(max_length = 100, null=True)
     email = models.CharField(null=True, unique=True, max_length=191)
     data_rejestracji = models.DateField(null=True)
-    ikonka = models.ImageField(null=True, max_length = 50, blank=True, upload_to='dokumenty/ikonki')
+    ikonka = models.ImageField(null=True, max_length = 180, blank=True, default='default.jpg', upload_to='dokumenty/ikonki')
     pesel = models.CharField(null=True, unique = True, max_length=11, validators=[validate_digits_only]) 
     imie = models.CharField(null=True, max_length=20, validators=[validate_string])
     nazwisko = models.CharField(null=True, max_length=35, validators=[validate_string])
@@ -71,6 +69,7 @@ class Student(AbstractUser):
     numer_telefonu = models.CharField(null=True, unique = True, max_length=9, validators=[validate_digits_only])
     nazwa_kierunku = models.ForeignKey(Kierunek, on_delete=models.CASCADE, null=True, blank=True)
     semestr = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
+    dodatkowe_punkty = models.IntegerField(null=True, blank=True, default=0)
     numer_albumu = models.CharField(null=True, max_length=5, validators=[validate_digits_only])
     rok_studiow = models.CharField(null=True, max_length=1, validators=[validate_digits_only])
     #kierunek = models.CharField(null=True,blank=True,max_length=50)
@@ -83,6 +82,7 @@ class Student(AbstractUser):
 
     def __str__(self):
         return self.username
+    
     
     
     
@@ -102,7 +102,7 @@ class Admin(models.Model):
         return self.login
 
 class Aktualnosci(models.Model):
-    id_aktualnosci = models.IntegerField(primary_key=True)
+    id_aktualnosci = models.AutoField(primary_key=True)
     nazwa_aktualnosci = models.TextField(null=True)
     tekst_aktualnosci = models.TextField(null=True)
     data_opublikowania = models.DateField(null=True)
@@ -315,10 +315,5 @@ class SemestrStudenta(models.Model):
     def __str__(self):
         return str(self.semestr)
     
-class HistoriaStatusuFormularza(models.Model):
-    formularz_id = models.IntegerField()
-    stary_status = models.CharField(max_length=255)
-    nowy_status = models.CharField(max_length=255)
-    zmiana_timestamp = models.DateTimeField(auto_now_add=True)
 
 

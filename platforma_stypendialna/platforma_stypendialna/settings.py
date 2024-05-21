@@ -147,3 +147,7 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = 'mailtrap@demomailtrap.com'
 
 LOGIN_REDIRECT_URL = 'index'
+LOGIN_URL = 'logowanie'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

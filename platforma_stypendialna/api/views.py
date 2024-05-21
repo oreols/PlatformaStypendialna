@@ -16,8 +16,11 @@ from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
+from django.db import connection
+from django.contrib.auth.decorators import login_required, user_passes_test
 
-from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego, ZapiszOsiagniecie, SemestrStudentaForm, AktualnySemestrForm
+
+from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego, ZapiszOsiagniecie, SemestrStudentaForm, AktualnySemestrForm, UpdateUzytkownik
 from django.core.exceptions import ValidationError
 from django.forms.models import modelformset_factory
 from django.shortcuts import get_object_or_404
@@ -29,17 +32,40 @@ from django.urls import reverse
 from django.db import connection
 from django.forms.models import inlineformset_factory
 
+
 # Create your views here.
+
+def student_has_submitted_form_naukowe(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'naukowe'", [student_id])
+        row = cursor.fetchone()
+    return row[0] > 0
+
+def student_has_submitted_form_socjalne(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'socjalne'", [student_id])
+        row = cursor.fetchone()
+    return row[0] > 0
+
+def student_has_submitted_form_niepelnosprawne(student_id):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'dla_niepelnosprawnych'", [student_id])
+        row = cursor.fetchone()
+    return row[0] > 0
+
+
 
 def main(request):
     return HttpResponse("Witam na platformie stypendialnej!")
 
 def logoutUser(request):
     logout(request)
-    return redirect('index')
+    return redirect('logowanie')
 
 
 def loginPage(request):
+    if request.user.is_authenticated:
+        return redirect('profil_uzytkownika')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -48,7 +74,7 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
-            return HttpResponse("Zalogowano")
+            return redirect('strona_glowna')
         else:
             return HttpResponse("Nieprawidłowa nazwa użytkownika lub hasło")
         
@@ -59,6 +85,8 @@ def index(request):
     return render(request, 'index.html', {'messages': messages_to_display})
 
 def registerPage(request):
+    if request.user.is_authenticated:
+        return redirect('profil_uzytkownika')
     form = StudentRegistrationForm()
     if request.method == 'POST':
         form = StudentRegistrationForm(request.POST)
@@ -118,20 +146,30 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, 'Link aktywacyjny jest nieprawidłowy lub przedawniony')
         return redirect('index')
-        
-        
+
+@login_required   
 def ZlozenieFormularzaNiepelnosprawnych(request):
     if request.method == 'POST':
         form = SkladanieFormularzaDlaNiepelnosprawnych(request.POST)
         student = request.user
-        if form.is_valid():
-            form.instance.student = student
-            form.save()
-            return redirect('strona_glowna')
+        form.instance.student = student
+        form.save(commit=False)
+        if not student_has_submitted_form_socjalne(form.instance.student.id_student):
+            if not student_has_submitted_form_niepelnosprawne(form.instance.student.id_student):
+                #student = request.user
+                if form.is_valid():
+                    #form.instance.student = student
+                    form.save()
+                    return redirect('strona_glowna')
+            else: 
+                return HttpResponse("Skladales juz formularz socjalny")
+        else:
+            return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
 
+@login_required
 def ZlozenieFormularzaNaukowego(request):
     OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=13)
     formset = OsiagnieciaFormSet()
@@ -155,17 +193,24 @@ def ZlozenieFormularzaNaukowego(request):
     
     if request.method == 'POST':
         formset = OsiagnieciaFormSet(request.POST)
+        srednia = float(request.POST["srednia_ocen"])
         
         form_naukowe = SkladanieFormularzaNaukowego(request.POST)
         if formset.is_valid() and form_naukowe.is_valid():
             student = request.user
             form_naukowe.instance.student = student
-            form_naukowe.save()
-            for form in formset:
-                if form.has_changed():
-                    form.instance.student = student
-                    form.save()
-            return redirect('/admin_tables')
+            form_naukowe.save(commit=False)
+            #srednia = form_naukowe.srednia_ocen()
+            if srednia >= 4.5 and not student_has_submitted_form_naukowe(form_naukowe.instance.student.id_student):
+                form_naukowe.save(commit=True)
+                for form in formset:
+                    if form.has_changed():
+                        form.instance.student = student
+                        form.save()
+            else:
+                return HttpResponse("Nie spełniasz wymagań lub już złożyłeś formularz naukowy")
+
+        return redirect('/admin_tables')
     else:
         form = ZapiszOsiagniecie()
         form_naukowe = SkladanieFormularzaNaukowego()
@@ -174,6 +219,16 @@ def ZlozenieFormularzaNaukowego(request):
     
     return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list, 'form_naukowe': form_naukowe})
 
+#def ZlozenieFormularzaNaukowego(request):
+ #   if request.method == 'POST':
+  #      form = ZapiszOsiagniecie(request.POST)
+   #     if form.is_valid():
+    #        form.save()
+     #       return redirect('main')
+    #else:
+     #   form = ZapiszOsiagniecie()
+    #return render(request, 'website/form_naukowe.html', {'form2': form}) 
+    #redirect('website/kontakt.html')
 def AdminTables(request):
     with connection.cursor() as cursor:
         cursor.callproc('CountStudents')
@@ -189,13 +244,28 @@ def AdminTables(request):
     context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci, 'student_count': student_count}
     return render(request, 'website/admin_tables.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def NoweWnioski(request):
     formularz = Formularz.objects.all()
     context = {'formularz': formularz}
     return render(request, 'website/nowe_wnioski.html', context)
 
-class PanelAdmina(TemplateView):
-    template_name = 'website/panel_admina.html'
+@user_passes_test(lambda u: u.is_superuser)
+def PanelAdmina(request):
+    return render(request, 'website/panel_admina.html')
+
+@login_required
+def Formularze(request):
+    return render(request, 'website/formularze.html')
+
+@user_passes_test(lambda u: u.is_superuser)
+def PanelRektora(request):
+    return render(request, 'website/panel_rektora.html')
+
+
+def StronaGlowna(request):
+    return render(request, 'website/strona_glowna.html')
+
 
 class Wyniki(TemplateView):
     template_name = 'website/wyniki.html'
@@ -204,10 +274,6 @@ class Ranking(TemplateView):
     template_name = 'website/ranking.html'
 
 
-class Formularze(TemplateView):
-    template_name = 'website/formularze.html'
-class PanelRektora(TemplateView):
-    template_name = 'website/panel_rektora.html'
 
 class StronaGlowna(TemplateView):
     template_name = 'website/strona_glowna.html'
@@ -219,12 +285,13 @@ class StronaGlowna(TemplateView):
         context['ostatnia_aktualnosc'] = ostatnia_aktualnosc
         return context
 
-class KryteriaOceny(TemplateView):
-    template_name = 'website/kryteria_oceny.html'
+def KryteriaOceny(request):
+    return render(request, 'website/kryteria_oceny.html')
 
-class Logowanie(TemplateView):
-    template_name = 'website/logowanie.html'
+def Logowanie(request):
+    return render(request, 'website/logowanie.html')
 
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujStudenta(request,pk):
     student = Student.objects.get(id_student=pk)
     form = StudentRegistrationForm(instance=student)
@@ -236,6 +303,7 @@ def EdytujStudenta(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_studenta.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def UsunStudenta(request,pk):
     student = Student.objects.get(id_student=pk)
     if request.method == 'POST':
@@ -244,7 +312,7 @@ def UsunStudenta(request,pk):
     context = {'item': student}
     return render(request, 'website/usun_studenta.html',context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujFormNiepelno(request,pk):
     formularz = Formularz.objects.get(id_formularza=pk)
     form = SkladanieFormularzaDlaNiepelnosprawnych(instance=formularz)
@@ -256,6 +324,7 @@ def EdytujFormNiepelno(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_form_niepelno.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNiepelno(request, pk):
     formularz = get_object_or_404(Formularz, id_formularza=pk)
     
@@ -276,7 +345,7 @@ def ZobaczFormNiepelno(request, pk):
     context = {'form': form}
     return render(request, 'website/zobacz_form_niepelno.html', context)
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormSocjalne(request, pk):
     formularz = get_object_or_404(Formularz, id_formularza=pk)
     
@@ -294,14 +363,10 @@ def ZobaczFormSocjalne(request, pk):
     else:
         form = FormularzSocjalne(instance=formularz)
     
-    # Disable all fields except komentarz
-    for field_name, field in form.fields.items():
-        if field_name != 'komentarz':
-            field.widget.attrs['disabled'] = 'disabled'
-    
     context = {'form': form}
     return render(request, 'website/zobacz_form_socjalne.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNaukowe(request, pk):
     with connection.cursor() as cursor:
         cursor.execute("SELECT id_formularza, student_id, typ_stypendium, srednia_ocen, data_zlozenia, status, punkty_osiagniecie FROM api_formularz WHERE id_formularza = %s", [pk])
@@ -336,20 +401,17 @@ def ZobaczFormNaukowe(request, pk):
     else:
         form = SkladanieFormularzaNaukowego(initial=formularz)
     
-    # Wyłączanie wszystkich pól oprócz komentarza
-    for field_name, field in form.fields.items():
-        if field_name != 'komentarz':
-            field.widget.attrs['disabled'] = 'disabled'
-    
     context = {'form': form}
     return render(request, 'website/zobacz_form_naukowe.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def AkceptowaneWnioski(request):
     query = "SELECT * FROM api_formularz WHERE status = %s"
     params = ['zaakceptowane']
     formularze = Formularz.objects.raw(query, params)
     return render(request, 'website/zaakceptowane_wnioski.html', {'formularze': formularze})
 
+@user_passes_test(lambda u: u.is_superuser)
 def OdrzuconeWnioski(request):
     query = "SELECT * FROM api_formularz WHERE status = %s"
     params = ['odrzucone']
@@ -357,6 +419,9 @@ def OdrzuconeWnioski(request):
     return render(request, 'website/odrzucone_wnioski.html', {'formularze': formularze})
 
 
+@user_passes_test(lambda u: u.is_superuser)
+def UsunFormNiepelno(request,pk):
+    formularz = Formularz.objects.get(id_formularza=pk)
 
 def UsunFormNiepelno(request, pk):
     with connection.cursor() as cursor:
@@ -391,6 +456,7 @@ class Kontakty(TemplateView):
             context['form'] = KontaktForm(instance=ostatni_kontakt)
         return context
 
+@user_passes_test(lambda u: u.is_superuser)
 def edytujKontakt(request):
     kontakt = Kontakt.objects.last()
     if request.method == 'POST':
@@ -402,7 +468,7 @@ def edytujKontakt(request):
         form = KontaktForm(instance=kontakt)
     return render(request, 'website/edytuj_kontakt.html', {'form': form})
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def dodajAktualnosc(request):
     if request.method == 'POST':
         aktualnosci = AktualnosciForm(request.POST)
@@ -413,6 +479,7 @@ def dodajAktualnosc(request):
         aktualnosci = AktualnosciForm()
     return render(request, 'website/dodaj_aktualnosci.html', {'form': aktualnosci})
 
+@user_passes_test(lambda u: u.is_superuser)
 def edytujAktualnosc(request,pk):
     aktualnosci = Aktualnosci.objects.get(id_aktualnosci=pk)
     form = AktualnosciForm(instance=aktualnosci)
@@ -424,10 +491,9 @@ def edytujAktualnosc(request,pk):
     context = {'form': form}
     return render(request, 'website/edytuj_aktualnosci.html',context)
 
+@login_required
 
-from django.forms import inlineformset_factory
 
-from django.forms import inlineformset_factory
 
 def ZlozenieFormularzaSocjalnego(request, id=None):
     if id:
@@ -474,67 +540,79 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
     }
     return render(request, 'website/form_socjalne.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
+def EdytujFormSocjalne(request, pk_form):
+    formularz = Formularz.objects.get(id_formularza=pk_form)
+    form_soc = FormularzSocjalne(instance=formularz)
 
 def EdytujFormSocjalne(request, pk_form, pk_student):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id_formularza, student_id, data_zlozenia, status, przychod_bez_podatku, semestr_studenta_id, aktualny_semestr_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
+        cursor.execute("SELECT id_formularza, typ_stypendium, data_zlozenia, przychod_bez_podatku, aktualny_semestr_id, semestr_studenta_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
         form_row = cursor.fetchone()
         if not form_row:
             raise Http404("Formularz nie istnieje")
         
         formularz = {
             'id_formularza': form_row[0],
-            'student_id': form_row[1],
+            'typ_stypendium': form_row[1],
             'data_zlozenia': form_row[2],
-            'status': form_row[3],
-            'przychod_bez_podatku': form_row[4],
-            'semestr_studenta_id': form_row[5],
-            'aktualny_semestr_id': form_row[6]
-
+            'przychod_bez_podatku': form_row[3],
+            'aktualny_semestr_id': form_row[4],
+            'semestr_studenta_id': form_row[5]
         }
 
-        cursor.execute("SELECT student_id, id_czlonka, imie_czlonka, nazwisko_czlonka, stopien_pokrewienstwa, data_urodzenia, miejsce_pracy FROM api_czlonekrodziny WHERE student_id = %s", [pk_student])
-        czlonek_row = cursor.fetchone()
-        if not czlonek_row:
-            raise Http404("Czlonek rodziny nie istnieje")
-        
-        czlonek = {
-            'student_id': czlonek_row[0],
-            'id_czlonka': czlonek_row[1],
-            'imie_czlonka': czlonek_row[2],
-            'nazwisko_czlonka': czlonek_row[3],
-            'stopien_pokrewienstwa': czlonek_row[4],
-            'data_urodzenia': czlonek_row[5],
-            'miejsce_pracy': czlonek_row[6]
-        }
+        cursor.execute("SELECT cr.id_czlonka, cr.student_id, cr.imie_czlonka, cr.nazwisko_czlonka, cr.stopien_pokrewienstwa, cr.data_urodzenia, cr.miejsce_pracy FROM api_czlonekrodziny cr JOIN api_student u ON cr.student_id = u.id_student WHERE u.id_student = %s", [pk_student])
+        czlonek_rows = cursor.fetchall()
 
-    if request.method == 'POST':
-        form_soc = FormularzSocjalne(request.POST, initial=formularz)
-        czlonek_form = CzlonekSocjalne(request.POST, initial=czlonek)
+        if not czlonek_rows:
+            raise Http404("Członek rodziny nie istnieje")
         
-        if form_soc.is_valid() and czlonek_form.is_valid():
-            with connection.cursor() as cursor:
-                cursor.execute("""
-                    UPDATE api_formularz
-                    SET  przychod_bez_podatku = %s, oswiadczenie_prawo_o_szkolnictwie = %s, oswiadczenie_gospodarstwo_domowe = %s
-                    WHERE id_formularza = %s
-                """, [form_soc.cleaned_data['przychod_bez_podatku'], form_soc.cleaned_data['oswiadczenie_prawo_o_szkolnictwie'], form_soc.cleaned_data['oswiadczenie_gospodarstwo_domowe'], pk_form])
-                
-                cursor.execute("""
-                    UPDATE api_czlonekrodziny
-                    SET imie_czlonka = %s, nazwisko_czlonka = %s, data_urodzenia = %s, miejsce_pracy = %s, stopien_pokrewienstwa = %s
-                    WHERE id_czlonka = %s
-                """, [czlonek_form.cleaned_data['imie_czlonka'], czlonek_form.cleaned_data['nazwisko_czlonka'], czlonek_form.cleaned_data['data_urodzenia'],czlonek_form.cleaned_data['miejsce_pracy'],czlonek_form.cleaned_data['stopien_pokrewienstwa'], czlonek['id_czlonka']])
+        czlonkowie = []
+        czlonek_forms = []
+        for row in czlonek_rows:
+            czlonek = {
+                'id_czlonka': row[0],
+                'student_id': row[1],
+                'imie_czlonka': row[2],
+                'nazwisko_czlonka': row[3],
+                'stopien_pokrewienstwa': row[4],
+                'data_urodzenia': row[5],
+                'miejsce_pracy': row[6]
+            }
+            czlonkowie.append(czlonek)
+            czlonek_forms.append(CzlonekSocjalne(initial=czlonek))
 
-            return redirect('/admin_tables')
-    else:
-        form_soc = FormularzSocjalne(initial=formularz)
-        czlonek_form = CzlonekSocjalne(initial=czlonek)
+        if request.method == 'POST':
+            form_soc = FormularzSocjalne(request.POST, initial=formularz)
+            czlonek_forms = [CzlonekSocjalne(request.POST, initial=czlonek) for czlonek in czlonkowie]
+            
+            if form_soc.is_valid() and all(form.is_valid() for form in czlonek_forms):
+                with connection.cursor() as cursor:
+                    cursor.execute("""
+                        UPDATE api_formularz
+                        SET przychod_bez_podatku = %s 
+                        WHERE id_formularza = %s
+                    """, [form_soc.cleaned_data['przychod_bez_podatku'], pk_form])
+                    
+                    for form, czlonek in zip(czlonek_forms, czlonkowie):
+                        cursor.execute("""
+                            UPDATE api_czlonekrodziny
+                            SET imie_czlonka = %s, nazwisko_czlonka = %s, data_urodzenia = %s, miejsce_pracy = %s, stopien_pokrewienstwa = %s
+                            WHERE id_czlonka = %s
+                        """, [form.cleaned_data['imie_czlonka'], form.cleaned_data['nazwisko_czlonka'], form.cleaned_data['data_urodzenia'], form.cleaned_data['miejsce_pracy'], form.cleaned_data['stopien_pokrewienstwa'], czlonek['id_czlonka']])
+
+                return redirect('/admin_tables')
+        else:
+            form_soc = FormularzSocjalne(initial=formularz)
+            czlonek_forms = [CzlonekSocjalne(initial=czlonek) for czlonek in czlonkowie]
     
-    context = {'form_soc': form_soc, 'czlonek': czlonek_form}
+    context = {'form_soc': form_soc, 'czlonek_forms': czlonek_forms}
     return render(request, 'website/edytuj_form_socjalne.html', context)
 
 
+
+
+@user_passes_test(lambda u: u.is_superuser)
 def UsunFormSocjalne(request, pk_form, pk_student):
     if request.method == 'POST':
         with connection.cursor() as cursor:
@@ -544,6 +622,7 @@ def UsunFormSocjalne(request, pk_form, pk_student):
         return redirect(reverse('admin_tables'))
     return render(request, 'website/usun_form_socjalne.html')
 
+@user_passes_test(lambda u: u.is_superuser)
 def EdytujFormNaukowe(request, pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
     form_naukowe = SkladanieFormularzaNaukowego(instance=formularz)
@@ -555,6 +634,7 @@ def EdytujFormNaukowe(request, pk_form):
     context = {'form_naukowe': form_naukowe}
     return render(request, 'website/edytuj_form_naukowe.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def UsunFormNaukowe(request,pk_form):
     formularz = Formularz.objects.get(id_formularza=pk_form)
     if request.method == 'POST':
@@ -563,24 +643,7 @@ def UsunFormNaukowe(request,pk_form):
     context = {'item': formularz}
     return render(request, 'website/usun_form_naukowe.html',context)
 
-    
-def WynikiStudenta(request, pk_decyzji, pk_formularz):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT typ_stypendium, status FROM api_formularz WHERE id_formularza = %s",[pk_formularz])
-        form = cursor.fetchall()
-        if not form:
-            cursor.execute(
-                "UPDATE api_formularz SET status = 'nie zlozono wniosku' WHERE id_formularza = %s",[pk_formularz])
-
-    with connection.cursor() as cursor:
-        cursor.execute(
-            "SELECT * FROM api_decyzjestypendialne WHERE id_decyzji = %s",[pk_decyzji])
-        wyniki = cursor.fetchall()
-
-    context = {'form': form, 'wyniki': wyniki}
-    return render(request, 'website/wyswietl_wyniki.html', context)
-
+@user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNaukowe(request, pk):
     with connection.cursor() as cursor:
         cursor.execute("SELECT id_formularza, student_id, typ_stypendium, srednia_ocen, data_zlozenia, status, punkty_osiagniecie FROM api_formularz WHERE id_formularza = %s", [pk])
@@ -615,10 +678,37 @@ def ZobaczFormNaukowe(request, pk):
     else:
         form = SkladanieFormularzaNaukowego(initial=formularz)
     
-    # Wyłączanie wszystkich pól oprócz komentarza
-    for field_name, field in form.fields.items():
-        if field_name != 'komentarz':
-            field.widget.attrs['disabled'] = 'disabled'
-    
     context = {'form': form}
     return render(request, 'website/zobacz_form_naukowe.html', context)
+
+@login_required
+def AktualizujProfil(request):
+    if request.method == 'POST':
+        form = UpdateUzytkownik(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profil_uzytkownika')
+    else:
+        form = UpdateUzytkownik(instance=request.user)
+    context = {
+        'form': form
+    }
+
+    return render(request, 'website/profil_uzytkownika.html', context)
+
+# def WynikiStudenta(request, pk_decyzji, pk_formularz):
+#     with connection.cursor() as cursor:
+#         cursor.execute(
+#             "SELECT typ_stypendium, status FROM api_formularz WHERE id_formularza = %s",[pk_formularz])
+#         form = cursor.fetchall()
+#         if not form:
+#             cursor.execute(
+#                 "UPDATE api_formularz SET status = 'nie zlozono wniosku' WHERE id_formularza = %s",[pk_formularz])
+
+#     with connection.cursor() as cursor:
+#         cursor.execute(
+#             "SELECT * FROM api_decyzjestypendialne WHERE id_decyzji = %s",[pk_decyzji])
+#         wyniki = cursor.fetchall()
+
+#     context = {'form': form, 'wyniki': wyniki}
+#     return render(request, 'website/wyswietl_wyniki.html', context)
