@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'platforma_stypendialna.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'stypendialne2',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',  # or the hostname where your MySQL server is running
+        'NAME': 'db_b179',
+        'USER': 'b179',
+        'PASSWORD': 'F4A8_4a0d30',
+        'HOST': 'mysql.mikr.us',
         'PORT': '3306',      # or the port on which your MySQL server is listening
     }
 }

@@ -230,18 +230,18 @@ def ZlozenieFormularzaNaukowego(request):
     #return render(request, 'website/form_naukowe.html', {'form2': form}) 
     #redirect('website/kontakt.html')
 def AdminTables(request):
-    with connection.cursor() as cursor:
-        cursor.callproc('CountStudents')
-        results = cursor.fetchall()
-        student_count = None
-        for result in results:
-            student_count = result[0] if result else None
+    # with connection.cursor() as cursor:
+        # cursor.callproc('CountStudents')
+        # results = cursor.fetchall()
+        # student_count = None
+        # for result in results:
+        #     student_count = result[0] if result else None
 
     student = Student.objects.all()
     formularz = Formularz.objects.all()
     kontakt = Kontakt.objects.all()
     aktualnosci = Aktualnosci.objects.all()
-    context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci, 'student_count': student_count}
+    context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci}
     return render(request, 'website/admin_tables.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
