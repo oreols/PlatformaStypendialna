@@ -50,4 +50,6 @@ urlpatterns = [
     path('zaakceptowane_wnioski', AkceptowaneWnioski, name='zaakceptowane_wnioski'),
     path('odrzucone_wnioski/', OdrzuconeWnioski, name='odrzucone_wnioski'),
     path('profil_uzytkownika', AktualizujProfil, name='profil_uzytkownika'),
+    path('statystyki', Statystyki, name='statystyki'),
+    path('wyniki', WynikiStudenta, name='wyniki'),
 ]

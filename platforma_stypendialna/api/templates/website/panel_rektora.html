@@ -1,4 +1,4 @@
-{% extends "base_admin.html" %}
+{% extends "base.html" %}
 {% block content %}
 <head>
     <title>Formularze</title>
@@ -9,12 +9,15 @@
             <button class="base">Wnioski</button>
             <button class="base"><a href="ranking">Ranking</a></button>
             <button class="base"><a href="archiwum">Archiwum</a></button>
+            
         </div>
         <div class="wnioski-list">
             <a href="nowe_wnioski">Nowe</a>
             <a href="zaakceptowane_wnioski">Zaakceptowane</a>
             <a href="odrzucone_wnioski">Odrzucone</a>
         </div>
+        <button class="base aktualnosci"><a href="dodaj_aktualnosci">Aktualnosci</a></button>
+        <button class="base statystyki"><a href="statystyki">Statystyki</a></button>
     </div>
 
 {% endblock %}

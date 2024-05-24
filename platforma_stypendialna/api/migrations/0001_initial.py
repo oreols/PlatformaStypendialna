@@ -304,7 +304,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL('''
             DELIMITER //
-            CREATE PROCEDURE CountStudents()
+            CREATE PROCEDURE IF NOT EXISTS CountStudents()
             BEGIN
             DECLARE student_count INT;
             SELECT COUNT(*) INTO student_count FROM api_Student;
@@ -312,5 +312,34 @@ class Migration(migrations.Migration):
             END//
             DELIMITER ;
             '''),
-
+        migrations.RunSQL('''
+            delimiter //
+            create procedure IF NOT EXISTS CountSocjalne ()
+            begin
+            declare count_socjalne int;
+            select count(*) into count_socjalne from api_formularz where typ_stypendium = 'socjalne';
+            select count_socjalne as 'Liczba_stypendiow_socjalnych';
+            end//
+            delimiter ;
+            '''),
+        migrations.RunSQL('''
+            delimiter //
+            create procedure IF NOT EXISTS CountNaukowe ()
+            begin
+            declare count_naukowe int;
+            select count(*) into count_naukowe from api_formularz where typ_stypendium = 'naukowe';
+            select count_naukowe as 'Liczba_stypendiow_naukowych';
+            end//
+            delimiter ;
+            '''),
+        migrations.RunSQL('''
+            delimiter //
+            create procedure IF NOT EXISTS CountNiepelno ()
+            begin
+            declare count_niepelno int;
+            select count(*) into count_niepelno from api_formularz where typ_stypendium = 'dla_niepelnosprawnych';
+            select count_niepelno as 'Liczba_stypeniow_dla_osob_niepelnosprawnych';
+            end//
+            delimiter ;
+            '''),
     ]

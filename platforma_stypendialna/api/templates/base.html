@@ -21,13 +21,14 @@
 <link rel="stylesheet" href="static/strona_glowna.css">
 <link rel="stylesheet" href="static/kryteria_oceny.css">
 <link rel="stylesheet" href="static/form.css">
+<link rel="stylesheet" href="static/rektor.css">
 </head>
 <header>
     <div class="logo">
         <h1>STYPENDIALNIE</h1> 
         <div class="buttons_nav">
             {% if user.is_authenticated %}
-            <a href="profil_uzytkownika">
+            <a href="{% url 'profil_uzytkownika' %}">
                 <img src="{{ user.ikonka.url }}" width="40" height="40" alt="User Icon">
             </a>
             {% else %}

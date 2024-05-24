@@ -1,0 +1,17 @@
+{% extends "base_admin.html" %}
+{% block content %}
+<head>
+    <title>Statystyki</title>
+</head>
+    <div class="container container_statystyki">
+        <div class="title">Statystyki</div>
+        <div class="statystyki-list">
+            <div>
+                <div class="statystyki-item">Studenci (liczba: {{ student_count }})</div>
+                <div class="statystyki-item">Stypendium dla os. niepełnosprawnych (liczba:{{count_niepelno}})</div>
+                <div class="statystyki-item">Stypendium socjalne (liczba: {{count_socjalne}})</div>
+                <div class="statystyki-item">Stypendium naukowe (liczba: {{count_naukowe}})</div>
+            </div>
+        </div>
+    </div>
+{% endblock%}

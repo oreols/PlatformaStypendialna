@@ -1,9 +1,16 @@
 {% extends "navbar.html" %}
-    {% block content %}
-
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{form}}
-        <input type="submit" name="Submit">
-    </form>
-    {% endblock %}
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" value="{{ student.username }}">
+    <br>
+    <label for="pesel">PESEL:</label>
+    <input type="text" name="pesel" id="pesel" value="{{ student.pesel }}">
+    <br>
+    <label for="numer_albumu">Numer Albumu:</label>
+    <input type="text" name="numer_albumu" id="numer_albumu" value="{{ student.numer_albumu }}">
+    <br>
+    <input type="submit" name="Submit" value="Submit">
+</form>
+{% endblock %}

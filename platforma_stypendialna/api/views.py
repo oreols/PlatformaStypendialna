@@ -101,9 +101,6 @@ def registerPage(request):
             User = get_user_model()
             user_object = User.objects.get(username=username)
             
-
-            
-
             current_site = get_current_site(request)
             mail_subject = 'Aktywuj swoje konto'
             message = render_to_string('account_activation_email.html', {
@@ -219,31 +216,51 @@ def ZlozenieFormularzaNaukowego(request):
     
     return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list, 'form_naukowe': form_naukowe})
 
-#def ZlozenieFormularzaNaukowego(request):
- #   if request.method == 'POST':
-  #      form = ZapiszOsiagniecie(request.POST)
-   #     if form.is_valid():
-    #        form.save()
-     #       return redirect('main')
-    #else:
-     #   form = ZapiszOsiagniecie()
-    #return render(request, 'website/form_naukowe.html', {'form2': form}) 
-    #redirect('website/kontakt.html')
+@user_passes_test(lambda u: u.is_superuser)
 def AdminTables(request):
-    # with connection.cursor() as cursor:
-        # cursor.callproc('CountStudents')
-        # results = cursor.fetchall()
-        # student_count = None
-        # for result in results:
-        #     student_count = result[0] if result else None
+    with connection.cursor() as cursor:
+        cursor.callproc('CountStudents')
+        results = cursor.fetchall()
+        student_count = None
+        for result in results:
+            student_count = result[0] if result else None
 
     student = Student.objects.all()
     formularz = Formularz.objects.all()
     kontakt = Kontakt.objects.all()
     aktualnosci = Aktualnosci.objects.all()
-    context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci}
+    context = {'student': student , 'formularz': formularz, 'kontakt': kontakt, 'aktualnosci': aktualnosci, 'student_count': student_count}
     return render(request, 'website/admin_tables.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
+def Statystyki(request):
+    with connection.cursor() as cursor:
+        cursor.callproc('CountSocjalne')
+        results = cursor.fetchall()
+        count_socjalne = None
+        for result in results:
+            count_socjalne = result[0] if result else None
+    with connection.cursor() as cursor:
+        cursor.callproc('CountNaukowe')
+        results = cursor.fetchall()
+        count_naukowe = None
+        for result in results:
+            count_naukowe = result[0] if result else None
+    with connection.cursor() as cursor:
+        cursor.callproc('CountNiepelno')
+        results = cursor.fetchall()
+        count_niepelno = None
+        for result in results:
+            count_niepelno = result[0] if result else None
+    with connection.cursor() as cursor:
+        cursor.callproc('CountStudents')
+        results = cursor.fetchall()
+        student_count = None
+        for result in results:
+            student_count = result[0] if result else None
+
+    context = {'count_socjalne': count_socjalne, 'count_naukowe': count_naukowe, 'count_niepelno': count_niepelno,'student_count': student_count}
+    return render(request, 'website/statystyki.html', context)
 @user_passes_test(lambda u: u.is_superuser)
 def NoweWnioski(request):
     formularz = Formularz.objects.all()
@@ -292,16 +309,37 @@ def Logowanie(request):
     return render(request, 'website/logowanie.html')
 
 @user_passes_test(lambda u: u.is_superuser)
-def EdytujStudenta(request,pk):
-    student = Student.objects.get(id_student=pk)
-    form = StudentRegistrationForm(instance=student)
+def EdytujStudenta(request, pk):
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT username, pesel, numer_albumu
+            FROM api_student 
+            WHERE id_student = %s
+        """, [pk])
+        student = cursor.fetchone()
+    
     if request.method == 'POST':
-        form = StudentRegistrationForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            return redirect('/admin_tables')
-    context = {'form': form}
-    return render(request, 'website/edytuj_studenta.html',context)
+        username = request.POST.get('username')
+        pesel = request.POST.get('pesel')
+        numer_albumu = request.POST.get('numer_albumu')
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                UPDATE api_student
+                SET username = %s, pesel = %s, numer_albumu = %s
+                WHERE id_student = %s
+            """, [username, pesel, numer_albumu, pk])
+
+        return redirect('/admin_tables')
+
+    context = {
+        'student': {
+            'username': student[0],
+            'pesel': student[1],
+            'numer_albumu': student[2]
+        }
+    }
+    return render(request, 'website/edytuj_studenta.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
 def UsunStudenta(request,pk):
@@ -690,25 +728,37 @@ def AktualizujProfil(request):
             return redirect('profil_uzytkownika')
     else:
         form = UpdateUzytkownik(instance=request.user)
-    context = {
-        'form': form
-    }
+    context = {'form': form}
 
     return render(request, 'website/profil_uzytkownika.html', context)
 
-# def WynikiStudenta(request, pk_decyzji, pk_formularz):
-#     with connection.cursor() as cursor:
-#         cursor.execute(
-#             "SELECT typ_stypendium, status FROM api_formularz WHERE id_formularza = %s",[pk_formularz])
-#         form = cursor.fetchall()
-#         if not form:
-#             cursor.execute(
-#                 "UPDATE api_formularz SET status = 'nie zlozono wniosku' WHERE id_formularza = %s",[pk_formularz])
+from django.shortcuts import render
+from django.db import connection
+from django.contrib.auth.decorators import login_required
 
-#     with connection.cursor() as cursor:
-#         cursor.execute(
-#             "SELECT * FROM api_decyzjestypendialne WHERE id_decyzji = %s",[pk_decyzji])
-#         wyniki = cursor.fetchall()
+@login_required
+def WynikiStudenta(request):
+    # Pobranie student_id z zalogowanego użytkownika
+    user = request.user
 
-#     context = {'form': form, 'wyniki': wyniki}
-#     return render(request, 'website/wyswietl_wyniki.html', context)
+    # Uzyskanie student_id z obiektu użytkownika
+    student_id = user.api_student.id_student
+
+    # Zapytanie SQL do pobrania danych formularzy dla danego studenta
+    query = """
+        SELECT data_zlozenia, typ_stypendium, status 
+        FROM api_formularz 
+        WHERE student_id = %s
+    """
+
+    # Wykonanie zapytania SQL
+    with connection.cursor() as cursor:
+        cursor.execute(query, [student_id])
+        rows = cursor.fetchall()
+
+    # Przygotowanie danych do przekazania do szablonu
+    forms = [{'data_zlozenia': row[0], 'typ_stypendium': row[1], 'status': row[2]} for row in rows]
+    context = {'forms': forms}
+
+    # Renderowanie szablonu z danymi
+    return render(request, 'website/wyniki.html', context)
