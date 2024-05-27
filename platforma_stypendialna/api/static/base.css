@@ -117,4 +117,18 @@ body{
 }
 
 
+th {
+    background-color: #6b6e6e;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+tr {
+    text-align: center;
+}
+
+a.kontakt{
+    color: black;
+}
 

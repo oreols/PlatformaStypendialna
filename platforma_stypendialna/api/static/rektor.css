@@ -76,6 +76,9 @@ body {
         bottom: 80px;
         padding: 5px 30px;
     }
+    table td {
+        padding: 5px;
+    }
 }
 .moje_formularze {
     display: grid;
@@ -100,4 +103,9 @@ body {
     background-color: #679fa3;
     color: black;
 }
+
+table td {
+    padding: 5px;
+}
+
 

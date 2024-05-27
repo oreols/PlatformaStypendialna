@@ -302,6 +302,16 @@ class Migration(migrations.Migration):
                 ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
+        # migrations.CreateModel(
+        #     name="historia_statusow",
+        #     fields=[
+        #         ('id_historii', models.IntegerField(primary_key=True, serialize=False)),
+        #         ('stary_status', models.CharField(max_length=20, null=True)),
+        #         ('nowy_status', models.CharField(max_length=20, null=True)),
+        #         ('data_zmiany', models.DateTimeField(null=True)),
+        #         ('formularz', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='api.formularz')),
+        #     ],
+        # ),
         migrations.RunSQL('''
             DELIMITER //
             CREATE PROCEDURE IF NOT EXISTS CountStudents()
@@ -342,4 +352,18 @@ class Migration(migrations.Migration):
             end//
             delimiter ;
             '''),
+    #     migrations.RunSQL('''
+    #         DELIMITER //
+    #         CREATE TRIGGER trigger_log_status_change
+    #         AFTER UPDATE ON api_formularz
+    #         FOR EACH ROW
+    #         BEGIN
+    #             IF NEW.status = 'zaakceptowane' OR NEW.status = 'odrzucone' THEN
+    #                 INSERT INTO historia_statusow (formularz_id, stary_status, nowy_status, data_zmiany)
+    #                 VALUES (NEW.id, OLD.status, NEW.status, CURRENT_TIMESTAMP);
+    #             END IF;
+    #         END;
+    #         //
+    #         DELIMITER ;
+    #         '''),           
     ]

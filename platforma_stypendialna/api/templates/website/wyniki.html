@@ -1,16 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="moje_formularze">
-    <div class="formularze-list">
+
+
+<head>
+    <title>Moje wyniki</title>
+</head>
+    <div class="container container_panel_rektora">
         <div>
-            {% for form in forms %}
+            
             <table class="formularze-item">
-                <tr class="items">Data złożenia: {{ form.data_zlozenia }}</tr>
-                <tr class="items">Typ stypendium: {{ form.typ_stypendium }}</tr>
-                <tr class="items">Status formularza: {{ form.status }}</tr>
+                <tr>
+                    <th>Data złożenia:</th>
+                    <th>Typ stypendium:</th>
+                    <th>Status formularza:</th>
+                </tr>
+                {% for form in forms %}
+                <tr>
+                    <td>{{ form.data_zlozenia }}</td> 
+                    <td>{{ form.typ_stypendium }}</td>
+                    <td>{{ form.status }}</td> <br>
+                </tr>
+                {% endfor %}
             </table>
-            {% endfor %}
+                
         </div>
     </div>
-</div>
+
 {% endblock %}

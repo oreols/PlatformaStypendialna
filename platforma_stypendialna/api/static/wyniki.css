@@ -87,3 +87,9 @@ span {
 #rodzaj_formularza{
     width: 200px;
 }
+
+table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid black;
+}

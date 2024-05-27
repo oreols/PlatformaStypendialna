@@ -19,7 +19,7 @@
                             {% if form.status == 'nowe'%}
                             <tr>
                                 <td>{{ form.id_formularza }}</td>
-                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.student_id }}</td>
                                 <td>{{ form.data_zlozenia }}</td>
                                 <td>{{ form.status }}</td>
                                 <td><a class="btn btn-warning" href="{% url 'zobacz_form_niepelno' form.id_formularza %}">Otwórz</a></td>
@@ -54,7 +54,7 @@
                             {% if form.status == 'nowe'%}
                             <tr>
                                 <td>{{ form.id_formularza }}</td>
-                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.student_id }}</td>
                                 <td>{{ form.data_zlozenia }}</td>
                                 <td>{{ form.status }}</td>
                                 <td>{{form.zalacznik}}</td>

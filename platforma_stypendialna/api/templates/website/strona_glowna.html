@@ -12,12 +12,16 @@
     </span>
     <div class="title"> Ogłoszenia i aktualności</div> 
     <ul class="ogloszenia"> 
+        {% if ostatnia_aktualnosc %}
             <li>
                 <strong>{{ ostatnia_aktualnosc.nazwa_aktualnosci }}</strong><br>
                 {{ ostatnia_aktualnosc.tekst_aktualnosci }}<br> <br>
                 <em>Data publikacji: {{ ostatnia_aktualnosc.data_opublikowania }}</em>
             </li>
             <br>
+        {% else %}
+            <li>Brak aktualności do wyświetlenia.</li>
+        {% endif %}
     </ul>
 </div>
 {% endblock %}

@@ -6,7 +6,7 @@
 </head>
 <div class="container container_kontakt">
     <div class="title_kontakt">Dane kontaktowe</div>
-    <span>Numer telefonu: <a href=" tel:{{ ostatni_kontakt.numer_tel }}">{{ ostatni_kontakt.numer_tel }}</a> </span> <br>
-    <span>Email: <a href=" mailto:{{ ostatni_kontakt.email }}">{{ ostatni_kontakt.email }}</a> </span>
+    <span>Numer telefonu: <a class='kontakt' href=" tel:{{ kontakt.numer_tel }}">{{ kontakt.numer_tel }}</a> </span> <br>
+    <span>Email: <a class='kontakt' href=" mailto:{{ kontakt.email }}">{{ kontakt.email }}</a> </span>
 </div>
 {% endblock %}

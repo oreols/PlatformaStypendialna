@@ -59,7 +59,7 @@
                         {% if form.typ_stypendium == 'dla_niepelnosprawnych' %}
                             <tr>
                                 <td>{{ form.id_formularza }}</td>
-                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.student_id }}</td>
                                 <td>{{ form.data_zlozenia }}</td>
                                 <td><a class="btn btn-warning" href="{% url 'edytuj_form_niepelno' form.id_formularza %}">Edytuj</a></td>
                                 <td><a class="btn btn-danger" href="{% url 'usun_form_niepelno' form.id_formularza %}">Usuń</a></td>
@@ -91,7 +91,7 @@
                         {% if form.typ_stypendium == 'socjalne' %}
                             <tr>
                                 <td>{{ form.id_formularza }}</td>
-                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.student_id }}</td>
                                 <td>{{ form.data_zlozenia }}</td>
                                 <td><a class="btn btn-warning" href="{% url 'edytuj_form_socjalne' pk_form=form.id_formularza pk_student=form.student_id %}">Edytuj</a></td>
                                 <td><a class="btn btn-danger" href="{% url 'usun_form_socjalne' pk_form=form.id_formularza pk_student=form.student_id %}">Usuń</a></td>
@@ -124,7 +124,7 @@
                         {% if form.typ_stypendium == 'naukowe' %}
                             <tr>
                                 <td>{{ form.id_formularza }}</td>
-                                <td>{{ form.id_studenta }}</td>
+                                <td>{{ form.student_id }}</td>
                                 <td>{{ form.data_zlozenia }}</td>
                                 <td><a class="btn btn-warning" href="{% url 'edytuj_form_naukowe' form.id_formularza%}">Edytuj</a></td>
                                 <td><a class="btn btn-danger" href="{% url 'usun_form_naukowe' form.id_formularza %}">Usuń</a></td>

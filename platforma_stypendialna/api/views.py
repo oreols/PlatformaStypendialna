@@ -297,8 +297,23 @@ class StronaGlowna(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pobierz ostatnią aktualność
-        ostatnia_aktualnosc = Aktualnosci.objects.last()
+        with connection.cursor() as cursor:
+                cursor.execute("""
+                    SELECT nazwa_aktualnosci, tekst_aktualnosci, data_opublikowania
+                    FROM api_aktualnosci
+                    ORDER BY data_opublikowania DESC
+                    LIMIT 1
+                """)
+                row = cursor.fetchone()
+                if row:
+                    ostatnia_aktualnosc = {
+                        'nazwa_aktualnosci': row[0],
+                        'tekst_aktualnosci': row[1],
+                        'data_opublikowania': row[2]
+                    }
+                else:
+                    ostatnia_aktualnosc = None
+
         context['ostatnia_aktualnosc'] = ostatnia_aktualnosc
         return context
 
@@ -487,11 +502,23 @@ class Kontakty(TemplateView):
     template_name = 'website/kontakt.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        ostatni_kontakt = Kontakt.objects.last()
-        context['ostatni_kontakt'] = ostatni_kontakt
-        if self.request.user.is_superuser:
-            context['form'] = KontaktForm(instance=ostatni_kontakt)
+        context =  super().get_context_data(**kwargs)
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT email,numer_tel
+                FROM api_kontakt
+                ORDER BY id_kontakt DESC
+                LIMIT 1
+            """)
+            row = cursor.fetchone()
+            if row:
+                kontakt = {
+                    'email': row[0],
+                    'numer_tel': row[1]
+                }
+            else:
+                kontakt = None
+        context['kontakt'] = kontakt
         return context
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -738,16 +765,16 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 def WynikiStudenta(request):
-    # Pobranie student_id z zalogowanego użytkownika
     user = request.user
-    # Uzyskanie student_id z obiektu użytkownika
     student_id = user.id_student
 
-    # Zapytanie SQL do pobrania danych formularzy dla danego studenta
     query = """
-        SELECT data_zlozenia, typ_stypendium, status 
-        FROM api_formularz 
+       SELECT data_zlozenia, typ_stypendium, status
+        FROM api_formularz
         WHERE student_id = %s
+        AND data_zlozenia IS NOT NULL
+        AND typ_stypendium IS NOT NULL
+        AND status IS NOT NULL
     """
 
     # Wykonanie zapytania SQL
