@@ -740,9 +740,8 @@ from django.contrib.auth.decorators import login_required
 def WynikiStudenta(request):
     # Pobranie student_id z zalogowanego użytkownika
     user = request.user
-
     # Uzyskanie student_id z obiektu użytkownika
-    student_id = user.api_student.id_student
+    student_id = user.id_student
 
     # Zapytanie SQL do pobrania danych formularzy dla danego studenta
     query = """
