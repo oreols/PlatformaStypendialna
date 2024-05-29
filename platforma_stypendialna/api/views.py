@@ -54,6 +54,20 @@ def student_has_submitted_form_niepelnosprawne(student_id):
     return row[0] > 0
 
 
+def ranking_studentow():
+    query = """
+        SELECT api_student.id_student, api_student.imie, api_student.nazwisko, api_formularz.srednia_ocen
+        FROM api_student INNER JOIN api_formularz ON api_formularz.student_id = api_student.id_student
+        WHERE api_formularz.typ_stypendium = 'naukowe'
+        ORDER BY api_formularz.srednia_ocen DESC
+    """
+    return Student.objects.raw(query)
+    
+
+
+def widok_ranking_studentow(request):
+    students = ranking_studentow()
+    return render(request, 'website/ranking.html', {'students': students})
 
 def main(request):
     return HttpResponse("Witam na platformie stypendialnej!")
@@ -159,9 +173,9 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
                     form.save()
                     return redirect('strona_glowna')
             else: 
-                return HttpResponse("Skladales juz formularz socjalny")
+                return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
         else:
-            return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
+            return HttpResponse("Skladales juz formularz socjalny")
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
@@ -577,21 +591,25 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
     if request.method == 'POST':
         if form_soc.is_valid() and formset.is_valid() and semestr_studenta.is_valid() and aktualny_semestr.is_valid():
             student = request.user
-            semestr_studenta_instance = semestr_studenta.save(commit=False)
-            semestr_studenta_instance.student = student
-            semestr_studenta_instance.save()
-            aktualny_semestr_instance = aktualny_semestr.save(commit=False)
-            aktualny_semestr_instance.student = student
-            aktualny_semestr_instance.save()
-            form_soc_instance = form_soc.save(commit=False)
-            form_soc_instance.student = student
-            form_soc_instance.save()
+            print(student.id_student)
+            if not student_has_submitted_form_socjalne(student.id_student):
+                if not student_has_submitted_form_niepelnosprawne(student.id_student):
+                    semestr_studenta_instance = semestr_studenta.save(commit=False)
+                    semestr_studenta_instance.student = student
+                    semestr_studenta_instance.save()
+                    aktualny_semestr_instance = aktualny_semestr.save(commit=False)
+                    aktualny_semestr_instance.student = student
+                    aktualny_semestr_instance.save()
+                    form_soc_instance = form_soc.save(commit=False)
+                    form_soc_instance.student = student
+                    form_soc_instance.save()
 
             for form in formset:
                 if form.cleaned_data.get('DELETE'):
                     if form.instance.pk:
                         form.instance.delete()
                 else:
+                    student = request.user
                     czlonek_instance = form.save(commit=False)
                     czlonek_instance.student = student
                     czlonek_instance.save()

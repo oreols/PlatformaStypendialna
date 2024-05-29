@@ -16,16 +16,20 @@
             <caption class="caption_table"> STYPENDIUM SOCJALNE</caption>
             <thead>
                 <tr>
-                    <th>MIEJSCE</th><th>NR ALBUMU</th>
+                    <th>MIEJSCE</th><th>ID</th><th>NICK</th><th>IMIE</th><th>NAZWISKO</th><th>SREDNIA</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1.</td><td>00000</td>
-                </tr>
-                <tr>
-                    <td>2.</td><td>00001</td>
-                </tr>
+                {% for student in students %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.id_student }}</td>
+                <td>{{ student }}</td>
+                <td>{{ student.imie }}</td>
+                <td>{{ student.nazwisko }}</td>
+                <td>{{ student.srednia_ocen }}</td>
+            </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
