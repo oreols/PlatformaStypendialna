@@ -56,6 +56,20 @@ def student_has_submitted_form_niepelnosprawne(student_id):
     return row[0] > 0
 
 
+def ranking_studentow():
+    query = """
+        SELECT api_student.id_student, api_student.imie, api_student.nazwisko, api_formularz.srednia_ocen
+        FROM api_student INNER JOIN api_formularz ON api_formularz.student_id = api_student.id_student
+        WHERE api_formularz.typ_stypendium = 'naukowe'
+        ORDER BY api_formularz.srednia_ocen DESC
+    """
+    return Student.objects.raw(query)
+    
+
+
+def widok_ranking_studentow(request):
+    students = ranking_studentow()
+    return render(request, 'website/ranking.html', {'students': students})
 
 def main(request):
     return HttpResponse("Witam na platformie stypendialnej!")
@@ -161,9 +175,9 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
                     form.save()
                     return redirect('strona_glowna')
             else: 
-                return HttpResponse("Skladales juz formularz socjalny")
+                return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
         else:
-            return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
+            return HttpResponse("Skladales juz formularz socjalny")
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
