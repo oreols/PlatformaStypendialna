@@ -315,3 +315,10 @@ class SemestrStudenta(models.Model):
     def __str__(self):
         return str(self.semestr)
 
+class HistoriaStatusow(models.Model):
+    id_statusu = models.AutoField(primary_key=True)
+    formularz_id = models.ForeignKey(Formularz, on_delete=models.CASCADE)
+    stary_status = models.CharField(max_length=20)
+    nowy_status = models.CharField(max_length=20)
+    data_zmiany = models.DateTimeField(null=True)
+

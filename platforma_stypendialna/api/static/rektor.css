@@ -1,85 +1,183 @@
 *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inria Serif', sans-serif;
     text-decoration: none;
 }
-a {
-    color: white;
+
+body{
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: #C8ECE3;
 }
-a:hover {
-    color: black;
-    text-decoration: none;
-    font-weight: bold;
-}
-body {
+
+.container {
+    margin-top: 50px;
+    padding: 60px 20px;
+    max-width: 1000px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 10px;
     position: relative;
 }
-.container_panel_rektora {
-    .title {
-        text-align: center;
-        margin: 30px auto;
-        font-size: 30px;
-        color: white;
-        background-color: #051a1b;
-        width: 400px;
-        padding: 5px;
-        margin-bottom: 20px;
-    }
 
-    .buttons {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .base {
-        padding: 10px;
-        border: none;
-        background-color: #135B60;
-        color: white;
-        font-weight: bold;
-        font-size: 20px;
-        text-align: center;
-        position: relative;
-    }
-
-    .wnioski-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background-color: #559ba0;
-        padding: 10px;
-        border-radius: 5px;
-        width: 33%;
-    }
-
-    .wnioski-list a {
-        color: white;
-        text-decoration: none;
-    }
-
-    button:hover, .wnioski-list a:hover {
-        background-color: #679fa3;
-        color: black;
-    }
-    .statystyki {
-        position: absolute;
-        right:20px;
-        bottom: 20px;
-        padding: 5px 30px;
-        width: 200px;
-    }
-    .aktualnosci {
-        position: absolute;
-        width: 200px;
-        right: 20px;
-        bottom: 80px;
-        padding: 5px 30px;
-    }
-    table td {
-        padding: 5px;
-    }
+.title {
+    font-size: 30px;
+    color: white;
+    background-color: #041011;
+    width: 600px;
+    text-align: center; 
+    padding: 10px; 
+    margin: 0 auto; 
+    margin-bottom: 70px;
 }
+
+.logo{
+    background-color: #83C0C0;
+    padding: 10px;
+    border-bottom: 1px solid black;
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo h1{
+    font-family: Jacques Francois Shadow;
+    font-size: 50px;
+    margin: 0 auto;
+}
+#logowanie{
+    background-color: #83C0C0;
+}
+
+#logowanie > a {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#logowanie > a:hover {
+    color: black;
+}
+
+#rejestracja{
+    background-color: #83C0C0;
+    border: 1px solid white;
+}
+
+#rejestracja > a {
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+}
+
+#rejestracja > a:hover {
+    color: white;
+}
+
+a {
+    color: white;
+    text-decoration-line: none;
+}
+
+a:hover {
+    text-decoration: none;
+    cursor: pointer;
+    color: black;
+    font-weight: bold;
+}
+
+.buttons_panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    grid-template-rows: auto;
+    margin: 20px auto 40px;
+    padding: 10px;
+    width: 100%;
+}
+.buttons_panel button {
+    padding: 10px;
+    border: none;
+    background-color:#135B60 ;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+button:hover {
+    background-color: #679fa3;
+    color: black;
+}
+
+.title {
+    text-align: center;
+    margin: 30px auto;
+    font-size: 30px;
+    color: white;
+    background-color: #051a1b;
+    width: 400px;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.base {
+    padding: 10px;
+    border: none;
+    background-color: #135B60;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.wnioski-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #559ba0;
+    padding: 10px;
+    border-radius: 5px;
+    width: 33%;
+}
+
+.wnioski-list a {
+    color: white;
+    text-decoration: none;
+}
+
+button:hover, .wnioski-list a:hover {
+    background-color: #679fa3;
+    color: black;
+}
+.statystyki {
+    position: absolute;
+    right:20px;
+    bottom: 20px;
+    padding: 5px 30px;
+    width: 200px;
+}
+.aktualnosci {
+    position: absolute;
+    width: 200px;
+    right: 20px;
+    bottom: 80px;
+    padding: 5px 30px;
+}
+table td {
+    padding: 5px;
+}
+
 .moje_formularze {
     display: grid;
     grid-template-rows: repeat(3, 1fr);
@@ -107,5 +205,4 @@ body {
 table td {
     padding: 5px;
 }
-
 

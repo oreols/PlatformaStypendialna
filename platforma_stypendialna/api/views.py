@@ -18,7 +18,9 @@ from django.contrib import messages
 from django.urls import reverse
 from django.db import connection
 from django.contrib.auth.decorators import login_required, user_passes_test
-
+from django.db import IntegrityError
+from django.utils import timezone
+my_date = timezone.now()
 
 from .forms import StudentRegistrationForm, SkladanieFormularzaDlaNiepelnosprawnych, ZapiszOsiagniecie, KontaktForm, AktualnosciForm, FormularzSocjalne, CzlonekSocjalne, SkladanieFormularzaNaukowego, ZapiszOsiagniecie, SemestrStudentaForm, AktualnySemestrForm, UpdateUzytkownik
 from django.core.exceptions import ValidationError
@@ -235,32 +237,51 @@ def AdminTables(request):
 @user_passes_test(lambda u: u.is_superuser)
 def Statystyki(request):
     with connection.cursor() as cursor:
+        cursor.callproc('CountWnioski')
+        result = cursor.fetchone()
+        wnioski_count = result[0] if result else 0
+
+    with connection.cursor() as cursor:
         cursor.callproc('CountSocjalne')
-        results = cursor.fetchall()
-        count_socjalne = None
-        for result in results:
-            count_socjalne = result[0] if result else None
+        result = cursor.fetchone()
+        count_socjalne = result[0] if result else 0
+        count_socjalne_zaakceptowane = result[1] if result else 0
+        count_socjalne_odrzucone = result[2] if result else 0
+
     with connection.cursor() as cursor:
         cursor.callproc('CountNaukowe')
-        results = cursor.fetchall()
-        count_naukowe = None
-        for result in results:
-            count_naukowe = result[0] if result else None
+        result = cursor.fetchone()
+        count_naukowe = result[0] if result else 0
+        count_naukowe_zaakceptowane = result[1] if result else 0
+        count_naukowe_odrzucone = result[2] if result else 0
+
     with connection.cursor() as cursor:
         cursor.callproc('CountNiepelno')
-        results = cursor.fetchall()
-        count_niepelno = None
-        for result in results:
-            count_niepelno = result[0] if result else None
+        result = cursor.fetchone()
+        count_niepelno = result[0] if result else 0
+        count_niepelno_zaakceptowane = result[1] if result else 0
+        count_niepelno_odrzucone = result[2] if result else 0
+
     with connection.cursor() as cursor:
         cursor.callproc('CountStudents')
-        results = cursor.fetchall()
-        student_count = None
-        for result in results:
-            student_count = result[0] if result else None
+        result = cursor.fetchone()
+        student_count = result[0] if result else 0
 
-    context = {'count_socjalne': count_socjalne, 'count_naukowe': count_naukowe, 'count_niepelno': count_niepelno,'student_count': student_count}
+    context = {
+        'count_socjalne': count_socjalne,
+        'count_naukowe': count_naukowe,
+        'count_niepelno': count_niepelno,
+        'student_count': student_count,
+        'wnioski_count': wnioski_count,
+        'count_niepelno_zaakceptowane': count_niepelno_zaakceptowane,
+        'count_socjalne_zaakceptowane': count_socjalne_zaakceptowane,
+        'count_naukowe_zaakceptowane': count_naukowe_zaakceptowane,
+        'count_niepelno_odrzucone': count_niepelno_odrzucone,
+        'count_socjalne_odrzucone': count_socjalne_odrzucone,
+        'count_naukowe_odrzucone': count_naukowe_odrzucone,
+    }
     return render(request, 'website/statystyki.html', context)
+
 @user_passes_test(lambda u: u.is_superuser)
 def NoweWnioski(request):
     formularz = Formularz.objects.all()
@@ -421,41 +442,25 @@ def ZobaczFormSocjalne(request, pk):
 
 @user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNaukowe(request, pk):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id_formularza, student_id, typ_stypendium, srednia_ocen, data_zlozenia, status, punkty_osiagniecie FROM api_formularz WHERE id_formularza = %s", [pk])
-        row = cursor.fetchone()
-        if not row:
-            raise Http404("Formularz nie istnieje")
-        
-        formularz = {
-            'id_formularza': row[0],
-            'student_id': row[1], 
-            'typ_stypendium': row[2],
-            'srednia_ocen': row[3],
-            'punkty_osiagniecie': row[4],
-            'data_zlozenia': row[5],
-        }
+    formularz = get_object_or_404(Formularz, id_formularza=pk)
 
     if request.method == 'POST':
-        form = SkladanieFormularzaNaukowego(request.POST, initial=formularz)
+        form = SkladanieFormularzaNaukowego(request.POST, instance=formularz)
         if 'accept' in request.POST:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "UPDATE api_formularz SET status = 'zaakceptowane' WHERE id_formularza = %s", [pk]
-                )
+            formularz.status = 'zaakceptowane'
+            formularz.save()
             return redirect('zaakceptowane_wnioski')
         elif 'reject' in request.POST:
             if form.is_valid():
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "UPDATE api_formularz SET status = 'odrzucone' WHERE id_formularza = %s", [pk]
-                    )
+                formularz.status = 'odrzucone'
+                formularz.save()
                 return redirect('odrzucone_wnioski')
     else:
-        form = SkladanieFormularzaNaukowego(initial=formularz)
+        form = SkladanieFormularzaNaukowego(instance=formularz)
     
-    context = {'form': form}
+    context = {'form_n': form}
     return render(request, 'website/zobacz_form_naukowe.html', context)
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def AkceptowaneWnioski(request):
@@ -557,46 +562,56 @@ def edytujAktualnosc(request,pk):
     return render(request, 'website/edytuj_aktualnosci.html',context)
 
 @login_required
-
-
-
 def ZlozenieFormularzaSocjalnego(request, id=None):
     if id:
         obj = get_object_or_404(Formularz, id=id)
     else:
         obj = None
+
     semestr_studenta = SemestrStudentaForm(request.POST or None, instance=obj)
     aktualny_semestr = AktualnySemestrForm(request.POST or None, instance=obj)
     form_soc = FormularzSocjalne(request.POST or None, instance=obj)
     CzlonekFormset = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne, extra=1, can_delete=True)
+    
     if obj:
         formset = CzlonekFormset(request.POST or None, queryset=obj.czlonekrodziny_set.all())
     else:
         formset = CzlonekFormset(request.POST or None, queryset=CzlonekRodziny.objects.none())
 
     if request.method == 'POST':
+        # Sprawdzamy, czy formularz główny oraz wszystkie formularze związane są ważne
         if form_soc.is_valid() and formset.is_valid() and semestr_studenta.is_valid() and aktualny_semestr.is_valid():
-            student = request.user
-            semestr_studenta_instance = semestr_studenta.save(commit=False)
-            semestr_studenta_instance.student = student
-            semestr_studenta_instance.save()
-            aktualny_semestr_instance = aktualny_semestr.save(commit=False)
-            aktualny_semestr_instance.student = student
-            aktualny_semestr_instance.save()
-            form_soc_instance = form_soc.save(commit=False)
-            form_soc_instance.student = student
-            form_soc_instance.save()
+            # Sprawdzamy, czy formularz nie jest pusty
+            if not form_soc.has_changed() and not any(form.has_changed() for form in formset):
+                messages.error(request, "Nie wypełniono żadnych pól formularza.")
+            else:
+                student = request.user
+                
+                # Zapisujemy formularze w jednej transakcji
+                with transaction.atomic():
+                    semestr_studenta_instance = semestr_studenta.save(commit=False)
+                    semestr_studenta_instance.student = student
+                    semestr_studenta_instance.save()
+                    
+                    aktualny_semestr_instance = aktualny_semestr.save(commit=False)
+                    aktualny_semestr_instance.student = student
+                    aktualny_semestr_instance.save()
+                    
+                    form_soc_instance = form_soc.save(commit=False)
+                    form_soc_instance.student = student
+                    form_soc_instance.save()
 
-            for form in formset:
-                if form.cleaned_data.get('DELETE'):
-                    if form.instance.pk:
-                        form.instance.delete()
-                else:
-                    czlonek_instance = form.save(commit=False)
-                    czlonek_instance.student = student
-                    czlonek_instance.save()
-            return redirect('/admin_tables')
+                    for form in formset:
+                        if form.cleaned_data.get('DELETE'):
+                            if form.instance.pk:
+                                form.instance.delete()
+                        else:
+                            czlonek_instance = form.save(commit=False)
+                            czlonek_instance.student = student
+                            czlonek_instance.save()
 
+                return redirect('/admin_tables')
+        
     context = {
         'form_soc': form_soc,
         'formset': formset,
@@ -604,6 +619,8 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
         'aktualny_semestr': aktualny_semestr
     }
     return render(request, 'website/form_socjalne.html', context)
+
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def EdytujFormSocjalne(request, pk_form):
@@ -708,44 +725,6 @@ def UsunFormNaukowe(request,pk_form):
     context = {'item': formularz}
     return render(request, 'website/usun_form_naukowe.html',context)
 
-@user_passes_test(lambda u: u.is_superuser)
-def ZobaczFormNaukowe(request, pk):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id_formularza, student_id, typ_stypendium, srednia_ocen, data_zlozenia, status, punkty_osiagniecie FROM api_formularz WHERE id_formularza = %s", [pk])
-        row = cursor.fetchone()
-        if not row:
-            raise Http404("Formularz nie istnieje")
-        
-        formularz = {
-            'id_formularza': row[0],
-            'student_id': row[1], 
-            'typ_stypendium': row[2],
-            'srednia_ocen': row[3],
-            'punkty_osiagniecie': row[4],
-            'data_zlozenia': row[5],
-        }
-
-    if request.method == 'POST':
-        form = SkladanieFormularzaNaukowego(request.POST, initial=formularz)
-        if 'accept' in request.POST:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "UPDATE api_formularz SET status = 'zaakceptowane' WHERE id_formularza = %s", [pk]
-                )
-            return redirect('zaakceptowane_wnioski')
-        elif 'reject' in request.POST:
-            if form.is_valid():
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "UPDATE api_formularz SET status = 'odrzucone' WHERE id_formularza = %s", [pk]
-                    )
-                return redirect('odrzucone_wnioski')
-    else:
-        form = SkladanieFormularzaNaukowego(initial=formularz)
-    
-    context = {'form': form}
-    return render(request, 'website/zobacz_form_naukowe.html', context)
-
 @login_required
 def AktualizujProfil(request):
     if request.method == 'POST':
@@ -764,27 +743,50 @@ from django.db import connection
 from django.contrib.auth.decorators import login_required
 
 @login_required
+@login_required
 def WynikiStudenta(request):
     user = request.user
     student_id = user.id_student
 
     query = """
-       SELECT data_zlozenia, typ_stypendium, status
-        FROM api_formularz
-        WHERE student_id = %s
-        AND data_zlozenia IS NOT NULL
-        AND typ_stypendium IS NOT NULL
-        AND status IS NOT NULL
+       SELECT f.data_zlozenia, f.typ_stypendium, f.status, h.data_zmiany
+       FROM api_formularz f
+       LEFT JOIN historia_statusow h ON f.id_formularza = h.formularz_id
+       WHERE f.student_id = %s
+       AND f.data_zlozenia IS NOT NULL
+       AND f.typ_stypendium IS NOT NULL
+       AND f.status IS NOT NULL
+       ORDER BY f.id_formularza, h.data_zmiany
     """
 
-    # Wykonanie zapytania SQL
     with connection.cursor() as cursor:
         cursor.execute(query, [student_id])
         rows = cursor.fetchall()
 
-    # Przygotowanie danych do przekazania do szablonu
-    forms = [{'data_zlozenia': row[0], 'typ_stypendium': row[1], 'status': row[2]} for row in rows]
+    forms = []
+    current_form = None
+
+    for row in rows:
+        data_zlozenia, typ_stypendium, status, data_zmiany = row
+
+        if current_form is None or current_form['data_zlozenia'] != data_zlozenia or current_form['typ_stypendium'] != typ_stypendium:
+            if current_form is not None:
+                forms.append(current_form)
+            current_form = {
+                'data_zlozenia': data_zlozenia,
+                'typ_stypendium': typ_stypendium,
+                'status': status,
+                'historia': []
+            }
+
+        if data_zmiany:
+            current_form['historia'].append({
+                'data_zmiany': data_zmiany
+            })
+
+    if current_form is not None:
+        forms.append(current_form)
+
     context = {'forms': forms}
 
-    # Renderowanie szablonu z danymi
     return render(request, 'website/wyniki.html', context)

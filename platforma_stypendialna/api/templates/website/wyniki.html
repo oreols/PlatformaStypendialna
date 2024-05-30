@@ -1,29 +1,36 @@
 {% extends "base.html" %}
 {% block content %}
-
-
 <head>
     <title>Moje wyniki</title>
 </head>
-    <div class="container container_panel_rektora">
-        <div>
-            
-            <table class="formularze-item">
-                <tr>
-                    <th>Data złożenia:</th>
-                    <th>Typ stypendium:</th>
-                    <th>Status formularza:</th>
-                </tr>
-                {% for form in forms %}
-                <tr>
-                    <td>{{ form.data_zlozenia }}</td> 
-                    <td>{{ form.typ_stypendium }}</td>
-                    <td>{{ form.status }}</td> <br>
-                </tr>
-                {% endfor %}
-            </table>
-                
-        </div>
+<div class="container container_panel_rektora">
+    <div>
+        <table class="formularze-item">
+            <tr>
+                <th>Data złożenia:</th>
+                <th>Typ stypendium:</th>
+                <th>Status formularza:</th>
+                <th>Data decyzji:</th>
+            </tr>
+            {% for form in forms %}
+            <tr>
+                <td>{{ form.data_zlozenia }}</td>
+                <td>{{ form.typ_stypendium }}</td>
+                <td>{{ form.status }}</td>
+                <td>
+                    {% if form.historia %}
+                        <ul>
+                            {% for hist in form.historia %}
+                                <li>{{ hist.data_zmiany }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        Brak zmian statusu
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
-
+</div>
 {% endblock %}

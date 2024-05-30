@@ -1,4 +1,4 @@
-{% extends "navbar.html" %}
+{% extends "base_admin.html" %}
 {% block content %}
     <div class="row">
         <div class="card">
@@ -8,9 +8,9 @@
             <div class="card-body">
                 <table class="table table-sm">
                     <tr>
-                        <th>ID</th>
-                        <th>ID Studenta</th>
-                        <th>Data Złożenia</th>
+                        <th>ID_formularza</th>
+                        <th>ID_studenta</th>
+                        <th>Data i godzina zlożenia</th>
                     </tr>
                     {% for form in formularze %}
                         <tr>
@@ -23,5 +23,4 @@
             </div>
         </div>
     </div>
-    
 {% endblock %}

@@ -323,12 +323,26 @@ class Migration(migrations.Migration):
             DELIMITER ;
             '''),
         migrations.RunSQL('''
+            DELIMITER //
+            CREATE PROCEDURE IF NOT EXISTS CountWnioski()
+            BEGIN
+            DECLARE wnioski_count INT;
+            SELECT COUNT(*) INTO wnioski_count FROM api_formularz;
+            SELECT wnioski_count AS 'Liczba_wnioskow';
+            END//
+            DELIMITER ;
+            '''),
+        migrations.RunSQL('''
             delimiter //
             create procedure IF NOT EXISTS CountSocjalne ()
             begin
-            declare count_socjalne int;
-            select count(*) into count_socjalne from api_formularz where typ_stypendium = 'socjalne';
-            select count_socjalne as 'Liczba_stypendiow_socjalnych';
+                declare count_socjalne int;
+                declare count_socjalne_zaakceptowane int;
+                declare count_socjalne_odrzucone int;
+                select count(*) into count_socjalne from api_formularz where typ_stypendium = 'socjalne';
+                select count(*) into count_socjalne_zaakceptowane from api_formularz where typ_stypendium = 'socjalne' and status = 'zaakceptowane';
+                select count(*) into count_socjalne_odrzucone from api_formularz where typ_stypendium = 'socjalne' and status = 'odrzucone';
+                select count_socjalne as 'Liczba_stypendiow_socjalnych', count_socjalne_zaakceptowane as 'Liczba_zaakceptowanych_stypendiow_socjalnych', count_socjalne_odrzucone as 'Liczba_odrzuconych_stypendiow_socjalnych';
             end//
             delimiter ;
             '''),
@@ -336,9 +350,13 @@ class Migration(migrations.Migration):
             delimiter //
             create procedure IF NOT EXISTS CountNaukowe ()
             begin
-            declare count_naukowe int;
-            select count(*) into count_naukowe from api_formularz where typ_stypendium = 'naukowe';
-            select count_naukowe as 'Liczba_stypendiow_naukowych';
+                declare count_naukowe int;
+                declare count_naukowe_zaakceptowane int;
+                declare count_naukowe_odrzucone int;
+                select count(*) into count_naukowe from api_formularz where typ_stypendium = 'naukowe';
+                select count(*) into count_naukowe_zaakceptowane from api_formularz where typ_stypendium = 'naukowe' and status = 'zaakceptowane';
+                select count(*) into count_naukowe_odrzucone from api_formularz where typ_stypendium = 'naukowe' and status = 'odrzucone';
+                select count_naukowe as 'Liczba_stypendiow_naukowych', count_naukowe_zaakceptowane as 'Liczba_zaakceptowanych_stypendiow_naukowych', count_naukowe_odrzucone as 'Liczba_odrzuconych_stypendiow_naukowych';
             end//
             delimiter ;
             '''),
@@ -346,24 +364,30 @@ class Migration(migrations.Migration):
             delimiter //
             create procedure IF NOT EXISTS CountNiepelno ()
             begin
-            declare count_niepelno int;
-            select count(*) into count_niepelno from api_formularz where typ_stypendium = 'dla_niepelnosprawnych';
-            select count_niepelno as 'Liczba_stypeniow_dla_osob_niepelnosprawnych';
+                declare count_niepelno int;
+                declare count_niepelno_zaakceptowane int;
+                declare count_niepelno_odrzucone int;
+                select count(*) into count_niepelno from api_formularz where typ_stypendium = 'dla_niepelnosprawnych';
+                select count(*) into count_niepelno_zaakceptowane from api_formularz where typ_stypendium = 'dla_niepelnosprawnych' and status = 'zaakceptowane';
+                select count(*) into count_niepelno_odrzucone from api_formularz where typ_stypendium = 'dla_niepelnosprawnych' and status = 'odrzucone';
+                select count_niepelno as 'Liczba_stypeniow_dla_osob_niepelnosprawnych', count_niepelno_zaakceptowane as 'Liczba_zaakceptowanych_stypendiow_dla_osob_niepelnosprawnych', count_niepelno_odrzucone as 'Liczba_odrzuconych_stypendiow_dla_osob_niepelnosprawnych';
             end//
             delimiter ;
             '''),
-    #     migrations.RunSQL('''
-    #         DELIMITER //
-    #         CREATE TRIGGER trigger_log_status_change
-    #         AFTER UPDATE ON api_formularz
-    #         FOR EACH ROW
-    #         BEGIN
-    #             IF NEW.status = 'zaakceptowane' OR NEW.status = 'odrzucone' THEN
-    #                 INSERT INTO historia_statusow (formularz_id, stary_status, nowy_status, data_zmiany)
-    #                 VALUES (NEW.id, OLD.status, NEW.status, CURRENT_TIMESTAMP);
-    #             END IF;
-    #         END;
-    #         //
-    #         DELIMITER ;
-    #         '''),           
+        
+        migrations.RunSQL('''
+            DELIMITER //
+            CREATE TRIGGER trigger_log_status_change
+            AFTER UPDATE ON api_formularz
+            FOR EACH ROW
+            BEGIN
+                IF NEW.status = 'zaakceptowane' OR NEW.status = 'odrzucone' THEN
+                    INSERT INTO historia_statusow (formularz_id, stary_status, nowy_status, data_zmiany)
+                    VALUES (NEW.id_formularza, OLD.status, NEW.status, CURRENT_TIMESTAMP);
+                END IF;
+            END;
+            //
+            DELIMITER ;
+            '''),
+
     ]

@@ -3,7 +3,7 @@
 
 <form method="POST">
     {% csrf_token %}
-    {{ form.as_div }}
+    {{ form_n.as_p }}
     <button type="submit" name="accept" class="btn btn-success">Akceptuj</button>
     <button type="submit" name="reject" class="btn btn-danger">Odrzuć</button>
 </form>
