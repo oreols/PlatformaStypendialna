@@ -593,15 +593,14 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
         formset = CzlonekFormset(request.POST or None, queryset=CzlonekRodziny.objects.none())
 
     if request.method == 'POST':
-        # Sprawdzamy, czy formularz główny oraz wszystkie formularze związane są ważne
         if form_soc.is_valid() and formset.is_valid() and semestr_studenta.is_valid() and aktualny_semestr.is_valid():
-            # Sprawdzamy, czy formularz nie jest pusty
+           
             if not form_soc.has_changed() and not any(form.has_changed() for form in formset):
                 messages.error(request, "Nie wypełniono żadnych pól formularza.")
             else:
                 student = request.user
                 
-                # Zapisujemy formularze w jednej transakcji
+               
                 with transaction.atomic():
                     semestr_studenta_instance = semestr_studenta.save(commit=False)
                     semestr_studenta_instance.student = student
