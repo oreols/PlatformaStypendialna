@@ -249,6 +249,19 @@ def AdminTables(request):
     return render(request, 'website/admin_tables.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
+def Konta(request):
+    with connection.cursor() as cursor:
+        cursor.callproc('CountStudents')
+        results = cursor.fetchall()
+        student_count = None
+        for result in results:
+            student_count = result[0] if result else None
+
+    student = Student.objects.all()
+    context = {'student': student, 'student_count': student_count}
+    return render(request, 'website/konta.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
 def Statystyki(request):
     with connection.cursor() as cursor:
         cursor.callproc('CountWnioski')

@@ -1,46 +1,5 @@
 {% extends 'navbar.html' %}
 {% block content %}
-    <br>
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                Studenci (liczba: {{ student_count }})
-            </div>
-            <div class="card-body">
-                <table class="table table-sm">
-                    <tr>
-                        <th>id</th>
-                        <th>nazwa użytkownika</th>
-                        <th>email</th>
-                        <th>data rejestracji</th>
-                        <th>pesel</th>
-                        <th>Imię</th>
-                        <th>Nazwisko</th>
-                        <th>nr albumu</th>
-                        <th>Zmień</th>
-                        <th>Usuń</th>
-                    </tr>
-                    {% for student in student %}
-                        <tr>
-                            <td>{{ student.id_student }}</td>
-                            <td>{{ student.username }}</td>
-                            <td>{{ student.email }}</td>
-                            <td>{{ student.data_rejestracji }}</td>
-                            <td>{{ student.pesel }}</td>
-                            <td>{{ student.imie }}</td>
-                            <td>{{ student.nazwisko }}</td>
-                            <td>{{ student.numer_albumu }}</td>
-                            <td><a class="btn btn-warning" href="{% url 'edytuj_studenta' student.id_student %}">Edytuj</a></td>
-                            <td><a class="btn btn-danger" href="{% url 'usun_studenta' student.id_student %}">Usuń</a></td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <br>
-
     <div class="row">
         <div class="card">
             <div class="card-header">
