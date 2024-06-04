@@ -49,7 +49,10 @@ urlpatterns = [
     path('zobacz_form_naukowe/<int:pk>/', ZobaczFormNaukowe, name='zobacz_form_naukowe'),
     path('zaakceptowane_wnioski', AkceptowaneWnioski, name='zaakceptowane_wnioski'),
     path('odrzucone_wnioski', OdrzuconeWnioski, name='odrzucone_wnioski'),
+    path('wszystkie_wnioski', WszystkieWnioski, name='wszystkie_wnioski'),
+    path('archiwalne_wnioski', ArchiwalneWnioski, name='archiwalne_wnioski'),
     path('profil_uzytkownika', AktualizujProfil, name='profil_uzytkownika'),
+    path('archiwizuj_wnioski', ArchiwizujWszystkieWnioski, name='archiwizuj_wnioski'),
     path('statystyki', Statystyki, name='statystyki'),
     path('wyniki', WynikiStudenta, name='wyniki'),
 ]
