@@ -58,7 +58,7 @@ def student_has_submitted_form_niepelnosprawne(student_id):
 
 def ranking_studentow():
     query = """
-        SELECT api_student.id_student, api_student.imie, api_student.nazwisko, api_formularz.srednia_ocen
+        SELECT api_student.id_student,api_student.username, api_student.imie, api_student.nazwisko, api_formularz.srednia_ocen
         FROM api_student INNER JOIN api_formularz ON api_formularz.student_id = api_student.id_student
         WHERE api_formularz.typ_stypendium = 'naukowe'
         ORDER BY api_formularz.srednia_ocen DESC
@@ -66,7 +66,7 @@ def ranking_studentow():
     return Student.objects.raw(query)
     
 
-
+@login_required
 def widok_ranking_studentow(request):
     students = ranking_studentow()
     return render(request, 'website/ranking.html', {'students': students})
@@ -334,10 +334,6 @@ def StronaGlowna(request):
 
 class Wyniki(TemplateView):
     template_name = 'website/wyniki.html'
-
-class Ranking(TemplateView):
-    template_name = 'website/ranking.html'
-
 
 
 class StronaGlowna(TemplateView):
@@ -732,6 +728,10 @@ def UsunFormSocjalne(request, pk_form, pk_student):
 
 @user_passes_test(lambda u: u.is_superuser)
 def EdytujFormNaukowe(request, pk_form):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id_formularza, typ_stypendium, data_zlozenia, srednia_ocen, aktualny_semestr_id, semestr_studenta_id FROM api_formularz WHERE id_formularza = %s", [pk_form])
+        
+
     formularz = Formularz.objects.get(id_formularza=pk_form)
     form_naukowe = SkladanieFormularzaNaukowego(instance=formularz)
     if request.method == 'POST':
@@ -768,7 +768,7 @@ from django.shortcuts import render
 from django.db import connection
 from django.contrib.auth.decorators import login_required
 
-@login_required
+
 @login_required
 def WynikiStudenta(request):
     user = request.user
