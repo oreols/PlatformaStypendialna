@@ -39,19 +39,19 @@ from django.forms.models import inlineformset_factory
 
 def student_has_submitted_form_naukowe(student_id):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'naukowe'", [student_id])
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'naukowe' AND status != 'archiwalne' ", [student_id])
         row = cursor.fetchone()
     return row[0] > 0
 
 def student_has_submitted_form_socjalne(student_id):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'socjalne'", [student_id])
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'socjalne' AND status != 'archiwalne' ", [student_id])
         row = cursor.fetchone()
     return row[0] > 0
 
 def student_has_submitted_form_niepelnosprawne(student_id):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'dla_niepelnosprawnych'", [student_id])
+        cursor.execute("SELECT COUNT(*) FROM api_formularz WHERE student_id = %s AND typ_stypendium = 'dla_niepelnosprawnych' AND status != 'archiwalne' ", [student_id])
         row = cursor.fetchone()
     return row[0] > 0
 
@@ -499,6 +499,36 @@ def OdrzuconeWnioski(request):
     formularze = Formularz.objects.raw(query, params)
     return render(request, 'website/odrzucone_wnioski.html', {'formularze': formularze})
 
+@user_passes_test(lambda u: u.is_superuser)
+def WszystkieWnioski(request):
+    query = "SELECT * FROM api_formularz WHERE status NOT LIKE 'archiwalne'"
+    formularze = Formularz.objects.raw(query)
+    return render(request, 'website/wszystkie_wnioski.html', {'formularze': formularze})
+
+@user_passes_test(lambda u: u.is_superuser)
+def ArchiwalneWnioski(request):
+    query = "SELECT * FROM api_formularz WHERE status = %s"
+    params = ['archiwalne']
+    formularze = Formularz.objects.raw(query, params)
+    return render(request, 'website/archiwalne_wnioski.html', {'formularze': formularze})
+
+@user_passes_test(lambda u: u.is_superuser)
+def ArchiwizujWszystkieWnioski(request):
+    nowy_status = 'archiwalne'
+    
+    update_query = "UPDATE api_formularz SET status = %s WHERE status != %s"
+    with connection.cursor() as cursor:
+        cursor.execute(update_query, [nowy_status, nowy_status])
+
+    select_query = "SELECT * FROM api_formularz WHERE status = %s"
+    formularze = Formularz.objects.raw(select_query, [nowy_status])
+    
+    return render(request, 'website/archiwalne_wnioski.html', {'formularze': formularze})
+
+
+
+
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def UsunFormNiepelno(request,pk):
@@ -777,7 +807,7 @@ def WynikiStudenta(request):
     query = """
        SELECT f.data_zlozenia, f.typ_stypendium, f.status, h.data_zmiany
        FROM api_formularz f
-       LEFT JOIN historia_statusow h ON f.id_formularza = h.formularz_id
+       LEFT JOIN api_historiastatusow h ON f.id_formularza = h.formularz_id_id
        WHERE f.student_id = %s
        AND f.data_zlozenia IS NOT NULL
        AND f.typ_stypendium IS NOT NULL

@@ -44,7 +44,7 @@ class Formularz(models.Model):
     charakter_stopnia_niepelnosprawnosci = models.TextField(null=True, blank=True, max_length=100)
     data_rozpoczecia_orzeczenia = models.DateField(null=True, blank=True)
     data_konca_orzeczenia = models.DateField(null=True, blank=True)
-    status = models.CharField(max_length=20, choices=[('nowe', 'Nowe'), ('zaakceptowane', 'Zaakceptowane'), ('odrzucone', 'Odrzucone')], default='nowe', blank=True, null=True)
+    status = models.CharField(max_length=20, choices=[('nowe', 'Nowe'), ('zaakceptowane', 'Zaakceptowane'), ('odrzucone', 'Odrzucone'), ('archiwalne', 'Archiwalne'), ('wszystkie', 'Wszystkie')], default='nowe', blank=True, null=True)
     komentarz = models.TextField(null=True, blank=True)
     punkty_osiagniecie = models.IntegerField(null=True, blank=True)
     aktualny_semestr = models.ForeignKey('AktualnySemestr', on_delete=models.CASCADE, null=True, blank=True)

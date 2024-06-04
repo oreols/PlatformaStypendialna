@@ -1,0 +1,27 @@
+{% extends "base_admin.html" %}
+{% block content %}
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                Wszystkie aktualne wnioski
+            </div>
+            <button id="archiwizuj"><a href="{% url 'archiwizuj_wnioski' %}">Archiwizuj wszystko</a></button>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <th>ID_formularza</th>
+                        <th>ID_studenta</th>
+                        <th>Data i godzina zlożenia</th>
+                    </tr>
+                    {% for form in formularze %}
+                        <tr>
+                            <td>{{ form.id_formularza }}</td>
+                            <td>{{ form.student_id }}</td>
+                            <td>{{ form.data_zlozenia }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

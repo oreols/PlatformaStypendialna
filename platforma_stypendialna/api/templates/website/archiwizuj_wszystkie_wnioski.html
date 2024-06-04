@@ -1,0 +1,10 @@
+{% extends "navbar.html" %}
+{% block content %}
+    <p>Czy na pewno chcesz zaarchiwizować wszystkie formularze?</p> <br>
+
+    <form action="{% url 'archiwizuj_wszystkie_wnioski' item.id_formularza %}" method="POST">
+        {% csrf_token %}
+        <a href="{% url 'admin_tables' %}">Anuluj</a>
+        <input type="submit" value="Usuń">
+    </form>
+{% endblock %}
