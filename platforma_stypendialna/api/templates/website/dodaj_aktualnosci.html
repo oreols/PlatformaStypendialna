@@ -13,4 +13,28 @@
         <button type="submit">Dodaj aktualność</button>
     </form>
 </div>
+<div class="card-header">
+    Aktualnosci
+</div>
+<div class="card-body">
+    <table class="table table-sm ">
+        <tr>
+            <th>id</th>
+            <th>nazwa</th>
+            <th>tresc</th>
+            <th>data dodania</th>
+            <th>Zmien</th>
+        </tr>
+        {% for akt in aktualnosci_list %}
+            <tr>
+                <td>{{akt.id_aktualnosci}}</td>
+                <td>{{akt.nazwa_aktualnosci}}</td>
+                <td>{{akt.tekst_aktualnosci}}</td>
+                <td>{{akt.data_opublikowania}}</td>
+                <td><a class="btn btn-warning" href="{% url 'edytuj_aktualnosci' akt.id_aktualnosci %}">Edytuj</a></td>
+            </tr>
+        {%endfor%}
+    </table>
+</div>
+
 {% endblock %}

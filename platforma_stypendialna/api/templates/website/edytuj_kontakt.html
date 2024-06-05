@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_admin.html" %}
 {% block content %}
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,5 +11,26 @@
         {{ form.as_p }}
         <button type="submit">Zapisz zmiany</button>
     </form>
+</div>
+<div class="card-header">
+    Kontakt
+</div>
+<div class="card-body">
+    <table class="table table-sm ">
+        <tr>
+            <th>id</th>
+            <th>email</th>
+            <th>numer telefonu</th>
+            <th>Zmien</th>
+        </tr>
+        {% for kont in kontakt_lista %}
+            <tr>
+                <td>{{kont.id_kontakt}}</td>
+                <td>{{kont.email}}</td>
+                <td>{{kont.numer_tel}}</td>
+                <td><a class="btn btn-warning" href="{% url 'edytuj_kontakt'%}">Edytuj</a></td>
+            </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

@@ -3,6 +3,7 @@ from .models import Student, Formularz, Osiagniecia, Kontakt, Aktualnosci, Czlon
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory
+from django.forms.models import modelformset_factory
 
 
 
@@ -183,6 +184,7 @@ class CzlonekSocjalne(forms.ModelForm):
             'stopien_pokrewienstwa': forms.TextInput(attrs={'width': '150px'}),
             'miejsce_pracy': forms.TextInput(attrs={'width': '150px'}),
         }
+CzlonekSocjalneFormSet = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne,extra=0)
 
 class UpdateUzytkownik(forms.ModelForm):
     class Meta:

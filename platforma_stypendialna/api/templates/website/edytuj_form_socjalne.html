@@ -1,4 +1,4 @@
-{% extends "navbar.html" %}
+{% extends "base_admin.html" %}
 {% block content %}
     <h2>Edytuj Formularz Socjalny</h2>
     <form method="post">
@@ -13,10 +13,10 @@
         <!-- Członkowie Rodziny -->
         <fieldset>
             <legend>Członkowie Rodziny</legend>
-            {% for form in czlonek_forms %}
+            {{ czlonek_formset.management_form }}
+            {% for form in czlonek_formset %}
                 <fieldset>
                     <legend>Członek {{ forloop.counter }}</legend>
-                    {{ form.pk_czlonek.as_hidden }}
                     {{ form.as_p }}
                 </fieldset>
             {% endfor %}

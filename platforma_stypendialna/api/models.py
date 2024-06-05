@@ -238,14 +238,6 @@ class AdminLog(models.Model):
     def __str__(self):
         return str(self.id_log_admin)
 
-#class Typ_Osiagniecia(models.Model):
-    #id_typ_osiagniecia = models.IntegerField(primary_key=True)
-    #nazwa_typu = models.TextField(null=True)
-    #punkty_osiagniecie = models.IntegerField(null=True)
-
-    #def __str__(self):
-        #return str(self.nazwa_konkursu)
-
 class Osiagniecia(models.Model):
     id_osiagniecia = models.AutoField(primary_key=True)
     #id_student = models.IntegerField(null=True)
@@ -282,7 +274,6 @@ class CzlonekRodziny(models.Model):
     miejsce_pracy = models.TextField(null=True, max_length=20)
     student = models.ForeignKey('Student', on_delete=models.CASCADE)
 
-
     def __str__(self):
         return str(self.id_czlonka)
     
@@ -316,9 +307,10 @@ class SemestrStudenta(models.Model):
         return str(self.semestr)
 
 class HistoriaStatusow(models.Model):
-    id_statusu = models.AutoField(primary_key=True)
-    formularz_id = models.ForeignKey(Formularz, on_delete=models.CASCADE)
+    id_historii = models.AutoField(primary_key=True)
+    formularz = models.ForeignKey(Formularz, on_delete=models.CASCADE)
     stary_status = models.CharField(max_length=20)
     nowy_status = models.CharField(max_length=20)
     data_zmiany = models.DateTimeField(null=True)
+    data_zlozenia_form = models.DateTimeField(null=True)
 
