@@ -1,33 +1,35 @@
 {% extends "base_admin.html" %}
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="card">
-            <div class="card-header">
-                RANKING - STYPENDIUM NAUKOWE
-            </div>
-            <div class="card-body">
-                <table class="table table-sm">
-                    <tr>
-                        <th>MIEJSCE</th>
-                        <th>NICK</th>
-                        <th>IMIE</th>
-                        <th>NAZWISKO</th>   
-                        <th>ŚREDNIA OCEN</th> 
-                    </tr>
-                    {% for student in students %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ student }}</td>
-                        <td>{{ student.imie }}</td>
-                        <td>{{ student.nazwisko }}</td>
-                        <td>{{ student.srednia_ocen }}</td>
-                    </tr>
-                    {% endfor %}
-
-                </table>
+    <div class="container">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Ranking
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">STYPENDIUM SOCJALNE</a>
+              <a class="dropdown-item" href="#">STYPENDIUM NAUKOWE</a>
+              <a class="dropdown-item" href="#">STYPENDIUM DLA OSÓB NIEPEŁNOSPRAWNYCH</a>
             </div>
         </div>
+        
+        <table class="socjalne">
+            <caption class="caption_table"> STYPENDIUM SOCJALNE</caption>
+            <thead>
+                <tr>
+                    <th>MIEJSCE</th><th>NUMER ALBUMU</th><th>NICK</th><th>SREDNIA OCEN</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.numer_albumu }}</td>
+                <td>{{ student }}</td>
+                <td>{{ student.srednia_ocen }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
