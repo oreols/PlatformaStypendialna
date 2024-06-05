@@ -10,7 +10,8 @@
     {% csrf_token %}
     <div class="container container_form">
         <div class="title"> Stypendium naukowe</div>  
-        <span class="minimalna">MINIMALNA ŚREDNIA: <span  id="minimalna_sr"> 4,5</span></span>  
+        <span class="minimalna">KIERUNEK STUDENTA: <span  id="minimalna_sr"> {{ form_student.nazwa_kierunku }}</span></span>  
+        <span class="minimalna">MINIMALNA ŚREDNIA WYMAGANA NA KIERUNKU: <span  id="minimalna_sr"> {{ form_student.nazwa_kierunku.srednia_kierunku }}</span></span>  
         ŚREDNIA OCEN: {{form_naukowe.srednia_ocen}}
         {{ formset.management_form }}
         {% for form, text in form_text_list %}

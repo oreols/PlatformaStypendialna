@@ -382,7 +382,7 @@ class Migration(migrations.Migration):
             FOR EACH ROW
             BEGIN
                 IF NEW.status = 'zaakceptowane' OR NEW.status = 'odrzucone' THEN
-                    INSERT INTO historia_statusow (formularz_id, stary_status, nowy_status, data_zmiany)
+                    INSERT INTO api_historiastatusow (formularz_id_id, stary_status, nowy_status, data_zmiany)
                     VALUES (NEW.id_formularza, OLD.status, NEW.status, CURRENT_TIMESTAMP);
                 END IF;
             END;

@@ -58,9 +58,9 @@ def student_has_submitted_form_niepelnosprawne(student_id):
 
 def ranking_studentow():
     query = """
-        SELECT api_student.id_student, api_student.imie, api_student.nazwisko, api_formularz.srednia_ocen
+        SELECT api_student.numer_albumu, api_student.id_student, api_formularz.srednia_ocen
         FROM api_student INNER JOIN api_formularz ON api_formularz.student_id = api_student.id_student
-        WHERE api_formularz.typ_stypendium = 'naukowe'
+        WHERE api_formularz.typ_stypendium = 'naukowe' AND api_formularz.status = 'zaakceptowane'
         ORDER BY api_formularz.srednia_ocen DESC
     """
     return Student.objects.raw(query)
@@ -187,6 +187,7 @@ def ZlozenieFormularzaNaukowego(request):
     OsiagnieciaFormSet = formset_factory(ZapiszOsiagniecie, extra=13)
     formset = OsiagnieciaFormSet()
     form_naukowe = SkladanieFormularzaNaukowego()
+    form_student = Student.objects.get(username=request.user)
 
     texts = [
         "Autorstwo lub współautorstwo publikacji naukowych w czasopismach naukowych ujętych w wykazie ogłoszonym przez ministra właściwego do spraw nauki, PKT 0,03",
@@ -214,7 +215,7 @@ def ZlozenieFormularzaNaukowego(request):
             form_naukowe.instance.student = student
             form_naukowe.save(commit=False)
             #srednia = form_naukowe.srednia_ocen()
-            if srednia >= 4.5 and not student_has_submitted_form_naukowe(form_naukowe.instance.student.id_student):
+            if srednia >= form_student.nazwa_kierunku.srednia_kierunku and not student_has_submitted_form_naukowe(form_naukowe.instance.student.id_student):
                 form_naukowe.save(commit=True)
                 for form in formset:
                     if form.has_changed():
@@ -230,7 +231,7 @@ def ZlozenieFormularzaNaukowego(request):
     
     form_text_list  = zip(formset, texts)
     
-    return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list, 'form_naukowe': form_naukowe})
+    return render (request, 'website/form_naukowe.html', {'formset': formset, 'form_text_list': form_text_list, 'form_naukowe': form_naukowe, 'form_student': form_student})
 
 @user_passes_test(lambda u: u.is_superuser)
 def AdminTables(request):

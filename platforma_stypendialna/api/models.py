@@ -14,6 +14,7 @@ def validate_string(value):
 class Kierunek(models.Model):
     id_kierunku = models.IntegerField(primary_key=True)
     nazwa_kierunku = models.TextField(null=True)
+    srednia_kierunku = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return self.nazwa_kierunku
