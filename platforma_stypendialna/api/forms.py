@@ -14,7 +14,7 @@ class StudentRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ['username', 'password', 'email', 'data_rejestracji', 'pesel', 'imie', 'nazwisko', 'numer_telefonu', 'semestr', 'numer_albumu', 'rok_studiow', 'nazwa_kierunku', 'numer_konta_bankowego', 'zalaczniki']
+        fields = ['username', 'password', 'email', 'data_rejestracji', 'pesel', 'imie', 'nazwisko', 'numer_telefonu', 'numer_albumu', 'nazwa_kierunku', 'numer_konta_bankowego', 'zalaczniki']
         widgets = {
             'password': forms.PasswordInput()  
         }
@@ -189,7 +189,7 @@ CzlonekSocjalneFormSet = modelformset_factory(CzlonekRodziny, form=CzlonekSocjal
 class UpdateUzytkownik(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['numer_telefonu', 'numer_albumu', 'rok_studiow', 'nazwa_kierunku', 'numer_konta_bankowego', 'pesel', 'imie', 'nazwisko', 'ikonka']
+        fields = ['numer_telefonu', 'numer_albumu', 'numer_konta_bankowego', 'pesel', 'imie', 'nazwisko', 'ikonka']
         widgets = {
             'username': forms.TextInput(attrs={'width': '150px'}),
             'email': forms.EmailInput(attrs={'width': '150px'}),
