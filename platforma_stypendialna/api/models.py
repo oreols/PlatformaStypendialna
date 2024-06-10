@@ -242,12 +242,11 @@ class AdminLog(models.Model):
 
 class Osiagniecia(models.Model):
     id_osiagniecia = models.AutoField(primary_key=True)
-    #id_student = models.IntegerField(null=True)
     liczba_osiagniec = models.IntegerField(null=True,blank=True)
-    #typ_osiagniecia = models.ForeignKey('Typ_Osiagniecia', on_delete=models.CASCADE)
     student = models.ForeignKey('Student', on_delete=models.SET_NULL, null=True, blank=True)
     krotki_opis = models.TextField(null=True, max_length=250, blank=True)
     data_osiagniecia = models.DateField(null=True, blank=True)
+    formularz = models.ForeignKey('Formularz', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return str(self.id_osiagniecia)

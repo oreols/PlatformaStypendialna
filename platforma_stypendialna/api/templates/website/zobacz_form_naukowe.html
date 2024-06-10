@@ -1,11 +1,10 @@
-{% extends "navbar.html" %}
-{% block content %}
-
-<form method="POST">
+<form method="post">
     {% csrf_token %}
     {{ form_n.as_p }}
-    <button type="submit" name="accept" class="btn btn-success">Akceptuj</button>
-    <button type="submit" name="reject" class="btn btn-danger">Odrzuć</button>
+    <h2>Osiągnięcia:</h2>
+    {% for form in formset %}
+        {{ form.as_p }}
+    {% endfor %}
+    <button type="submit" name="accept">Zaakceptuj</button>
+    <button type="submit" name="reject">Odrzuć</button>
 </form>
-
-{% endblock %}

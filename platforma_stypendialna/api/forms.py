@@ -83,7 +83,7 @@ class SkladanieFormularzaNaukowego(forms.ModelForm):
     
     class Meta:
         model = Formularz
-        fields = ['typ_stypendium', 'data_zlozenia', 'srednia_ocen', 'aktualny_semestr', 'semestr_studenta', 'zalacznik']
+        fields = ['typ_stypendium', 'data_zlozenia', 'srednia_ocen', 'aktualny_semestr', 'semestr_studenta', 'zalacznik', 'punkty_osiagniecie']
     
     def clean_data_zlozenia(self):
         data_zlozenia = datetime.now()  # Zastąp datę starszą dzisiejszą datą

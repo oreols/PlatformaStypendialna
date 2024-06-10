@@ -15,7 +15,7 @@ from django.utils.encoding import force_bytes, force_str
 from .authbackend import CustomAuthBackend
 from .tokens import account_activation_token
 from django.core.mail import EmailMessage
-from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny
+from .models import Student, Formularz, Kontakt, Aktualnosci, CzlonekRodziny, Osiagniecia
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.urls import reverse
@@ -487,24 +487,29 @@ def ZobaczFormSocjalne(request, pk):
 @user_passes_test(lambda u: u.is_superuser)
 def ZobaczFormNaukowe(request, pk):
     formularz = get_object_or_404(Formularz, id_formularza=pk)
+    OsiagnieciaFormSet = modelformset_factory(Osiagniecia, form=ZapiszOsiagniecie, extra=0)
+    osiagniecia = Osiagniecia.objects.filter(student=formularz.student)
 
     if request.method == 'POST':
         form = SkladanieFormularzaNaukowego(request.POST, instance=formularz)
+        formset = OsiagnieciaFormSet(request.POST, queryset=osiagniecia)
         if 'accept' in request.POST:
-            formularz.status = 'zaakceptowane'
-            formularz.save()
-            return redirect('zaakceptowane_wnioski')
-        elif 'reject' in request.POST:
             if form.is_valid():
+                formularz.status = 'zaakceptowane'
+                formset.save()
+                return redirect('zaakceptowane_wnioski')
+        elif 'reject' in request.POST:
+            if form.is_valid() and formset.is_valid():
                 formularz.status = 'odrzucone'
                 formularz.save()
+                formset.save()
                 return redirect('odrzucone_wnioski')
     else:
         form = SkladanieFormularzaNaukowego(instance=formularz)
+        formset = OsiagnieciaFormSet(queryset=osiagniecia)
     
-    context = {'form_n': form}
+    context = {'form_n': form, 'formset': formset, 'formularz': formularz}
     return render(request, 'website/zobacz_form_naukowe.html', context)
-
 
 @user_passes_test(lambda u: u.is_superuser)
 def AkceptowaneWnioski(request):
@@ -778,7 +783,7 @@ def WynikiStudenta(request):
     query = """
         SELECT f.typ_stypendium, f.status, f.data_zlozenia, h.data_zmiany, h.data_zlozenia_form
         FROM api_formularz f
-        LEFT JOIN api_historiastatusow h ON f.id_formularza = h.formularz
+        LEFT JOIN api_historiastatusow h ON f.id_formularza = h.formularz_id
         WHERE f.student_id = %s 
         ORDER BY f.id_formularza
     """
