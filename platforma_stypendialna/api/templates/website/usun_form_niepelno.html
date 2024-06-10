@@ -1,13 +1,10 @@
 {% extends "navbar.html" %}
 {% block content %}
     <p>Czy na pewno chcesz usunąć formularz?</p> <br>
-    <p>ID formularza: {{ item.id_formularza }}</p>
-    <p>ID studenta: {{ item.student_id }}</p>
-    <p>Data złożenia: {{ item.data_zlozenia }}</p>
-    <p>Status: {{ item.status }}</p>
 
-    <form action="{% url 'usun_form_niepelno' item.id_formularza %}" method="POST">
+    <form method="POST">
         {% csrf_token %}
+        {{ form.as_p}}
         <a href="{% url 'admin_tables' %}">Anuluj</a>
         <input type="submit" value="Usuń">
     </form>
