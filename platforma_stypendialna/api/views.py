@@ -194,10 +194,12 @@ def ZlozenieFormularzaNiepelnosprawnych(request):
                     #form.instance.student = student
                     form.save()
                     return redirect('strona_glowna')
-            else: 
-                return HttpResponse("Skladales juz formularz dla niepelnosprawnych")
+            else:
+                messages_to_display = 'Skladales juz formularz dla niepelnosprawnych'
+                return render(request, 'website/index2.html', {'messages': messages_to_display})
         else:
-            return HttpResponse("Skladales juz formularz socjalny")
+            messages_to_display = 'Skladales juz formularz socjalny'
+            return render(request, 'website/index2.html', {'messages': messages_to_display})
     else:
         form = SkladanieFormularzaDlaNiepelnosprawnych()
     return render(request, 'website/form_niepelno.html', {'form': form}) 
@@ -242,7 +244,8 @@ def ZlozenieFormularzaNaukowego(request):
                         form.instance.student = student
                         form.save()
             else:
-                return HttpResponse("Nie spełniasz wymagań lub już złożyłeś formularz naukowy")
+                messages_to_display = 'Niestety nie spełniasz wymaganej średniej lub składałeś już formularz naukowy'
+                return render(request, 'website/index2.html', {'messages': messages_to_display})
 
         return redirect('/admin_tables')
     else:
@@ -654,6 +657,8 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
     aktualny_semestr = AktualnySemestrForm(request.POST or None, instance=obj)
     form_soc = FormularzSocjalne(request.POST or None, instance=obj)
     CzlonekFormset = modelformset_factory(CzlonekRodziny, form=CzlonekSocjalne, extra=1, can_delete=True)
+    student = request.user
+    form_soc.instance.student = student
     
     if obj:
         formset = CzlonekFormset(request.POST or None, queryset=obj.czlonekrodziny_set.all())
@@ -662,36 +667,41 @@ def ZlozenieFormularzaSocjalnego(request, id=None):
 
     if request.method == 'POST':
         if form_soc.is_valid() and formset.is_valid() and semestr_studenta.is_valid() and aktualny_semestr.is_valid():
+            if not student_has_submitted_form_socjalne(form_soc.instance.student.id_student):
+                if not student_has_submitted_form_niepelnosprawne(form_soc.instance.student.id_student):
            
-            if not form_soc.has_changed() and not any(form.has_changed() for form in formset):
-                messages.error(request, "Nie wypełniono żadnych pól formularza.")
-            else:
-                student = request.user
+                    if not form_soc.has_changed() and not any(form.has_changed() for form in formset):
+                        messages.error(request, "Nie wypełniono żadnych pól formularza.")
+                    else:
+                        student = request.user
                 
                
-                with transaction.atomic():
-                    semestr_studenta_instance = semestr_studenta.save(commit=False)
-                    semestr_studenta_instance.student = student
-                    semestr_studenta_instance.save()
+                    with transaction.atomic():
+                        semestr_studenta_instance = semestr_studenta.save(commit=False)
+                        semestr_studenta_instance.student = student
+                        semestr_studenta_instance.save()
                     
-                    aktualny_semestr_instance = aktualny_semestr.save(commit=False)
-                    aktualny_semestr_instance.student = student
-                    aktualny_semestr_instance.save()
+                        aktualny_semestr_instance = aktualny_semestr.save(commit=False)
+                        aktualny_semestr_instance.student = student
+                        aktualny_semestr_instance.save()
                     
-                    form_soc_instance = form_soc.save(commit=False)
-                    form_soc_instance.student = student
-                    form_soc_instance.save()
+                        form_soc_instance = form_soc.save(commit=False)
+                        form_soc_instance.student = student
+                        form_soc_instance.save()
 
-                    for form in formset:
-                        if form.cleaned_data.get('DELETE'):
-                            if form.instance.pk:
-                                form.instance.delete()
-                        else:
-                            czlonek_instance = form.save(commit=False)
-                            czlonek_instance.student = student
-                            czlonek_instance.save()
+                        for form in formset:
+                            if form.cleaned_data.get('DELETE'):
+                                if form.instance.pk:
+                                    form.instance.delete()
+                            else:
+                                czlonek_instance = form.save(commit=False)
+                                czlonek_instance.student = student
+                                czlonek_instance.save()
 
                 return redirect('/admin_tables')
+            else:
+                messages_to_display = 'Skladales juz formularz socjalny lub dla niepełnosprawnych'
+                return render(request, 'website/index2.html', {'messages': messages_to_display})
         
     context = {
         'form_soc': form_soc,
