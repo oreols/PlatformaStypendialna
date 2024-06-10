@@ -7,6 +7,8 @@ import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
+from django.db.backends.utils import CursorWrapper
+
 
 
 class Migration(migrations.Migration):
@@ -303,27 +305,22 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.RunSQL('''
-            DELIMITER //
             CREATE PROCEDURE IF NOT EXISTS CountStudents()
             BEGIN
             DECLARE student_count INT;
             SELECT COUNT(*) INTO student_count FROM api_Student;
             SELECT student_count AS 'Liczba_studentow';
-            END//
-            DELIMITER ;
+            END
             '''),
         migrations.RunSQL('''
-            DELIMITER //
             CREATE PROCEDURE IF NOT EXISTS CountWnioski()
             BEGIN
             DECLARE wnioski_count INT;
             SELECT COUNT(*) INTO wnioski_count FROM api_formularz;
             SELECT wnioski_count AS 'Liczba_wnioskow';
-            END//
-            DELIMITER ;
+            END
             '''),
         migrations.RunSQL('''
-            delimiter //
             create procedure IF NOT EXISTS CountSocjalne ()
             begin
                 declare count_socjalne int;
@@ -333,11 +330,9 @@ class Migration(migrations.Migration):
                 select count(*) into count_socjalne_zaakceptowane from api_formularz where typ_stypendium = 'socjalne' and status = 'zaakceptowane';
                 select count(*) into count_socjalne_odrzucone from api_formularz where typ_stypendium = 'socjalne' and status = 'odrzucone';
                 select count_socjalne as 'Liczba_stypendiow_socjalnych', count_socjalne_zaakceptowane as 'Liczba_zaakceptowanych_stypendiow_socjalnych', count_socjalne_odrzucone as 'Liczba_odrzuconych_stypendiow_socjalnych';
-            end//
-            delimiter ;
+            end
             '''),
         migrations.RunSQL('''
-            delimiter //
             create procedure IF NOT EXISTS CountNaukowe ()
             begin
                 declare count_naukowe int;
@@ -347,11 +342,9 @@ class Migration(migrations.Migration):
                 select count(*) into count_naukowe_zaakceptowane from api_formularz where typ_stypendium = 'naukowe' and status = 'zaakceptowane';
                 select count(*) into count_naukowe_odrzucone from api_formularz where typ_stypendium = 'naukowe' and status = 'odrzucone';
                 select count_naukowe as 'Liczba_stypendiow_naukowych', count_naukowe_zaakceptowane as 'Liczba_zaakceptowanych_stypendiow_naukowych', count_naukowe_odrzucone as 'Liczba_odrzuconych_stypendiow_naukowych';
-            end//
-            delimiter ;
+            end
             '''),
         migrations.RunSQL('''
-            delimiter //
             create procedure IF NOT EXISTS CountNiepelno ()
             begin
                 declare count_niepelno int;
@@ -361,19 +354,15 @@ class Migration(migrations.Migration):
                 select count(*) into count_niepelno_zaakceptowane from api_formularz where typ_stypendium = 'dla_niepelnosprawnych' and status = 'zaakceptowane';
                 select count(*) into count_niepelno_odrzucone from api_formularz where typ_stypendium = 'dla_niepelnosprawnych' and status = 'odrzucone';
                 select count_niepelno as 'Liczba_stypeniow_dla_osob_niepelnosprawnych', count_niepelno_zaakceptowane as 'Liczba_zaakceptowanych_stypendiow_dla_osob_niepelnosprawnych', count_niepelno_odrzucone as 'Liczba_odrzuconych_stypendiow_dla_osob_niepelnosprawnych';
-            end//
-            delimiter ;
+            end
             '''),
         migrations.RunSQL('''
-            delimiter //
             create procedure IF NOT EXISTS UsunPusteFormularze ()
             begin
                 delete from api_formularz where typ_stypendium is null;
-            end//
-            delimiter ;
+            end
         '''),
         migrations.RunSQL('''
-            DELIMITER //
             CREATE TRIGGER zmiana_statusow
             AFTER UPDATE ON api_formularz
             FOR EACH ROW
@@ -383,11 +372,9 @@ class Migration(migrations.Migration):
                     VALUES (NEW.id_formularza, NEW.data_zlozenia, OLD.status, NEW.status, CURRENT_TIMESTAMP);
                 END IF;
             END;
-            //
-            DELIMITER ;
+            
             '''),
         migrations.RunSQL('''
-            DELIMITER //
             CREATE FUNCTION IF NOT EXISTS ustal_plec(pesel CHAR(11)) RETURNS VARCHAR(10)
             DETERMINISTIC
             BEGIN
@@ -403,8 +390,7 @@ class Migration(migrations.Migration):
                 END IF;
 
                 RETURN plec;
-            END //
-            DELIMITER ;
+            END 
         '''),
 
     ]
