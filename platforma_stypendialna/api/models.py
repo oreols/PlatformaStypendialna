@@ -264,10 +264,6 @@ class OcenaKoncowaDziekanat(models.Model):
     
 class CzlonekRodziny(models.Model):
     id_czlonka = models.AutoField(primary_key=True)
-    imie_czlonka = models.TextField(null=True)
-    nazwisko_czlonka = models.TextField(null=True)
-    stopien_pokrewienstwa = models.TextField(max_length=10, null=True)
-    id_czlonka = models.IntegerField(primary_key=True)
     imie_czlonka = models.TextField(null=True, validators=[validate_string])
     nazwisko_czlonka = models.TextField(null=True, validators=[validate_string])
     stopien_pokrewienstwa = models.TextField(max_length=10, null=True, validators=[validate_string])
