@@ -386,5 +386,25 @@ class Migration(migrations.Migration):
             //
             DELIMITER ;
             '''),
+        migrations.RunSQL('''
+            DELIMITER //
+            CREATE FUNCTION IF NOT EXISTS ustal_plec(pesel CHAR(11)) RETURNS VARCHAR(10)
+            DETERMINISTIC
+            BEGIN
+                DECLARE plec_numer INT;
+                DECLARE plec VARCHAR(10);
+
+                SET plec_numer = SUBSTRING(pesel, 10, 1);
+
+                IF plec_numer % 2 = 0 THEN
+                    SET plec = 'kobieta';
+                ELSE
+                    SET plec = 'mezczyzna';
+                END IF;
+
+                RETURN plec;
+            END //
+            DELIMITER ;
+        '''),
 
     ]

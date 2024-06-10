@@ -1,3 +1,6 @@
+import logging
+
+logger = logging.getLogger(__name__)
 from django.forms import ValidationError
 from django.shortcuts import redirect, render
 from django.http import HttpResponse;
@@ -55,6 +58,22 @@ def student_has_submitted_form_niepelnosprawne(student_id):
         row = cursor.fetchone()
     return row[0] > 0
 
+#def zapisz_plec(student_id, pesel):
+ #   query = """
+  #  UPDATE api_student SET plec = ustal_plec(pesel) WHERE student_id = %s AND plec IS NULL", [pesel, student_id])
+   # """
+    #return Student.objects.raw(query)    
+
+#def zapisz_plec(pesel, numer_albumu):
+ #   with connection.cursor() as cursor:
+  #      cursor.execute("UPDATE api_student SET plec = ustal_plec(%s) WHERE numer_albumu = %s", [pesel, numer_albumu])
+
+def zapisz_plec(pesel):
+    if len(pesel) != 11 or not pesel.isdigit():
+        raise ValueError("Zle podany pesel")
+
+    literka_plec = int(pesel[9])
+    return 'F' if literka_plec % 2 == 0 else 'M'
 
 def ranking_studentow():
     query = """
@@ -111,6 +130,7 @@ def registerPage(request):
             password = request.POST['password']
             #id_student = request.POST['id_student']
             form.instance.password = make_password(password)
+            form.instance.plec = zapisz_plec(form.instance.pesel)
             user = form.save(commit=False)
             user.is_active = False
             user.save()

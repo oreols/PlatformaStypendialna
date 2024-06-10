@@ -64,6 +64,7 @@ class Student(AbstractUser):
     data_rejestracji = models.DateField(null=True)
     ikonka = models.ImageField(null=True, max_length = 180, blank=True, default='default.jpg', upload_to='dokumenty/ikonki')
     pesel = models.CharField(null=True, unique = True, max_length=11, validators=[validate_digits_only]) 
+    plec = models.CharField(null=True, max_length=10, blank=True)
     imie = models.CharField(null=True, max_length=20, validators=[validate_string])
     nazwisko = models.CharField(null=True, max_length=35, validators=[validate_string])
     zalaczniki = models.FileField(null=True, upload_to='dokumenty/zalaczniki', blank = True)
