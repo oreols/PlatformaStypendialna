@@ -362,18 +362,18 @@ class Migration(migrations.Migration):
                 delete from api_formularz where typ_stypendium is null;
             end
         '''),
-        # migrations.RunSQL('''
-        #     CREATE TRIGGER zmiana_statusow
-        #     AFTER UPDATE ON api_formularz
-        #     FOR EACH ROW
-        #     BEGIN
-        #         IF NEW.status = 'zaakceptowane' OR NEW.status = 'odrzucone' THEN
-        #             INSERT INTO api_historiastatusow (formularz, data_zlozenia_form, stary_status, nowy_status, data_zmiany)
-        #             VALUES (NEW.id_formularza, NEW.data_zlozenia, OLD.status, NEW.status, CURRENT_TIMESTAMP);
-        #         END IF;
-        #     END;
+        migrations.RunSQL('''
+            CREATE TRIGGER zmiana_statusow
+            AFTER UPDATE ON api_formularz
+            FOR EACH ROW
+            BEGIN
+                IF NEW.status = 'zaakceptowane' OR NEW.status = 'odrzucone' THEN
+                    INSERT INTO api_historiastatusow (formularz_id, data_zlozenia_form, stary_status, nowy_status, data_zmiany)
+                    VALUES (NEW.id_formularza, NEW.data_zlozenia, OLD.status, NEW.status, CURRENT_TIMESTAMP);
+                END IF;
+            END;
             
-        #     '''),
+            '''),
         migrations.RunSQL('''
             CREATE FUNCTION IF NOT EXISTS ustal_plec(pesel CHAR(11)) RETURNS VARCHAR(10)
             DETERMINISTIC
