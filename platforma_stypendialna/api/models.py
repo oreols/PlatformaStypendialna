@@ -114,7 +114,7 @@ class Aktualnosci(models.Model):
         return str(self.id_aktualnosci)
 
 class Kontakt(models.Model):
-    id_kontakt = models.IntegerField(primary_key=True)
+    id_kontakt = models.AutoField(primary_key=True)
     email = models.TextField(null=True)
     numer_tel = models.IntegerField(null=True)
     admin = models.ForeignKey(Admin, on_delete=models.CASCADE, null=True)

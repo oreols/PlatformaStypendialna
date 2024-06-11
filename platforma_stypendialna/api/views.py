@@ -606,7 +606,7 @@ def edytujAktualnosc(request,pk):
         form = AktualnosciForm(request.POST, instance=aktualnosci)
         if form.is_valid():
             form.save()
-            return redirect('/admin_tables')
+            return redirect('/dodaj_aktualnosci')
     context = {'form': form}
     return render(request, 'website/edytuj_aktualnosci.html',context)
 
@@ -690,9 +690,6 @@ def EdytujFormSocjalne(request, pk_form, pk_student):
     return render(request, 'website/edytuj_form_socjalne.html', context)
 
 @user_passes_test(lambda u: u.is_superuser)
-def UsunFormNiepelno(request,pk):
-    formularz = Formularz.objects.get(id_formularza=pk)
-
 def UsunFormNiepelno(request, pk):
     if request.method == 'POST':
         with connection.cursor() as cursor:

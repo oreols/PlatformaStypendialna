@@ -133,7 +133,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CzlonekRodziny',
             fields=[
-                ('id_czlonka', models.IntegerField(primary_key=True, serialize=False)),
+                ('id_czlonka', models.AutoField(primary_key=True, serialize=False)),
                 ('imie_czlonka', models.TextField(null=True, validators=[api.models.validate_string])),
                 ('nazwisko_czlonka', models.TextField(null=True, validators=[api.models.validate_string])),
                 ('stopien_pokrewienstwa', models.TextField(max_length=10, null=True, validators=[api.models.validate_string])),
@@ -193,7 +193,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Kontakt',
             fields=[
-                ('id_kontakt', models.IntegerField(primary_key=True, serialize=False)),
+                ('id_kontakt', models.AutoField(primary_key=True, serialize=False)),
                 ('email', models.TextField(null=True)),
                 ('numer_tel', models.IntegerField(null=True)),
                 ('admin', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='api.admin')),

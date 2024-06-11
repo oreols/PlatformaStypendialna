@@ -43,15 +43,45 @@
             </table>
         </div>
         <br><br>
-        <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć wymaganą dokumentację -> <a href="dokumentacja_socjalne">ZOBACZ TUTAJ</a></span>
+
         <br>
         {{ form_soc.zalacznik }} 
         {{ form_soc.errors }}
         {{ formset.non_form_errors }}
-        <button id="wyslij_socjalne" type="submit">WYŚLIJ FORMULARZ</button>
-    </div>
-
-
+        
+    
+    <br><br>
+    <span id="uwaga">Do wniosku o przyznanie stypendium socjalnego obowiązkowo należy dołączyć dokumentację: </span>
+    <ol>
+        <li> Wnioskodawca:
+            <ul>
+                <li>Zaświadczenie z Urzędu Skarbowego dot. dochodu i wysokości składki społecznej</li>
+                <li>Zaświadczenie z ZUS dot. wysokości składki zdrowotnej,</li>
+                <li>Oświadczenie o dochodach niepodlegających opodatkowaniu</li>
+            </ul>
+        </li>
+        <li> Rodzice:
+            <ul>
+                <li>Zaświadczenie z Urzędu Skarbowego dot. dochodu i wysokości składki społecznej</li>
+                <li>Zaświadczenie z ZUS dot. wysokości składki zdrowotnej</li>
+                <li>Oświadczenie o dochodach niepodlegających opodatkowaniu</li>
+            </ul>
+        </li>
+        <li> Rodzeństwo pełnoletnie:
+            <ul>
+                <li>Zaświadczenie z Urzędu Skarbowego dot. dochodu i wysokości składki społecznej, oświadczenie o dochodach niepodlegających opodatkowaniu </li>
+                <li>Zaświadczenie z ZUS dot. wysokości składki zdrowotnej</li>
+                <li>Zaświadczenie o uczeniu się (ze szkoły/uczelni)i/lub orzeczenie o niepełnosprawności</li>
+            </ul>
+        </li>
+        <li> Rodzeństwo niepełnoletnie:
+            <ul>
+                <li>Zaświadczenie o uczeniu się (ze szkoły lub uczelni)</li>
+            </ul>
+        </li>
+    </ol>
+<button id="wyslij_socjalne" type="submit">WYŚLIJ FORMULARZ</button>
+</div>
 </form>
 
 <script>
